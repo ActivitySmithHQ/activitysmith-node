@@ -1,0 +1,27 @@
+{
+  "name": "activitysmith",
+  "version": "0.1.0",
+  "description": "Official ActivitySmith Node.js SDK",
+  "keywords": [
+    "activitysmith",
+    "live activities",
+    "push notifications",
+    "api"
+  ],
+  "homepage": "https://github.com/ActivitySmithHQ/activitysmith-node",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "generated"
+  ],
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"no tests yet\""
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3"
+  }
+}
