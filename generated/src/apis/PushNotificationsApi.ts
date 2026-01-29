@@ -35,7 +35,7 @@ export interface SendPushNotificationRequest {
 /**
  * 
  */
-export class NotificationsApi extends runtime.BaseAPI {
+export class PushNotificationsApi extends runtime.BaseAPI {
 
     /**
      * Sends a push notification to every paired device in your account.
@@ -57,7 +57,7 @@ export class NotificationsApi extends runtime.BaseAPI {
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
-            const tokenString = await token("bearerAuth", []);
+            const tokenString = await token("apiKeyAuth", []);
 
             if (tokenString) {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
