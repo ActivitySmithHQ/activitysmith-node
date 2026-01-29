@@ -9,19 +9,32 @@
     "api"
   ],
   "homepage": "https://github.com/ActivitySmithHQ/activitysmith-node",
-  "type": "module",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "dist/generated/index.js",
+  "types": "dist/generated/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/generated/index.d.ts",
+      "import": "./dist/generated/index.js",
+      "require": "./dist/generated/index.js",
+      "default": "./dist/generated/index.js"
+    }
+  },
   "files": [
-    "dist",
-    "generated"
+    "dist/generated",
+    "README.md",
+    "LICENSE"
   ],
   "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
-    "build": "tsc",
-    "test": "echo \"no tests yet\""
+    "build": "tsc -p tsconfig.generated.json",
+    "prepublishOnly": "npm run build",
+    "test": "npm run build && vitest run"
   },
   "devDependencies": {
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "vitest": "^1.6.0"
   }
 }

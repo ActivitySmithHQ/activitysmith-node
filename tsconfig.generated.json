@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "module": "CommonJS",
+    "rootDir": "generated",
+    "outDir": "dist/generated",
+    "strict": false
+  },
+  "include": ["generated"]
+}
