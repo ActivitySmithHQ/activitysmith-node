@@ -1,42 +1,70 @@
-# activitysmith
+# ActivitySmith Node.js Library
 
-Official ActivitySmith Node.js SDK (OpenAPI generated).
+The ActivitySmith Node library provides convenient access to the ActivitySmith API from server-side JavaScript and TypeScript applications.
 
-## Install
+## Documentation
+
+See [API reference](https://activitysmith.com/docs/api-reference/introduction)
+
+## Installation
 
 ```sh
-npm i activitysmith
+npm install activitysmith
 ```
 
-## Usage (ESM)
+## Usage
+
+ESM:
 
 ```ts
-import { Configuration, LiveActivitiesApi, NotificationsApi } from "activitysmith";
+import ActivitySmith from "activitysmith";
 
-const config = new Configuration({
-  accessToken: process.env.ACTIVITYSMITH_API_KEY,
+const client = new ActivitySmith({
+  apiKey: process.env.ACTIVITYSMITH_API_KEY,
 });
 
-const live = new LiveActivitiesApi(config);
-await live.startLiveActivity({
-  liveActivityStartRequest: {
-    // See LiveActivityStartRequest type for fields
+// Push Notifications
+await client.notifications.sendPushNotification({
+  pushNotificationRequest: {
+    // See PushNotificationRequest for fields
   },
 });
 
-const notifications = new NotificationsApi(config);
-await notifications.sendPushNotification({
-  pushNotificationRequest: {
-    // See PushNotificationRequest type for fields
+// Live Activities
+await client.liveActivities.startLiveActivity({
+  liveActivityStartRequest: {
+    // See LiveActivityStartRequest for fields
   },
 });
 ```
 
-## Configuration
+CommonJS:
 
-- Default base URL: `https://activitysmith.com/api`
-- Override with `new Configuration({ basePath: "..." })`
+```js
+const ActivitySmith = require("activitysmith");
 
-## Types
+const client = new ActivitySmith({
+  apiKey: process.env.ACTIVITYSMITH_API_KEY,
+});
+```
 
-All request/response types are exported from the package.
+## API Surface
+
+The client exposes grouped resources:
+
+- `client.liveActivities`
+- `client.notifications`
+
+Each method is fully typed. Request and response types are included in the type definitions.
+
+## TypeScript Support
+
+This package is written in TypeScript and ships with type definitions out of the box.
+
+## Requirements
+
+- Node.js 18 or newer
+
+## License
+
+MIT
