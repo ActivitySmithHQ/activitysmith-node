@@ -1,6 +1,6 @@
 {
   "name": "activitysmith",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Official ActivitySmith Node.js SDK",
   "keywords": [
     "activitysmith",
@@ -9,17 +9,17 @@
     "api"
   ],
   "homepage": "https://github.com/ActivitySmithHQ/activitysmith-node",
-  "main": "dist/generated/index.js",
-  "types": "dist/generated/index.d.ts",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/generated/index.d.ts",
-      "import": "./dist/generated/index.js",
-      "require": "./dist/generated/index.js",
-      "default": "./dist/generated/index.js"
+      "types": "./dist/src/index.d.ts",
+      "require": "./dist/src/index.js",
+      "default": "./dist/src/index.js"
     }
   },
   "files": [
+    "dist/src",
     "dist/generated",
     "README.md",
     "LICENSE"
@@ -29,7 +29,8 @@
     "node": ">=18"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.generated.json",
+    "clean": "tsc -b --clean",
+    "build": "npm run clean && tsc -b",
     "prepublishOnly": "npm run build",
     "test": "npm run build && vitest run"
   },
