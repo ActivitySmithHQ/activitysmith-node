@@ -19,14 +19,6 @@ import type {
   PushNotificationResponse,
   SendPushNotification429Response,
 } from '../models/index';
-import {
-    PushNotificationRequestFromJSON,
-    PushNotificationRequestToJSON,
-    PushNotificationResponseFromJSON,
-    PushNotificationResponseToJSON,
-    SendPushNotification429ResponseFromJSON,
-    SendPushNotification429ResponseToJSON,
-} from '../models/index';
 
 export interface SendPushNotificationRequest {
     pushNotificationRequest: PushNotificationRequest;
@@ -35,7 +27,7 @@ export interface SendPushNotificationRequest {
 /**
  * 
  */
-export class NotificationsApi extends runtime.BaseAPI {
+export class PushNotificationsApi extends runtime.BaseAPI {
 
     /**
      * Sends a push notification to every paired device in your account.
@@ -57,7 +49,7 @@ export class NotificationsApi extends runtime.BaseAPI {
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
-            const tokenString = await token("bearerAuth", []);
+            const tokenString = await token("apiKeyAuth", []);
 
             if (tokenString) {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
@@ -68,10 +60,10 @@ export class NotificationsApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: PushNotificationRequestToJSON(requestParameters['pushNotificationRequest']),
+            body: requestParameters['pushNotificationRequest'],
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PushNotificationResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response);
     }
 
     /**
