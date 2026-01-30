@@ -1,11 +1,11 @@
-import { Configuration, NotificationsApi, LiveActivitiesApi } from "../generated/index";
+import { Configuration, PushNotificationsApi, LiveActivitiesApi } from "../generated/index";
 
 export interface ActivitySmithOptions {
   apiKey: string;
 }
 
 export class ActivitySmith {
-  public readonly notifications: NotificationsApi;
+  public readonly notifications: PushNotificationsApi;
   public readonly liveActivities: LiveActivitiesApi;
 
   constructor(opts: ActivitySmithOptions) {
@@ -18,7 +18,7 @@ export class ActivitySmith {
       accessToken: opts.apiKey,
     });
 
-    this.notifications = new NotificationsApi(config);
+    this.notifications = new PushNotificationsApi(config);
     this.liveActivities = new LiveActivitiesApi(config);
   }
 }
