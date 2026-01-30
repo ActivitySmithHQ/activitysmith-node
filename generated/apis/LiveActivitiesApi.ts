@@ -23,22 +23,6 @@ import type {
   LiveActivityUpdateResponse,
   RateLimitError,
 } from '../models/index';
-import {
-    LiveActivityEndRequestFromJSON,
-    LiveActivityEndRequestToJSON,
-    LiveActivityEndResponseFromJSON,
-    LiveActivityEndResponseToJSON,
-    LiveActivityStartRequestFromJSON,
-    LiveActivityStartRequestToJSON,
-    LiveActivityStartResponseFromJSON,
-    LiveActivityStartResponseToJSON,
-    LiveActivityUpdateRequestFromJSON,
-    LiveActivityUpdateRequestToJSON,
-    LiveActivityUpdateResponseFromJSON,
-    LiveActivityUpdateResponseToJSON,
-    RateLimitErrorFromJSON,
-    RateLimitErrorToJSON,
-} from '../models/index';
 
 export interface EndLiveActivityRequest {
     liveActivityEndRequest: LiveActivityEndRequest;
@@ -77,7 +61,7 @@ export class LiveActivitiesApi extends runtime.BaseAPI {
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
-            const tokenString = await token("bearerAuth", []);
+            const tokenString = await token("apiKeyAuth", []);
 
             if (tokenString) {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
@@ -88,10 +72,10 @@ export class LiveActivitiesApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: LiveActivityEndRequestToJSON(requestParameters['liveActivityEndRequest']),
+            body: requestParameters['liveActivityEndRequest'],
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => LiveActivityEndResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response);
     }
 
     /**
@@ -123,7 +107,7 @@ export class LiveActivitiesApi extends runtime.BaseAPI {
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
-            const tokenString = await token("bearerAuth", []);
+            const tokenString = await token("apiKeyAuth", []);
 
             if (tokenString) {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
@@ -134,10 +118,10 @@ export class LiveActivitiesApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: LiveActivityStartRequestToJSON(requestParameters['liveActivityStartRequest']),
+            body: requestParameters['liveActivityStartRequest'],
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => LiveActivityStartResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response);
     }
 
     /**
@@ -169,7 +153,7 @@ export class LiveActivitiesApi extends runtime.BaseAPI {
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
-            const tokenString = await token("bearerAuth", []);
+            const tokenString = await token("apiKeyAuth", []);
 
             if (tokenString) {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
@@ -180,10 +164,10 @@ export class LiveActivitiesApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: LiveActivityUpdateRequestToJSON(requestParameters['liveActivityUpdateRequest']),
+            body: requestParameters['liveActivityUpdateRequest'],
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => LiveActivityUpdateResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response);
     }
 
     /**
