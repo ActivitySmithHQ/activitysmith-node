@@ -4,11 +4,27 @@
   "description": "Official ActivitySmith Node.js SDK",
   "keywords": [
     "activitysmith",
-    "live activities",
-    "push notifications",
-    "api"
+    "live-activities",
+    "push-notifications",
+    "api",
+    "sdk",
+    "deployment",
+    "publishing",
+    "monitoring",
+    "observability",
+    "logging",
+    "logs",
+    "automation",
+    "tracking",
+    "reporting"
   ],
-  "homepage": "https://github.com/ActivitySmithHQ/activitysmith-node",
+  "author": "ActivitySmith",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ActivitySmithHQ/activitysmith-node.git"
+  },
+  "homepage": "https://activitysmith.com/docs/sdks/node",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
   "exports": {
@@ -24,7 +40,6 @@
     "README.md",
     "LICENSE"
   ],
-  "license": "MIT",
   "engines": {
     "node": ">=18"
   },
