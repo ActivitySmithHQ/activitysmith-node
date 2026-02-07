@@ -16,4 +16,3 @@ jobs:
       - run: npm install
         if: hashFiles('package-lock.json') == ''
       - run: npm test
-        continue-on-error: true
