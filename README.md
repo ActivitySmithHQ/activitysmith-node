@@ -1,6 +1,6 @@
-# ActivitySmith Node.js Library
+# ActivitySmith Node SDK
 
-The ActivitySmith Node library provides convenient access to the ActivitySmith API from server-side JavaScript and TypeScript applications.
+The ActivitySmith Node SDK provides convenient access to the ActivitySmith API from server-side JavaScript and TypeScript applications.
 
 ## Documentation
 
@@ -24,17 +24,13 @@ const client = new ActivitySmith({
 });
 
 // Push Notifications
-await client.notifications.sendPushNotification({
-  pushNotificationRequest: {
-    // See PushNotificationRequest for fields
-  },
+await client.notifications.send({
+  // See PushNotificationRequest for fields
 });
 
 // Live Activities
-await client.liveActivities.startLiveActivity({
-  liveActivityStartRequest: {
-    // See LiveActivityStartRequest for fields
-  },
+await client.liveActivities.start({
+  // See LiveActivityStartRequest for fields
 });
 ```
 
