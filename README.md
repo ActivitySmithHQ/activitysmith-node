@@ -19,17 +19,17 @@ ESM:
 ```ts
 import ActivitySmith from "activitysmith";
 
-const client = new ActivitySmith({
+const activitysmith = new ActivitySmith({
   apiKey: process.env.ACTIVITYSMITH_API_KEY,
 });
 
 // Push Notifications
-await client.notifications.send({
+await activitysmith.notifications.send({
   // See PushNotificationRequest for fields
 });
 
 // Live Activities
-await client.liveActivities.start({
+await activitysmith.liveActivities.start({
   // See LiveActivityStartRequest for fields
 });
 ```
@@ -39,7 +39,7 @@ CommonJS:
 ```js
 const ActivitySmith = require("activitysmith");
 
-const client = new ActivitySmith({
+const activitysmith = new ActivitySmith({
   apiKey: process.env.ACTIVITYSMITH_API_KEY,
 });
 ```
@@ -48,8 +48,8 @@ const client = new ActivitySmith({
 
 The client exposes grouped resources:
 
-- `client.liveActivities`
-- `client.notifications`
+- `activitysmith.liveActivities`
+- `activitysmith.notifications`
 
 Each method is fully typed. Request and response types are included in the type definitions.
 
