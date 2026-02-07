@@ -12,25 +12,13 @@ See [API reference](https://activitysmith.com/docs/api-reference/introduction)
 npm install activitysmith
 ```
 
-## Usage
-
-ESM:
+## Setup
 
 ```ts
 import ActivitySmith from "activitysmith";
 
 const activitysmith = new ActivitySmith({
   apiKey: process.env.ACTIVITYSMITH_API_KEY,
-});
-
-// Push Notifications
-await activitysmith.notifications.send({
-  // See PushNotificationRequest for fields
-});
-
-// Live Activities
-await activitysmith.liveActivities.start({
-  // See LiveActivityStartRequest for fields
 });
 ```
 
@@ -44,14 +32,84 @@ const activitysmith = new ActivitySmith({
 });
 ```
 
+## Usage
+
+### Send a Push Notification
+
+```ts
+const response = await activitysmith.notifications.send({
+  title: "Build Failed",
+  message: "CI pipeline failed on main branch",
+});
+
+console.log(response.success);
+console.log(response.devices_notified);
+```
+
+### Start a Live Activity
+
+```ts
+const start = await activitysmith.liveActivities.start({
+  content_state: {
+    title: "ActivitySmith API Deployment",
+    subtitle: "start",
+    number_of_steps: 4,
+    current_step: 1,
+    type: "segmented_progress",
+    color: "yellow",
+  },
+});
+
+const activityId = start.activity_id;
+```
+
+### Update a Live Activity
+
+```ts
+const update = await activitysmith.liveActivities.update({
+  activity_id: activityId,
+  content_state: {
+    title: "ActivitySmith API Deployment",
+    subtitle: "npm i & pm2",
+    current_step: 3,
+  },
+});
+
+console.log(update.devices_notified);
+```
+
+### End a Live Activity
+
+```ts
+const end = await activitysmith.liveActivities.end({
+  activity_id: activityId,
+  content_state: {
+    title: "ActivitySmith API Deployment",
+    subtitle: "done",
+    current_step: 4,
+    auto_dismiss_minutes: 3,
+  },
+});
+
+console.log(end.success);
+```
+
+## Error Handling
+
+```ts
+try {
+  await activitysmith.notifications.send({
+    title: "Build Failed",
+  });
+} catch (error) {
+  console.error(error);
+}
+```
+
 ## API Surface
 
-The client exposes grouped resources:
-
-- `activitysmith.liveActivities`
 - `activitysmith.notifications`
-
-Each method is fully typed. Request and response types are included in the type definitions.
+- `activitysmith.liveActivities`
 
 ## TypeScript Support
 
