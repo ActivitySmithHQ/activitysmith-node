@@ -14,8 +14,6 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     environment: release
-    env:
-      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
     steps:
       - uses: actions/checkout@v4
 
@@ -27,14 +25,5 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Publish package (token)
-        if: ${{ env.NPM_TOKEN != '' }}
-        env:
-          NODE_AUTH_TOKEN: ${{ env.NPM_TOKEN }}
-        run: npm publish --provenance --access public
-
-      - name: Publish package (trusted publishing)
-        if: ${{ env.NPM_TOKEN == '' }}
-        env:
-          NODE_AUTH_TOKEN: ""
+      - name: Publish package
         run: npm publish --provenance --access public
