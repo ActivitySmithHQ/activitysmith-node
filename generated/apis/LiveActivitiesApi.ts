@@ -15,12 +15,15 @@
 
 import * as runtime from '../runtime';
 import type {
+  BadRequestError,
+  ForbiddenError,
   LiveActivityEndRequest,
   LiveActivityEndResponse,
   LiveActivityStartRequest,
   LiveActivityStartResponse,
   LiveActivityUpdateRequest,
   LiveActivityUpdateResponse,
+  NoRecipientsError,
   RateLimitError,
 } from '../models/index';
 
@@ -88,7 +91,7 @@ export class LiveActivitiesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Starts a Live Activity on all registered devices and returns an activity_id.
+     * Starts a Live Activity on devices matched by API key scope and optional target channels.
      * Start a Live Activity
      */
     async startLiveActivityRaw(requestParameters: StartLiveActivityRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<LiveActivityStartResponse>> {
@@ -125,7 +128,7 @@ export class LiveActivitiesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Starts a Live Activity on all registered devices and returns an activity_id.
+     * Starts a Live Activity on devices matched by API key scope and optional target channels.
      * Start a Live Activity
      */
     async startLiveActivity(requestParameters: StartLiveActivityRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<LiveActivityStartResponse> {

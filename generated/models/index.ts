@@ -1,11 +1,66 @@
 /* tslint:disable */
 /* eslint-disable */
 /**
+ * 
+ * @export
+ * @interface AlertPayload
+ */
+export interface AlertPayload {
+    [key: string]: any | any;
+    /**
+     * 
+     * @type {string}
+     * @memberof AlertPayload
+     */
+    title?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof AlertPayload
+     */
+    body?: string;
+}
+/**
+ * 
+ * @export
+ * @interface BadRequestError
+ */
+export interface BadRequestError {
+    [key: string]: any | any;
+    /**
+     * 
+     * @type {string}
+     * @memberof BadRequestError
+     */
+    error: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof BadRequestError
+     */
+    message: string;
+}
+/**
+ * 
+ * @export
+ * @interface ChannelTarget
+ */
+export interface ChannelTarget {
+    [key: string]: any | any;
+    /**
+     * Channel slugs. When omitted, API key scope determines recipients.
+     * @type {Array<string>}
+     * @memberof ChannelTarget
+     */
+    channels: Array<string>;
+}
+/**
  * End payload. Required fields are title and current_step. number_of_steps is optional.
  * @export
  * @interface ContentStateEnd
  */
 export interface ContentStateEnd {
+    [key: string]: any | any;
     /**
      * 
      * @type {string}
@@ -89,6 +144,7 @@ export type ContentStateEndStepColorEnum = typeof ContentStateEndStepColorEnum[k
  * @interface ContentStateStart
  */
 export interface ContentStateStart {
+    [key: string]: any | any;
     /**
      * 
      * @type {string}
@@ -180,6 +236,7 @@ export type ContentStateStartStepColorEnum = typeof ContentStateStartStepColorEn
  * @interface ContentStateUpdate
  */
 export interface ContentStateUpdate {
+    [key: string]: any | any;
     /**
      * 
      * @type {string}
@@ -254,9 +311,30 @@ export type ContentStateUpdateStepColorEnum = typeof ContentStateUpdateStepColor
 /**
  * 
  * @export
+ * @interface ForbiddenError
+ */
+export interface ForbiddenError {
+    [key: string]: any | any;
+    /**
+     * 
+     * @type {string}
+     * @memberof ForbiddenError
+     */
+    error: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ForbiddenError
+     */
+    message: string;
+}
+/**
+ * 
+ * @export
  * @interface LiveActivityEndRequest
  */
 export interface LiveActivityEndRequest {
+    [key: string]: any | any;
     /**
      * 
      * @type {string}
@@ -276,6 +354,7 @@ export interface LiveActivityEndRequest {
  * @interface LiveActivityEndResponse
  */
 export interface LiveActivityEndResponse {
+    [key: string]: any | any;
     /**
      * 
      * @type {boolean}
@@ -313,6 +392,7 @@ export interface LiveActivityEndResponse {
  * @interface LiveActivityLimitError
  */
 export interface LiveActivityLimitError {
+    [key: string]: any | any;
     /**
      * 
      * @type {string}
@@ -344,12 +424,25 @@ export interface LiveActivityLimitError {
  * @interface LiveActivityStartRequest
  */
 export interface LiveActivityStartRequest {
+    [key: string]: any | any;
     /**
      * 
      * @type {ContentStateStart}
      * @memberof LiveActivityStartRequest
      */
     content_state: ContentStateStart;
+    /**
+     * 
+     * @type {AlertPayload}
+     * @memberof LiveActivityStartRequest
+     */
+    alert?: AlertPayload;
+    /**
+     * 
+     * @type {ChannelTarget}
+     * @memberof LiveActivityStartRequest
+     */
+    target?: ChannelTarget;
 }
 /**
  * 
@@ -357,6 +450,7 @@ export interface LiveActivityStartRequest {
  * @interface LiveActivityStartResponse
  */
 export interface LiveActivityStartResponse {
+    [key: string]: any | any;
     /**
      * 
      * @type {boolean}
@@ -383,6 +477,12 @@ export interface LiveActivityStartResponse {
     activity_id: string;
     /**
      * 
+     * @type {Array<string>}
+     * @memberof LiveActivityStartResponse
+     */
+    effective_channel_slugs?: Array<string>;
+    /**
+     * 
      * @type {string}
      * @memberof LiveActivityStartResponse
      */
@@ -394,6 +494,7 @@ export interface LiveActivityStartResponse {
  * @interface LiveActivityUpdateRequest
  */
 export interface LiveActivityUpdateRequest {
+    [key: string]: any | any;
     /**
      * 
      * @type {string}
@@ -413,6 +514,7 @@ export interface LiveActivityUpdateRequest {
  * @interface LiveActivityUpdateResponse
  */
 export interface LiveActivityUpdateResponse {
+    [key: string]: any | any;
     /**
      * 
      * @type {boolean}
@@ -447,9 +549,36 @@ export interface LiveActivityUpdateResponse {
 /**
  * 
  * @export
+ * @interface NoRecipientsError
+ */
+export interface NoRecipientsError {
+    [key: string]: any | any;
+    /**
+     * 
+     * @type {string}
+     * @memberof NoRecipientsError
+     */
+    error: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof NoRecipientsError
+     */
+    message: string;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof NoRecipientsError
+     */
+    effective_channel_slugs?: Array<string>;
+}
+/**
+ * 
+ * @export
  * @interface PushNotificationRequest
  */
 export interface PushNotificationRequest {
+    [key: string]: any | any;
     /**
      * 
      * @type {string}
@@ -468,6 +597,30 @@ export interface PushNotificationRequest {
      * @memberof PushNotificationRequest
      */
     subtitle?: string;
+    /**
+     * 
+     * @type {{ [key: string]: any; }}
+     * @memberof PushNotificationRequest
+     */
+    payload?: { [key: string]: any; };
+    /**
+     * 
+     * @type {number}
+     * @memberof PushNotificationRequest
+     */
+    badge?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof PushNotificationRequest
+     */
+    sound?: string;
+    /**
+     * 
+     * @type {ChannelTarget}
+     * @memberof PushNotificationRequest
+     */
+    target?: ChannelTarget;
 }
 /**
  * 
@@ -475,6 +628,7 @@ export interface PushNotificationRequest {
  * @interface PushNotificationResponse
  */
 export interface PushNotificationResponse {
+    [key: string]: any | any;
     /**
      * 
      * @type {boolean}
@@ -495,6 +649,12 @@ export interface PushNotificationResponse {
     users_notified?: number;
     /**
      * 
+     * @type {Array<string>}
+     * @memberof PushNotificationResponse
+     */
+    effective_channel_slugs?: Array<string>;
+    /**
+     * 
      * @type {string}
      * @memberof PushNotificationResponse
      */
@@ -506,6 +666,7 @@ export interface PushNotificationResponse {
  * @interface RateLimitError
  */
 export interface RateLimitError {
+    [key: string]: any | any;
     /**
      * 
      * @type {string}

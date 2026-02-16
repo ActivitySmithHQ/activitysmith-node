@@ -15,6 +15,9 @@
 
 import * as runtime from '../runtime';
 import type {
+  BadRequestError,
+  ForbiddenError,
+  NoRecipientsError,
   PushNotificationRequest,
   PushNotificationResponse,
   SendPushNotification429Response,
@@ -30,7 +33,7 @@ export interface SendPushNotificationRequest {
 export class PushNotificationsApi extends runtime.BaseAPI {
 
     /**
-     * Sends a push notification to every paired device in your account.
+     * Sends a push notification to devices matched by API key scope and optional target channels.
      * Send a push notification
      */
     async sendPushNotificationRaw(requestParameters: SendPushNotificationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PushNotificationResponse>> {
@@ -67,7 +70,7 @@ export class PushNotificationsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Sends a push notification to every paired device in your account.
+     * Sends a push notification to devices matched by API key scope and optional target channels.
      * Send a push notification
      */
     async sendPushNotification(requestParameters: SendPushNotificationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PushNotificationResponse> {
