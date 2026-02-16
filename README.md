@@ -40,6 +40,7 @@ const activitysmith = new ActivitySmith({
 const response = await activitysmith.notifications.send({
   title: "Build Failed",
   message: "CI pipeline failed on main branch",
+  channels: ["devs", "ops"], // Optional
 });
 
 console.log(response.success);
@@ -58,6 +59,7 @@ const start = await activitysmith.liveActivities.start({
     type: "segmented_progress",
     color: "yellow",
   },
+  channels: ["devs", "ops"], // Optional
 });
 
 const activityId = start.activity_id;

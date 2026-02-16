@@ -10,6 +10,25 @@ type StartRequestBody = Parameters<LiveActivitiesApi["startLiveActivity"]>[0]["l
 type UpdateRequestBody = Parameters<LiveActivitiesApi["updateLiveActivity"]>[0]["liveActivityUpdateRequest"];
 type EndRequestBody = Parameters<LiveActivitiesApi["endLiveActivity"]>[0]["liveActivityEndRequest"];
 type LiveInitOverrides = Parameters<LiveActivitiesApi["startLiveActivity"]>[1];
+type ChannelTargetInput = { channels?: string[] };
+type PushSendRequest = PushRequestBody & { channels?: string[] };
+type LiveStartSendRequest = StartRequestBody & { channels?: string[] };
+
+function withTargetChannels<T extends { target?: ChannelTargetInput }>(
+  request: T & { channels?: string[] },
+): T {
+  const channels = request.channels;
+  if (!channels || channels.length === 0 || request.target) {
+    const { channels: _ignored, ...rest } = request;
+    return rest as T;
+  }
+
+  const { channels: _ignored, ...rest } = request;
+  return {
+    ...rest,
+    target: { channels },
+  } as T;
+}
 
 export class NotificationsResource {
   private readonly api: PushNotificationsApi;
@@ -18,8 +37,11 @@ export class NotificationsResource {
     this.api = api;
   }
 
-  send(request: PushRequestBody, initOverrides?: SendInitOverrides) {
-    return this.api.sendPushNotification({ pushNotificationRequest: request }, initOverrides);
+  send(request: PushSendRequest, initOverrides?: SendInitOverrides) {
+    return this.api.sendPushNotification(
+      { pushNotificationRequest: withTargetChannels(request) },
+      initOverrides,
+    );
   }
 
   // Backward-compatible alias.
@@ -39,8 +61,11 @@ export class LiveActivitiesResource {
     this.api = api;
   }
 
-  start(request: StartRequestBody, initOverrides?: LiveInitOverrides) {
-    return this.api.startLiveActivity({ liveActivityStartRequest: request }, initOverrides);
+  start(request: LiveStartSendRequest, initOverrides?: LiveInitOverrides) {
+    return this.api.startLiveActivity(
+      { liveActivityStartRequest: withTargetChannels(request) },
+      initOverrides,
+    );
   }
 
   update(request: UpdateRequestBody, initOverrides?: LiveInitOverrides) {

@@ -24,6 +24,31 @@ describe("resource wrappers", () => {
     expect(sendSpy).toHaveBeenCalledWith({ pushNotificationRequest: payload }, undefined);
   });
 
+  it("maps top-level channels to target.channels for notifications.send", async () => {
+    const ActivitySmith = require("../dist/src/index.js");
+    const generated = require("../dist/generated/index.js");
+
+    const sendSpy = vi
+      .spyOn(generated.PushNotificationsApi.prototype, "sendPushNotification")
+      .mockResolvedValue({ success: true });
+
+    const client = new ActivitySmith({ apiKey: "test" });
+    await client.notifications.send({
+      title: "Build Failed",
+      channels: ["devs", "ops"],
+    });
+
+    expect(sendSpy).toHaveBeenCalledWith(
+      {
+        pushNotificationRequest: {
+          title: "Build Failed",
+          target: { channels: ["devs", "ops"] },
+        },
+      },
+      undefined,
+    );
+  });
+
   it("keeps long notification alias working", async () => {
     const ActivitySmith = require("../dist/src/index.js");
     const generated = require("../dist/generated/index.js");
@@ -88,6 +113,41 @@ describe("resource wrappers", () => {
         liveActivityEndRequest: {
           activity_id: "act-1",
           content_state: { title: "Deploy", current_step: 4 },
+        },
+      },
+      undefined,
+    );
+  });
+
+  it("maps top-level channels to target.channels for liveActivities.start", async () => {
+    const ActivitySmith = require("../dist/src/index.js");
+    const generated = require("../dist/generated/index.js");
+
+    const startSpy = vi
+      .spyOn(generated.LiveActivitiesApi.prototype, "startLiveActivity")
+      .mockResolvedValue({ activity_id: "act-1" });
+
+    const client = new ActivitySmith({ apiKey: "test" });
+    await client.liveActivities.start({
+      content_state: {
+        title: "Deploy",
+        number_of_steps: 4,
+        current_step: 1,
+        type: "segmented_progress",
+      },
+      channels: ["devs", "ops"],
+    });
+
+    expect(startSpy).toHaveBeenCalledWith(
+      {
+        liveActivityStartRequest: {
+          content_state: {
+            title: "Deploy",
+            number_of_steps: 4,
+            current_step: 1,
+            type: "segmented_progress",
+          },
+          target: { channels: ["devs", "ops"] },
         },
       },
       undefined,
