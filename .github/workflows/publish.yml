@@ -35,4 +35,6 @@ jobs:
 
       - name: Publish package (trusted publishing)
         if: ${{ env.NPM_TOKEN == '' }}
+        env:
+          NODE_AUTH_TOKEN: ""
         run: npm publish --provenance --access public
