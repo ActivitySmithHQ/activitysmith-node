@@ -36,6 +36,10 @@ const activitysmith = new ActivitySmith({
 
 ### Send a Push Notification
 
+<p align="center">
+  <img src="https://cdn.activitysmith.com/features/new-subscription-push-notification.png" alt="Push notification example" width="800" />
+</p>
+
 ```ts
 const response = await activitysmith.notifications.send({
   title: "New subscription 💸",
@@ -48,6 +52,10 @@ console.log(response.devices_notified);
 ```
 
 ### Start a Live Activity
+
+<p align="center">
+  <img src="https://cdn.activitysmith.com/features/start-live-activity.png" alt="Start live activity example" width="800" />
+</p>
 
 ```ts
 const start = await activitysmith.liveActivities.start({
@@ -67,6 +75,10 @@ const activityId = start.activity_id;
 
 ### Update a Live Activity
 
+<p align="center">
+  <img src="https://cdn.activitysmith.com/features/update-live-activity.png" alt="Update live activity example" width="800" />
+</p>
+
 ```ts
 const update = await activitysmith.liveActivities.update({
   activity_id: activityId,
@@ -81,6 +93,10 @@ console.log(update.devices_notified);
 ```
 
 ### End a Live Activity
+
+<p align="center">
+  <img src="https://cdn.activitysmith.com/features/end-live-activity.png" alt="End live activity example" width="800" />
+</p>
 
 ```ts
 const end = await activitysmith.liveActivities.end({
