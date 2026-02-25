@@ -33,7 +33,7 @@ export interface SendPushNotificationRequest {
 export class PushNotificationsApi extends runtime.BaseAPI {
 
     /**
-     * Sends a push notification to devices matched by API key scope and optional target channels.
+     * Sends a push notification to devices matched by API key scope and optional target channels. Supports optional redirection URL (tap) and up to 4 interactive actions (long-press on iOS).
      * Send a push notification
      */
     async sendPushNotificationRaw(requestParameters: SendPushNotificationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PushNotificationResponse>> {
@@ -70,7 +70,7 @@ export class PushNotificationsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Sends a push notification to devices matched by API key scope and optional target channels.
+     * Sends a push notification to devices matched by API key scope and optional target channels. Supports optional redirection URL (tap) and up to 4 interactive actions (long-press on iOS).
      * Send a push notification
      */
     async sendPushNotification(requestParameters: SendPushNotificationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PushNotificationResponse> {
