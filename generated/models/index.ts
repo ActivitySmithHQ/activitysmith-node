@@ -575,6 +575,55 @@ export interface NoRecipientsError {
 /**
  * 
  * @export
+ * @interface PushNotificationAction
+ */
+export interface PushNotificationAction {
+    [key: string]: any | any;
+    /**
+     * Button title displayed in iOS expanded notification UI.
+     * @type {string}
+     * @memberof PushNotificationAction
+     */
+    title: string;
+    /**
+     * 
+     * @type {PushNotificationActionType}
+     * @memberof PushNotificationAction
+     */
+    type: PushNotificationActionType;
+    /**
+     * HTTPS URL. For open_url it is opened in browser. For webhook it is called by ActivitySmith backend.
+     * @type {string}
+     * @memberof PushNotificationAction
+     */
+    url: string;
+    /**
+     * Webhook HTTP method. Used only when type=webhook.
+     * @type {PushNotificationWebhookMethod}
+     * @memberof PushNotificationAction
+     */
+    method?: PushNotificationWebhookMethod;
+    /**
+     * Optional webhook payload body. Used only when type=webhook.
+     * @type {{ [key: string]: any; }}
+     * @memberof PushNotificationAction
+     */
+    body?: { [key: string]: any; };
+}
+
+/**
+ * 
+ * @export
+ */
+export const PushNotificationActionType = {
+    OpenUrl: 'open_url',
+    Webhook: 'webhook'
+} as const;
+export type PushNotificationActionType = typeof PushNotificationActionType[keyof typeof PushNotificationActionType];
+
+/**
+ * 
+ * @export
  * @interface PushNotificationRequest
  */
 export interface PushNotificationRequest {
@@ -597,6 +646,18 @@ export interface PushNotificationRequest {
      * @memberof PushNotificationRequest
      */
     subtitle?: string;
+    /**
+     * Optional HTTPS URL opened when user taps the notification body.
+     * @type {string}
+     * @memberof PushNotificationRequest
+     */
+    redirection?: string;
+    /**
+     * Optional interactive actions shown on iOS long-press.
+     * @type {Array<PushNotificationAction>}
+     * @memberof PushNotificationRequest
+     */
+    actions?: Array<PushNotificationAction>;
     /**
      * 
      * @type {{ [key: string]: any; }}
@@ -660,6 +721,17 @@ export interface PushNotificationResponse {
      */
     timestamp: string;
 }
+
+/**
+ * 
+ * @export
+ */
+export const PushNotificationWebhookMethod = {
+    Get: 'GET',
+    Post: 'POST'
+} as const;
+export type PushNotificationWebhookMethod = typeof PushNotificationWebhookMethod[keyof typeof PushNotificationWebhookMethod];
+
 /**
  * 
  * @export
