@@ -44,26 +44,6 @@ const activitysmith = new ActivitySmith({
 const response = await activitysmith.notifications.send({
   title: "New subscription 💸",
   message: "Customer upgraded to Pro plan",
-  redirection:
-    "https://crm.example.com/customers/cus_9f3a1d", // Optional
-  actions: [
-    {
-      title: "Open CRM Profile",
-      type: "open_url",
-      url: "https://crm.example.com/customers/cus_9f3a1d",
-    },
-    {
-      title: "Start Onboarding Workflow",
-      type: "webhook",
-      url: "https://hooks.example.com/activitysmith/onboarding/start",
-      method: "POST",
-      body: {
-        customer_id: "cus_9f3a1d",
-        plan: "pro",
-      },
-    },
-  ], // Optional (max 4)
-  channels: ["sales", "customer-success"], // Optional
 });
 
 console.log(response.success);
@@ -131,6 +111,48 @@ const end = await activitysmith.liveActivities.end({
 console.log(end.success);
 ```
 
+## Channels
+
+Channels are used to target specific team members or devices. Can be used for both notifications and live activities.
+
+```ts
+const response = await activitysmith.notifications.send({
+  title: "New subscription 💸",
+  message: "Customer upgraded to Pro plan",
+  channels: ["sales", "customer-success"], // Optional
+});
+```
+
+## Push Notification Redirection and Actions
+
+Push notification redirection and actions are optional and can be used to redirect the user to a specific URL or to trigger a specific action.
+Webhooks are executed by ActivitySmith backend.
+
+```ts
+const response = await activitysmith.notifications.send({
+  title: "New subscription 💸",
+  message: "Customer upgraded to Pro plan",
+  redirection: "https://crm.example.com/customers/cus_9f3a1d", // Optional
+  actions: [
+    {
+      title: "Open CRM Profile",
+      type: "open_url",
+      url: "https://crm.example.com/customers/cus_9f3a1d",
+    },
+    {
+      title: "Start Onboarding Workflow",
+      type: "webhook",
+      url: "https://hooks.example.com/activitysmith/onboarding/start",
+      method: "POST",
+      body: {
+        customer_id: "cus_9f3a1d",
+        plan: "pro",
+      },
+    },
+  ], // Optional (max 4)
+});
+```
+
 ## Error Handling
 
 ```ts
@@ -142,11 +164,6 @@ try {
   console.error(error);
 }
 ```
-
-## API Surface
-
-- `activitysmith.notifications`
-- `activitysmith.liveActivities`
 
 ## TypeScript Support
 
