@@ -113,7 +113,7 @@ console.log(end.success);
 
 ## Channels
 
-Channels are used to target specific team members or devices. Can be used for both notifications and live activities.
+Channels are used to target specific team members or devices. Can be used for both push notifications and live activities.
 
 ```ts
 const response = await activitysmith.notifications.send({
@@ -125,7 +125,7 @@ const response = await activitysmith.notifications.send({
 
 ## Push Notification Redirection and Actions
 
-Push notification redirection and actions are optional and can be used to redirect the user to a specific URL or to trigger a specific action.
+Push notification redirection and actions are optional and can be used to redirect the user to a specific URL when they tap the notification or to trigger a specific action when they long-press the notification.
 Webhooks are executed by ActivitySmith backend.
 
 ```ts
