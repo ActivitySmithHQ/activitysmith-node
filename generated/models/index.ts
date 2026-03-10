@@ -55,7 +55,7 @@ export interface ChannelTarget {
     channels: Array<string>;
 }
 /**
- * End payload requires title. For segmented_progress include current_step and optionally number_of_steps. For progress include percentage or value with upper_limit. Type is optional when ending an existing activity.
+ * End payload requires title. For segmented_progress include current_step and optionally number_of_steps. For progress include percentage or value with upper_limit. Type is optional when ending an existing activity. You can send an updated number_of_steps here if the workflow changed after start.
  * @export
  * @interface ContentStateEnd
  */
@@ -74,7 +74,7 @@ export interface ContentStateEnd {
      */
     subtitle?: string;
     /**
-     * Total number of steps. Use for type=segmented_progress.
+     * Total number of steps. Use for type=segmented_progress. Optional on end, and safe to change if the final workflow used more or fewer steps than originally planned.
      * @type {number}
      * @memberof ContentStateEnd
      */
@@ -172,7 +172,7 @@ export const ContentStateEndStepColorEnum = {
 export type ContentStateEndStepColorEnum = typeof ContentStateEndStepColorEnum[keyof typeof ContentStateEndStepColorEnum];
 
 /**
- * Start payload requires title and type. For segmented_progress include number_of_steps and current_step. For progress include percentage or value with upper_limit.
+ * Start payload requires title and type. For segmented_progress include number_of_steps and current_step. For progress include percentage or value with upper_limit. For segmented_progress, number_of_steps is not locked and can be changed in later update or end calls.
  * @export
  * @interface ContentStateStart
  */
@@ -191,7 +191,7 @@ export interface ContentStateStart {
      */
     subtitle?: string;
     /**
-     * Total number of steps. Use for type=segmented_progress.
+     * Total number of steps. Use for type=segmented_progress. This value can be increased or decreased later when updating or ending the same activity.
      * @type {number}
      * @memberof ContentStateStart
      */
@@ -283,7 +283,7 @@ export const ContentStateStartStepColorEnum = {
 export type ContentStateStartStepColorEnum = typeof ContentStateStartStepColorEnum[keyof typeof ContentStateStartStepColorEnum];
 
 /**
- * Update payload requires title. For segmented_progress include current_step and optionally number_of_steps. For progress include percentage or value with upper_limit. Type is optional when updating an existing activity.
+ * Update payload requires title. For segmented_progress include current_step and optionally number_of_steps. For progress include percentage or value with upper_limit. Type is optional when updating an existing activity. You can increase or decrease number_of_steps during updates.
  * @export
  * @interface ContentStateUpdate
  */
@@ -302,7 +302,7 @@ export interface ContentStateUpdate {
      */
     subtitle?: string;
     /**
-     * Total number of steps. Use for type=segmented_progress.
+     * Total number of steps. Use for type=segmented_progress. Optional on update, and safe to change if the workflow gains or loses steps.
      * @type {number}
      * @memberof ContentStateUpdate
      */
@@ -414,7 +414,7 @@ export interface ForbiddenError {
     message: string;
 }
 /**
- * 
+ * End an existing Live Activity by activity_id.
  * @export
  * @interface LiveActivityEndRequest
  */
@@ -434,7 +434,7 @@ export interface LiveActivityEndRequest {
     content_state: ContentStateEnd;
 }
 /**
- * 
+ * Returned after a Live Activity end event is sent or queued.
  * @export
  * @interface LiveActivityEndResponse
  */
@@ -504,7 +504,7 @@ export interface LiveActivityLimitError {
     active: number;
 }
 /**
- * 
+ * Start a new Live Activity. The response includes activity_id for later update and end calls.
  * @export
  * @interface LiveActivityStartRequest
  */
@@ -530,7 +530,7 @@ export interface LiveActivityStartRequest {
     target?: ChannelTarget;
 }
 /**
- * 
+ * Returned after a Live Activity starts. Save activity_id and use it for all later updates and for the final end call.
  * @export
  * @interface LiveActivityStartResponse
  */
@@ -574,7 +574,7 @@ export interface LiveActivityStartResponse {
     timestamp: string;
 }
 /**
- * 
+ * Update an existing Live Activity by activity_id.
  * @export
  * @interface LiveActivityUpdateRequest
  */
@@ -594,7 +594,7 @@ export interface LiveActivityUpdateRequest {
     content_state: ContentStateUpdate;
 }
 /**
- * 
+ * Returned after a Live Activity update is sent or queued.
  * @export
  * @interface LiveActivityUpdateResponse
  */
