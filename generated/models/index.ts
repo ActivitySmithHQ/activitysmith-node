@@ -55,7 +55,7 @@ export interface ChannelTarget {
     channels: Array<string>;
 }
 /**
- * End payload. Required fields are title and current_step. number_of_steps is optional.
+ * End payload requires title. For segmented_progress include current_step and optionally number_of_steps. For progress include percentage or value with upper_limit. Type is optional when ending an existing activity.
  * @export
  * @interface ContentStateEnd
  */
@@ -74,17 +74,41 @@ export interface ContentStateEnd {
      */
     subtitle?: string;
     /**
-     * 
+     * Total number of steps. Use for type=segmented_progress.
      * @type {number}
      * @memberof ContentStateEnd
      */
     number_of_steps?: number;
     /**
-     * 
+     * Current step. Use for type=segmented_progress.
      * @type {number}
      * @memberof ContentStateEnd
      */
-    current_step: number;
+    current_step?: number;
+    /**
+     * Progress percentage (0–100). Use for type=progress. Takes precedence over value/upper_limit if both are provided.
+     * @type {number}
+     * @memberof ContentStateEnd
+     */
+    percentage?: number;
+    /**
+     * Current progress value. Use with upper_limit for type=progress.
+     * @type {number}
+     * @memberof ContentStateEnd
+     */
+    value?: number;
+    /**
+     * Maximum progress value. Use with value for type=progress.
+     * @type {number}
+     * @memberof ContentStateEnd
+     */
+    upper_limit?: number;
+    /**
+     * Optional. When omitted, the API uses the existing Live Activity type.
+     * @type {string}
+     * @memberof ContentStateEnd
+     */
+    type?: ContentStateEndTypeEnum;
     /**
      * Optional. Accent color for the Live Activity. Defaults to blue.
      * @type {string}
@@ -92,7 +116,7 @@ export interface ContentStateEnd {
      */
     color?: ContentStateEndColorEnum;
     /**
-     * Optional. Overrides color for the current step.
+     * Optional. Overrides color for the current step. Only applies to type=segmented_progress.
      * @type {string}
      * @memberof ContentStateEnd
      */
@@ -105,6 +129,15 @@ export interface ContentStateEnd {
     auto_dismiss_minutes?: number;
 }
 
+
+/**
+ * @export
+ */
+export const ContentStateEndTypeEnum = {
+    SegmentedProgress: 'segmented_progress',
+    Progress: 'progress'
+} as const;
+export type ContentStateEndTypeEnum = typeof ContentStateEndTypeEnum[keyof typeof ContentStateEndTypeEnum];
 
 /**
  * @export
@@ -139,7 +172,7 @@ export const ContentStateEndStepColorEnum = {
 export type ContentStateEndStepColorEnum = typeof ContentStateEndStepColorEnum[keyof typeof ContentStateEndStepColorEnum];
 
 /**
- * Start payload requires title, number_of_steps, current_step, and type.
+ * Start payload requires title and type. For segmented_progress include number_of_steps and current_step. For progress include percentage or value with upper_limit.
  * @export
  * @interface ContentStateStart
  */
@@ -158,17 +191,35 @@ export interface ContentStateStart {
      */
     subtitle?: string;
     /**
-     * 
+     * Total number of steps. Use for type=segmented_progress.
      * @type {number}
      * @memberof ContentStateStart
      */
-    number_of_steps: number;
+    number_of_steps?: number;
     /**
-     * 
+     * Current step. Use for type=segmented_progress.
      * @type {number}
      * @memberof ContentStateStart
      */
-    current_step: number;
+    current_step?: number;
+    /**
+     * Progress percentage (0–100). Use for type=progress. Takes precedence over value/upper_limit if both are provided.
+     * @type {number}
+     * @memberof ContentStateStart
+     */
+    percentage?: number;
+    /**
+     * Current progress value. Use with upper_limit for type=progress.
+     * @type {number}
+     * @memberof ContentStateStart
+     */
+    value?: number;
+    /**
+     * Maximum progress value. Use with value for type=progress.
+     * @type {number}
+     * @memberof ContentStateStart
+     */
+    upper_limit?: number;
     /**
      * 
      * @type {string}
@@ -182,7 +233,7 @@ export interface ContentStateStart {
      */
     color?: ContentStateStartColorEnum;
     /**
-     * Optional. Overrides color for the current step.
+     * Optional. Overrides color for the current step. Only applies to type=segmented_progress.
      * @type {string}
      * @memberof ContentStateStart
      */
@@ -194,7 +245,8 @@ export interface ContentStateStart {
  * @export
  */
 export const ContentStateStartTypeEnum = {
-    SegmentedProgress: 'segmented_progress'
+    SegmentedProgress: 'segmented_progress',
+    Progress: 'progress'
 } as const;
 export type ContentStateStartTypeEnum = typeof ContentStateStartTypeEnum[keyof typeof ContentStateStartTypeEnum];
 
@@ -231,7 +283,7 @@ export const ContentStateStartStepColorEnum = {
 export type ContentStateStartStepColorEnum = typeof ContentStateStartStepColorEnum[keyof typeof ContentStateStartStepColorEnum];
 
 /**
- * Update payload. Required fields are title and current_step. number_of_steps is optional.
+ * Update payload requires title. For segmented_progress include current_step and optionally number_of_steps. For progress include percentage or value with upper_limit. Type is optional when updating an existing activity.
  * @export
  * @interface ContentStateUpdate
  */
@@ -250,17 +302,41 @@ export interface ContentStateUpdate {
      */
     subtitle?: string;
     /**
-     * 
+     * Total number of steps. Use for type=segmented_progress.
      * @type {number}
      * @memberof ContentStateUpdate
      */
     number_of_steps?: number;
     /**
-     * 
+     * Current step. Use for type=segmented_progress.
      * @type {number}
      * @memberof ContentStateUpdate
      */
-    current_step: number;
+    current_step?: number;
+    /**
+     * Progress percentage (0–100). Use for type=progress. Takes precedence over value/upper_limit if both are provided.
+     * @type {number}
+     * @memberof ContentStateUpdate
+     */
+    percentage?: number;
+    /**
+     * Current progress value. Use with upper_limit for type=progress.
+     * @type {number}
+     * @memberof ContentStateUpdate
+     */
+    value?: number;
+    /**
+     * Maximum progress value. Use with value for type=progress.
+     * @type {number}
+     * @memberof ContentStateUpdate
+     */
+    upper_limit?: number;
+    /**
+     * Optional. When omitted, the API uses the existing Live Activity type.
+     * @type {string}
+     * @memberof ContentStateUpdate
+     */
+    type?: ContentStateUpdateTypeEnum;
     /**
      * Optional. Accent color for the Live Activity. Defaults to blue.
      * @type {string}
@@ -268,13 +344,22 @@ export interface ContentStateUpdate {
      */
     color?: ContentStateUpdateColorEnum;
     /**
-     * Optional. Overrides color for the current step.
+     * Optional. Overrides color for the current step. Only applies to type=segmented_progress.
      * @type {string}
      * @memberof ContentStateUpdate
      */
     step_color?: ContentStateUpdateStepColorEnum;
 }
 
+
+/**
+ * @export
+ */
+export const ContentStateUpdateTypeEnum = {
+    SegmentedProgress: 'segmented_progress',
+    Progress: 'progress'
+} as const;
+export type ContentStateUpdateTypeEnum = typeof ContentStateUpdateTypeEnum[keyof typeof ContentStateUpdateTypeEnum];
 
 /**
  * @export
