@@ -72,6 +72,20 @@ const start = await activitysmith.liveActivities.start({
 const activityId = start.activity_id;
 ```
 
+For a simple progress bar, send `type: "progress"` with `percentage` or `value` plus `upper_limit`.
+
+```ts
+const start = await activitysmith.liveActivities.start({
+  content_state: {
+    title: "Model fine-tuning",
+    subtitle: "uploading shards",
+    type: "progress",
+    percentage: 67,
+    color: "purple",
+  },
+});
+```
+
 ### Update a Live Activity
 
 <p align="center">
@@ -89,6 +103,21 @@ const update = await activitysmith.liveActivities.update({
 });
 
 console.log(update.devices_notified);
+```
+
+Progress update example:
+
+```ts
+await activitysmith.liveActivities.update({
+  activity_id: activityId,
+  content_state: {
+    title: "Model fine-tuning",
+    subtitle: "processing batches",
+    type: "progress",
+    value: 241,
+    upper_limit: 360,
+  },
+});
 ```
 
 ### End a Live Activity

@@ -154,6 +154,30 @@ describe("resource wrappers", () => {
     );
   });
 
+  it("passes through progress content_state without segmented fields", async () => {
+    const ActivitySmith = require("../dist/src/index.js");
+    const generated = require("../dist/generated/index.js");
+
+    const startSpy = vi
+      .spyOn(generated.LiveActivitiesApi.prototype, "startLiveActivity")
+      .mockResolvedValue({ activity_id: "act-1" });
+
+    const client = new ActivitySmith({ apiKey: "test" });
+    const payload = {
+      content_state: {
+        title: "Render export",
+        subtitle: "encoding frames",
+        type: "progress",
+        percentage: 67,
+        color: "purple",
+      },
+    };
+
+    await client.liveActivities.start(payload);
+
+    expect(startSpy).toHaveBeenCalledWith({ liveActivityStartRequest: payload }, undefined);
+  });
+
   it("keeps long live activity aliases working", async () => {
     const ActivitySmith = require("../dist/src/index.js");
     const generated = require("../dist/generated/index.js");
