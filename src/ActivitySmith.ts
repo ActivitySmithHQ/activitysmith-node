@@ -5,6 +5,8 @@ export interface ActivitySmithOptions {
 }
 
 type PushRequestBody = Parameters<PushNotificationsApi["sendPushNotification"]>[0]["pushNotificationRequest"];
+type PushSendParameters = Parameters<PushNotificationsApi["sendPushNotification"]>[0];
+type PushRawParameters = Parameters<PushNotificationsApi["sendPushNotificationRaw"]>[0];
 type SendInitOverrides = Parameters<PushNotificationsApi["sendPushNotification"]>[1];
 type StartRequestBody = Parameters<LiveActivitiesApi["startLiveActivity"]>[0]["liveActivityStartRequest"];
 type UpdateRequestBody = Parameters<LiveActivitiesApi["updateLiveActivity"]>[0]["liveActivityUpdateRequest"];
@@ -30,6 +32,28 @@ function withTargetChannels<T extends { target?: ChannelTargetInput }>(
   } as T;
 }
 
+function hasMediaValue(media: unknown): boolean {
+  if (typeof media === "string") {
+    return media.trim().length > 0;
+  }
+
+  return media !== null && media !== undefined;
+}
+
+function hasActionsValue(actions: unknown): boolean {
+  if (Array.isArray(actions)) {
+    return actions.length > 0;
+  }
+
+  return actions !== null && actions !== undefined;
+}
+
+function assertValidPushRequest(request: { media?: unknown; actions?: unknown }) {
+  if (hasMediaValue(request.media) && hasActionsValue(request.actions)) {
+    throw new Error("ActivitySmith: media cannot be combined with actions");
+  }
+}
+
 export class NotificationsResource {
   private readonly api: PushNotificationsApi;
 
@@ -38,19 +62,27 @@ export class NotificationsResource {
   }
 
   send(request: PushSendRequest, initOverrides?: SendInitOverrides) {
+    const normalized = withTargetChannels(request);
+    assertValidPushRequest(normalized);
+
     return this.api.sendPushNotification(
-      { pushNotificationRequest: withTargetChannels(request) },
+      { pushNotificationRequest: normalized },
       initOverrides,
     );
   }
 
   // Backward-compatible alias.
-  sendPushNotification(...args: Parameters<PushNotificationsApi["sendPushNotification"]>) {
-    return this.api.sendPushNotification(...args);
+  sendPushNotification(requestParameters: PushSendParameters, initOverrides?: SendInitOverrides) {
+    assertValidPushRequest(requestParameters.pushNotificationRequest);
+    return this.api.sendPushNotification(requestParameters, initOverrides);
   }
 
-  sendPushNotificationRaw(...args: Parameters<PushNotificationsApi["sendPushNotificationRaw"]>) {
-    return this.api.sendPushNotificationRaw(...args);
+  sendPushNotificationRaw(
+    requestParameters: PushRawParameters,
+    initOverrides?: SendInitOverrides,
+  ) {
+    assertValidPushRequest(requestParameters.pushNotificationRequest);
+    return this.api.sendPushNotificationRaw(requestParameters, initOverrides);
   }
 }
 
