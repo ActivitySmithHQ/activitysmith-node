@@ -732,13 +732,19 @@ export interface PushNotificationRequest {
      */
     subtitle?: string;
     /**
-     * Optional HTTPS URL opened when user taps the notification body.
+     * Optional HTTPS URL for an image, audio file, or video that users can preview or play when they expand the notification. If `redirection` is omitted, tapping the notification opens this URL. Cannot be combined with `actions`.
+     * @type {string}
+     * @memberof PushNotificationRequest
+     */
+    media?: string;
+    /**
+     * Optional HTTPS URL opened when user taps the notification body. Overrides the default tap target from `media` when both are provided.
      * @type {string}
      * @memberof PushNotificationRequest
      */
     redirection?: string;
     /**
-     * Optional interactive actions shown on iOS long-press.
+     * Optional interactive actions shown when users expand the notification. Cannot be combined with `media`.
      * @type {Array<PushNotificationAction>}
      * @memberof PushNotificationRequest
      */
