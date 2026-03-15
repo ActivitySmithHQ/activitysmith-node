@@ -49,6 +49,40 @@ describe("resource wrappers", () => {
     );
   });
 
+  it("preserves media and redirection for notifications.send", async () => {
+    const ActivitySmith = require("../dist/src/index.js");
+    const generated = require("../dist/generated/index.js");
+
+    const sendSpy = vi
+      .spyOn(generated.PushNotificationsApi.prototype, "sendPushNotification")
+      .mockResolvedValue({ success: true });
+
+    const client = new ActivitySmith({ apiKey: "test" });
+    const payload = {
+      title: "Voice Over Generated",
+      media: "https://cdn.activitysmith.com/voice_over.mp3",
+      redirection: "https://studio.acme.com/voice-overs/482/review",
+    };
+
+    await client.notifications.send(payload);
+
+    expect(sendSpy).toHaveBeenCalledWith({ pushNotificationRequest: payload }, undefined);
+  });
+
+  it("rejects media with actions for notifications.send", async () => {
+    const ActivitySmith = require("../dist/src/index.js");
+
+    const client = new ActivitySmith({ apiKey: "test" });
+
+    expect(() =>
+      client.notifications.send({
+        title: "Voice Over Generated",
+        media: "https://cdn.activitysmith.com/voice_over.mp3",
+        actions: [{ title: "Open", type: "open_url", url: "https://example.com" }],
+      }),
+    ).toThrow("ActivitySmith: media cannot be combined with actions");
+  });
+
   it("keeps long notification alias working", async () => {
     const ActivitySmith = require("../dist/src/index.js");
     const generated = require("../dist/generated/index.js");
@@ -61,7 +95,23 @@ describe("resource wrappers", () => {
     const request = { pushNotificationRequest: { title: "Build Failed" } };
     await client.notifications.sendPushNotification(request);
 
-    expect(sendSpy).toHaveBeenCalledWith(request);
+    expect(sendSpy).toHaveBeenCalledWith(request, undefined);
+  });
+
+  it("rejects media with actions for the long notification alias", async () => {
+    const ActivitySmith = require("../dist/src/index.js");
+
+    const client = new ActivitySmith({ apiKey: "test" });
+
+    expect(() =>
+      client.notifications.sendPushNotification({
+        pushNotificationRequest: {
+          title: "Voice Over Generated",
+          media: "https://cdn.activitysmith.com/voice_over.mp3",
+          actions: [{ title: "Open", type: "open_url", url: "https://example.com" }],
+        },
+      }),
+    ).toThrow("ActivitySmith: media cannot be combined with actions");
   });
 
   it("wraps live activity payloads for short methods", async () => {
