@@ -32,7 +32,7 @@ const activitysmith = new ActivitySmith({
 });
 ```
 
-## Usage
+## Push Notifications
 
 ### Send a Push Notification
 
@@ -44,6 +44,80 @@ const activitysmith = new ActivitySmith({
 await activitysmith.notifications.send({
   title: "New subscription 💸",
   message: "Customer upgraded to Pro plan",
+});
+```
+
+### Channels
+
+Channels are used to target specific team members or devices. Can be used for both push notifications and live activities.
+
+```ts
+await activitysmith.notifications.send({
+  title: "New subscription 💸",
+  message: "Customer upgraded to Pro plan",
+  channels: ["sales", "customer-success"], // Optional
+});
+```
+
+### Rich Push Notifications with Media
+
+<p align="center">
+  <img src="https://cdn.activitysmith.com/features/rich-push-notification-with-image.png" alt="Rich push notification with image" width="680" />
+</p>
+
+```ts
+await activitysmith.notifications.send({
+  title: "Homepage ready",
+  message: "Your agent finished the redesign.",
+  media: "https://cdn.example.com/output/homepage-v2.png",
+  redirection: "https://github.com/acme/web/pull/482",
+});
+```
+
+Send images, videos, or audio with your push notifications, press and hold to preview media directly from the notification, then tap through to open the linked content.
+
+<p align="center">
+  <img src="https://cdn.activitysmith.com/features/rich-push-notification-with-audio.png" alt="Rich push notification with audio" width="680" />
+</p>
+
+What will work:
+
+- direct image URL: `.jpg`, `.png`, `.gif`, etc.
+- direct audio file URL: `.mp3`, `.m4a`, etc.
+- direct video file URL: `.mp4`, `.mov`, etc.
+- URL that responds with a proper media `Content-Type`, even if the path has no extension
+
+### Actionable Push Notifications
+
+<p align="center">
+  <img src="https://cdn.activitysmith.com/features/actionable-push-notifications-2.png" alt="Actionable push notification example" width="680" />
+</p>
+
+Actionable push notifications can open a URL on tap or trigger actions when someone long-presses the notification.
+Webhooks are executed by the ActivitySmith backend.
+
+```ts
+await activitysmith.notifications.send({
+  title: "New subscription 💸",
+  message: "Customer upgraded to Pro plan",
+  redirection: "https://crm.example.com/customers/cus_9f3a1d", // Optional
+  actions: [
+    {
+      title: "Open CRM Profile",
+      type: "open_url",
+      url: "https://crm.example.com/customers/cus_9f3a1d",
+    },
+    {
+      title: "Start Onboarding Workflow",
+      type: "webhook",
+      url: "https://hooks.example.com/activitysmith/onboarding/start",
+      method: "POST",
+      body: {
+        customer_id: "cus_9f3a1d",
+        plan: "pro",
+      },
+    },
+  ], // Optional (max 4)
 });
 ```
 
@@ -188,80 +262,6 @@ await activitysmith.liveActivities.end({
     percentage: 100,
     auto_dismiss_minutes: 2,
   },
-});
-```
-
-## Channels
-
-Channels are used to target specific team members or devices. Can be used for both push notifications and live activities.
-
-```ts
-await activitysmith.notifications.send({
-  title: "New subscription 💸",
-  message: "Customer upgraded to Pro plan",
-  channels: ["sales", "customer-success"], // Optional
-});
-```
-
-## Rich Push Notifications with Media
-
-<p align="center">
-  <img src="https://cdn.activitysmith.com/features/rich-push-notification-with-image.png" alt="Rich push notification with image" width="680" />
-</p>
-
-```ts
-await activitysmith.notifications.send({
-  title: "Homepage ready",
-  message: "Your agent finished the redesign.",
-  media: "https://cdn.example.com/output/homepage-v2.png",
-  redirection: "https://github.com/acme/web/pull/482",
-});
-```
-
-Send images, videos, or audio with your push notifications, press and hold to preview media directly from the notification, then tap through to open the linked content.
-
-<p align="center">
-  <img src="https://cdn.activitysmith.com/features/rich-push-notification-with-audio.png" alt="Rich push notification with audio" width="680" />
-</p>
-
-What will work:
-
-- direct image URL: `.jpg`, `.png`, `.gif`, etc.
-- direct audio file URL: `.mp3`, `.m4a`, etc.
-- direct video file URL: `.mp4`, `.mov`, etc.
-- URL that responds with a proper media `Content-Type`, even if the path has no extension
-
-## Actionable Push Notifications
-
-<p align="center">
-  <img src="https://cdn.activitysmith.com/features/actionable-push-notifications-2.png" alt="Actionable push notification example" width="680" />
-</p>
-
-Actionable push notifications can open a URL on tap or trigger actions when someone long-presses the notification.
-Webhooks are executed by the ActivitySmith backend.
-
-```ts
-await activitysmith.notifications.send({
-  title: "New subscription 💸",
-  message: "Customer upgraded to Pro plan",
-  redirection: "https://crm.example.com/customers/cus_9f3a1d", // Optional
-  actions: [
-    {
-      title: "Open CRM Profile",
-      type: "open_url",
-      url: "https://crm.example.com/customers/cus_9f3a1d",
-    },
-    {
-      title: "Start Onboarding Workflow",
-      type: "webhook",
-      url: "https://hooks.example.com/activitysmith/onboarding/start",
-      method: "POST",
-      body: {
-        customer_id: "cus_9f3a1d",
-        plan: "pro",
-      },
-    },
-  ], // Optional (max 4)
 });
 ```
 
