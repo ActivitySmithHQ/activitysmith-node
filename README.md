@@ -47,18 +47,6 @@ await activitysmith.notifications.send({
 });
 ```
 
-### Channels
-
-Channels are used to target specific team members or devices. Can be used for both push notifications and live activities.
-
-```ts
-await activitysmith.notifications.send({
-  title: "New subscription 💸",
-  message: "Customer upgraded to Pro plan",
-  channels: ["sales", "customer-success"], // Optional
-});
-```
-
 ### Rich Push Notifications with Media
 
 <p align="center">
@@ -262,6 +250,18 @@ await activitysmith.liveActivities.end({
     percentage: 100,
     auto_dismiss_minutes: 2,
   },
+});
+```
+
+## Channels
+
+Channels are used to target specific team members or devices. Can be used for both push notifications and live activities.
+
+```ts
+await activitysmith.notifications.send({
+  title: "New subscription 💸",
+  message: "Customer upgraded to Pro plan",
+  channels: ["sales", "customer-success"], // Optional
 });
 ```
 
