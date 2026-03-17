@@ -41,13 +41,10 @@ const activitysmith = new ActivitySmith({
 </p>
 
 ```ts
-const response = await activitysmith.notifications.send({
+await activitysmith.notifications.send({
   title: "New subscription 💸",
   message: "Customer upgraded to Pro plan",
 });
-
-console.log(response.success);
-console.log(response.devices_notified);
 ```
 
 ## Live Activities
@@ -103,7 +100,7 @@ const activityId = start.activity_id;
 </p>
 
 ```ts
-const update = await activitysmith.liveActivities.update({
+await activitysmith.liveActivities.update({
   activity_id: activityId,
   content_state: {
     title: "Nightly database backup",
@@ -112,8 +109,6 @@ const update = await activitysmith.liveActivities.update({
     current_step: 2,
   },
 });
-
-console.log(update.devices_notified);
 ```
 
 #### End
@@ -123,7 +118,7 @@ console.log(update.devices_notified);
 </p>
 
 ```ts
-const end = await activitysmith.liveActivities.end({
+await activitysmith.liveActivities.end({
   activity_id: activityId,
   content_state: {
     title: "Nightly database backup",
@@ -133,8 +128,6 @@ const end = await activitysmith.liveActivities.end({
     auto_dismiss_minutes: 2,
   },
 });
-
-console.log(end.success);
 ```
 
 ### Progress Type
@@ -203,7 +196,7 @@ await activitysmith.liveActivities.end({
 Channels are used to target specific team members or devices. Can be used for both push notifications and live activities.
 
 ```ts
-const response = await activitysmith.notifications.send({
+await activitysmith.notifications.send({
   title: "New subscription 💸",
   message: "Customer upgraded to Pro plan",
   channels: ["sales", "customer-success"], // Optional
@@ -217,7 +210,7 @@ const response = await activitysmith.notifications.send({
 </p>
 
 ```ts
-const response = await activitysmith.notifications.send({
+await activitysmith.notifications.send({
   title: "Homepage ready",
   message: "Your agent finished the redesign.",
   media: "https://cdn.example.com/output/homepage-v2.png",
@@ -238,13 +231,17 @@ What will work:
 - direct video file URL: `.mp4`, `.mov`, etc.
 - URL that responds with a proper media `Content-Type`, even if the path has no extension
 
-## Push Notification Redirection and Actions
+## Actionable Push Notifications
 
-Push notification redirection and actions are optional and can be used to redirect the user to a specific URL when they tap the notification or to trigger a specific action when they long-press the notification.
-Webhooks are executed by ActivitySmith backend.
+<p align="center">
+  <img src="https://cdn.activitysmith.com/features/actionable-push-notifications-2.png" alt="Actionable push notification example" width="680" />
+</p>
+
+Actionable push notifications can open a URL on tap or trigger actions when someone long-presses the notification.
+Webhooks are executed by the ActivitySmith backend.
 
 ```ts
-const response = await activitysmith.notifications.send({
+await activitysmith.notifications.send({
   title: "New subscription 💸",
   message: "Customer upgraded to Pro plan",
   redirection: "https://crm.example.com/customers/cus_9f3a1d", // Optional
