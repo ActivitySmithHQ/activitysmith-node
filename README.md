@@ -257,7 +257,9 @@ await activitysmith.liveActivities.end({
 
 Just like Actionable Push Notifications, Live Activities can have a button that opens provided URL in a browser or triggers a webhook. Webhooks are executed by the ActivitySmith backend.
 
+<p align="center">
   <img src="https://cdn.activitysmith.com/features/live-activity-with-action.png" alt="Live Activity with action" width="680" />
+</p>
 
 #### Open URL action
 
