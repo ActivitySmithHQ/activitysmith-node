@@ -228,6 +228,78 @@ describe("resource wrappers", () => {
     expect(startSpy).toHaveBeenCalledWith({ liveActivityStartRequest: payload }, undefined);
   });
 
+  it("passes through live activity actions for short methods", async () => {
+    const ActivitySmith = require("../dist/src/index.js");
+    const generated = require("../dist/generated/index.js");
+
+    const startSpy = vi
+      .spyOn(generated.LiveActivitiesApi.prototype, "startLiveActivity")
+      .mockResolvedValue({ activity_id: "act-1" });
+    const updateSpy = vi
+      .spyOn(generated.LiveActivitiesApi.prototype, "updateLiveActivity")
+      .mockResolvedValue({ success: true });
+    const endSpy = vi
+      .spyOn(generated.LiveActivitiesApi.prototype, "endLiveActivity")
+      .mockResolvedValue({ success: true });
+
+    const client = new ActivitySmith({ apiKey: "test" });
+
+    const startPayload = {
+      content_state: {
+        title: "Deploying payments-api",
+        subtitle: "Running database migrations",
+        number_of_steps: 5,
+        current_step: 3,
+        type: "segmented_progress",
+      },
+      action: {
+        title: "Open Workflow",
+        type: "open_url",
+        url: "https://github.com/acme/payments-api/actions/runs/1234567890",
+      },
+    };
+
+    const updatePayload = {
+      activity_id: "act-1",
+      content_state: {
+        title: "Reindexing product search",
+        subtitle: "Shard 7 of 12",
+        number_of_steps: 12,
+        current_step: 7,
+      },
+      action: {
+        title: "Pause Reindex",
+        type: "webhook",
+        url: "https://ops.example.com/hooks/search/reindex/pause",
+        method: "POST",
+        body: { job_id: "reindex-2026-03-19" },
+      },
+    };
+
+    const endPayload = {
+      activity_id: "act-1",
+      content_state: {
+        title: "Deploying payments-api",
+        subtitle: "Production rollout complete",
+        number_of_steps: 5,
+        current_step: 5,
+      },
+      action: {
+        title: "Open Workflow",
+        type: "open_url",
+        url: "https://github.com/acme/payments-api/actions/runs/1234567890",
+      },
+    };
+
+    await client.liveActivities.start(startPayload);
+    await client.liveActivities.update(updatePayload);
+    await client.liveActivities.end(endPayload);
+
+    expect(startSpy).toHaveBeenCalledWith({ liveActivityStartRequest: startPayload }, undefined);
+    expect(updateSpy).toHaveBeenCalledWith({ liveActivityUpdateRequest: updatePayload }, undefined);
+    expect(endSpy).toHaveBeenCalledWith({ liveActivityEndRequest: endPayload }, undefined);
+  });
+
   it("keeps long live activity aliases working", async () => {
     const ActivitySmith = require("../dist/src/index.js");
     const generated = require("../dist/generated/index.js");
