@@ -414,6 +414,55 @@ export interface ForbiddenError {
     message: string;
 }
 /**
+ * Optional single action button shown in the Live Activity UI.
+ * @export
+ * @interface LiveActivityAction
+ */
+export interface LiveActivityAction {
+    [key: string]: any | any;
+    /**
+     * Button title displayed in the Live Activity UI.
+     * @type {string}
+     * @memberof LiveActivityAction
+     */
+    title: string;
+    /**
+     * 
+     * @type {LiveActivityActionType}
+     * @memberof LiveActivityAction
+     */
+    type: LiveActivityActionType;
+    /**
+     * HTTPS URL. For open_url it is opened in browser. For webhook it is called by ActivitySmith backend.
+     * @type {string}
+     * @memberof LiveActivityAction
+     */
+    url: string;
+    /**
+     * Webhook HTTP method. Used only when type=webhook.
+     * @type {LiveActivityWebhookMethod}
+     * @memberof LiveActivityAction
+     */
+    method?: LiveActivityWebhookMethod;
+    /**
+     * Optional webhook payload body. Used only when type=webhook.
+     * @type {{ [key: string]: any; }}
+     * @memberof LiveActivityAction
+     */
+    body?: { [key: string]: any; };
+}
+
+/**
+ * 
+ * @export
+ */
+export const LiveActivityActionType = {
+    OpenUrl: 'open_url',
+    Webhook: 'webhook'
+} as const;
+export type LiveActivityActionType = typeof LiveActivityActionType[keyof typeof LiveActivityActionType];
+
+/**
  * End an existing Live Activity by activity_id.
  * @export
  * @interface LiveActivityEndRequest
@@ -432,6 +481,12 @@ export interface LiveActivityEndRequest {
      * @memberof LiveActivityEndRequest
      */
     content_state: ContentStateEnd;
+    /**
+     * 
+     * @type {LiveActivityAction}
+     * @memberof LiveActivityEndRequest
+     */
+    action?: LiveActivityAction;
 }
 /**
  * Returned after a Live Activity end event is sent or queued.
@@ -518,6 +573,12 @@ export interface LiveActivityStartRequest {
     content_state: ContentStateStart;
     /**
      * 
+     * @type {LiveActivityAction}
+     * @memberof LiveActivityStartRequest
+     */
+    action?: LiveActivityAction;
+    /**
+     * 
      * @type {AlertPayload}
      * @memberof LiveActivityStartRequest
      */
@@ -592,6 +653,12 @@ export interface LiveActivityUpdateRequest {
      * @memberof LiveActivityUpdateRequest
      */
     content_state: ContentStateUpdate;
+    /**
+     * 
+     * @type {LiveActivityAction}
+     * @memberof LiveActivityUpdateRequest
+     */
+    action?: LiveActivityAction;
 }
 /**
  * Returned after a Live Activity update is sent or queued.
@@ -631,6 +698,17 @@ export interface LiveActivityUpdateResponse {
      */
     timestamp: string;
 }
+
+/**
+ * 
+ * @export
+ */
+export const LiveActivityWebhookMethod = {
+    Get: 'GET',
+    Post: 'POST'
+} as const;
+export type LiveActivityWebhookMethod = typeof LiveActivityWebhookMethod[keyof typeof LiveActivityWebhookMethod];
+
 /**
  * 
  * @export
