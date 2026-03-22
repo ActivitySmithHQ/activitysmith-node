@@ -165,7 +165,7 @@ await activitysmith.liveActivities.stream("nightly-backup", {
     title: "Nightly Backup",
     subtitle: "upload archive",
     type: "segmented_progress",
-    number_of_steps: 4,
+    number_of_steps: 3,
     current_step: 2,
   },
 });
@@ -339,7 +339,7 @@ await activitysmith.liveActivities.update({
   content_state: {
     title: "Nightly database backup",
     subtitle: "upload archive",
-    number_of_steps: 4,
+    number_of_steps: 3,
     current_step: 2,
   },
 });
@@ -357,8 +357,8 @@ await activitysmith.liveActivities.end({
   content_state: {
     title: "Nightly database backup",
     subtitle: "verify restore",
-    number_of_steps: 4,
-    current_step: 4,
+    number_of_steps: 3,
+    current_step: 3,
     auto_dismiss_minutes: 2,
   },
 });
