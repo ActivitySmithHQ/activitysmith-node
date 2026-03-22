@@ -182,7 +182,7 @@ await activitysmith.liveActivities.stream("nightly-backup", {
 #### Progress
 
 <p align="center">
-  <img src="https://cdn.activitysmith.com/features/progress-live-activity-update.png" alt="Progress stream example" width="680" />
+  <img src="https://cdn.activitysmith.com/features/progress-live-activity.png" alt="Progress stream example" width="680" />
 </p>
 
 ```ts
