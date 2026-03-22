@@ -111,6 +111,10 @@ await activitysmith.notifications.send({
 
 ## Live Activities
 
+<p align="center">
+  <img src="https://cdn.activitysmith.com/features/metrics-live-activity-action.png" alt="Live Activities example" width="680" />
+</p>
+
 ActivitySmith supports two ways to drive Live Activities:
 
 - Recommended: stream updates with `activitysmith.liveActivities.stream(...)`
