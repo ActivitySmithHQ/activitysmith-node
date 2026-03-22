@@ -228,6 +228,78 @@ describe("resource wrappers", () => {
     expect(startSpy).toHaveBeenCalledWith({ liveActivityStartRequest: payload }, undefined);
   });
 
+  it("wraps live activity stream payloads for short methods", async () => {
+    const ActivitySmith = require("../dist/src/index.js");
+    const generated = require("../dist/generated/index.js");
+
+    const streamSpy = vi
+      .spyOn(generated.LiveActivitiesApi.prototype, "reconcileLiveActivityStream")
+      .mockResolvedValue({ operation: "started", stream_key: "prod-web-1" });
+    const endStreamSpy = vi
+      .spyOn(generated.LiveActivitiesApi.prototype, "endLiveActivityStream")
+      .mockResolvedValue({ operation: "ended", stream_key: "prod-web-1" });
+
+    const client = new ActivitySmith({ apiKey: "test" });
+    await client.liveActivities.stream("prod-web-1", {
+      content_state: {
+        title: "Server Health",
+        subtitle: "prod-web-1",
+        type: "metrics",
+        metrics: [
+          { label: "CPU", value: 9, unit: "%" },
+          { label: "MEM", value: 45, unit: "%" },
+        ],
+      },
+      channels: ["ops"],
+    });
+    await client.liveActivities.endStream("prod-web-1");
+
+    expect(streamSpy).toHaveBeenCalledWith(
+      {
+        streamKey: "prod-web-1",
+        liveActivityStreamRequest: {
+          content_state: {
+            title: "Server Health",
+            subtitle: "prod-web-1",
+            type: "metrics",
+            metrics: [
+              { label: "CPU", value: 9, unit: "%" },
+              { label: "MEM", value: 45, unit: "%" },
+            ],
+          },
+          target: { channels: ["ops"] },
+        },
+      },
+      undefined,
+    );
+    expect(endStreamSpy).toHaveBeenCalledWith({ streamKey: "prod-web-1" }, undefined);
+  });
+
+  it("keeps long stream aliases working", async () => {
+    const ActivitySmith = require("../dist/src/index.js");
+    const generated = require("../dist/generated/index.js");
+
+    const streamSpy = vi
+      .spyOn(generated.LiveActivitiesApi.prototype, "reconcileLiveActivityStream")
+      .mockResolvedValue({ operation: "started", stream_key: "prod-web-1" });
+
+    const client = new ActivitySmith({ apiKey: "test" });
+    const request = {
+      streamKey: "prod-web-1",
+      liveActivityStreamRequest: {
+        content_state: {
+          title: "Server Health",
+          subtitle: "prod-web-1",
+          type: "metrics",
+          metrics: [{ label: "CPU", value: 9, unit: "%" }],
+        },
+      },
+    };
+
+    await client.liveActivities.reconcileLiveActivityStream(request);
+    expect(streamSpy).toHaveBeenCalledWith(request);
+  });
+
   it("passes through live activity actions for short methods", async () => {
     const ActivitySmith = require("../dist/src/index.js");
     const generated = require("../dist/generated/index.js");

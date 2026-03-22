@@ -11,10 +11,15 @@ type SendInitOverrides = Parameters<PushNotificationsApi["sendPushNotification"]
 type StartRequestBody = Parameters<LiveActivitiesApi["startLiveActivity"]>[0]["liveActivityStartRequest"];
 type UpdateRequestBody = Parameters<LiveActivitiesApi["updateLiveActivity"]>[0]["liveActivityUpdateRequest"];
 type EndRequestBody = Parameters<LiveActivitiesApi["endLiveActivity"]>[0]["liveActivityEndRequest"];
+type StreamRequestBody =
+  Parameters<LiveActivitiesApi["reconcileLiveActivityStream"]>[0]["liveActivityStreamRequest"];
+type StreamDeleteRequestBody =
+  Parameters<LiveActivitiesApi["endLiveActivityStream"]>[0]["liveActivityStreamDeleteRequest"];
 type LiveInitOverrides = Parameters<LiveActivitiesApi["startLiveActivity"]>[1];
 type ChannelTargetInput = { channels?: string[] };
 type PushSendRequest = PushRequestBody & { channels?: string[] };
 type LiveStartSendRequest = StartRequestBody & { channels?: string[] };
+type LiveStreamSendRequest = StreamRequestBody & { channels?: string[] };
 
 function withTargetChannels<T extends { target?: ChannelTargetInput }>(
   request: T & { channels?: string[] },
@@ -108,6 +113,31 @@ export class LiveActivitiesResource {
     return this.api.endLiveActivity({ liveActivityEndRequest: request }, initOverrides);
   }
 
+  stream(streamKey: string, request: LiveStreamSendRequest, initOverrides?: LiveInitOverrides) {
+    return this.api.reconcileLiveActivityStream(
+      {
+        streamKey,
+        liveActivityStreamRequest: withTargetChannels(request),
+      },
+      initOverrides,
+    );
+  }
+
+  endStream(
+    streamKey: string,
+    request?: StreamDeleteRequestBody,
+    initOverrides?: LiveInitOverrides,
+  ) {
+    if (request) {
+      return this.api.endLiveActivityStream(
+        { streamKey, liveActivityStreamDeleteRequest: request },
+        initOverrides,
+      );
+    }
+
+    return this.api.endLiveActivityStream({ streamKey }, initOverrides);
+  }
+
   // Backward-compatible aliases.
   startLiveActivity(...args: Parameters<LiveActivitiesApi["startLiveActivity"]>) {
     return this.api.startLiveActivity(...args);
@@ -121,6 +151,14 @@ export class LiveActivitiesResource {
     return this.api.endLiveActivity(...args);
   }
 
+  reconcileLiveActivityStream(...args: Parameters<LiveActivitiesApi["reconcileLiveActivityStream"]>) {
+    return this.api.reconcileLiveActivityStream(...args);
+  }
+
+  endLiveActivityStream(...args: Parameters<LiveActivitiesApi["endLiveActivityStream"]>) {
+    return this.api.endLiveActivityStream(...args);
+  }
+
   startLiveActivityRaw(...args: Parameters<LiveActivitiesApi["startLiveActivityRaw"]>) {
     return this.api.startLiveActivityRaw(...args);
   }
@@ -131,6 +169,16 @@ export class LiveActivitiesResource {
 
   endLiveActivityRaw(...args: Parameters<LiveActivitiesApi["endLiveActivityRaw"]>) {
     return this.api.endLiveActivityRaw(...args);
+  }
+
+  reconcileLiveActivityStreamRaw(
+    ...args: Parameters<LiveActivitiesApi["reconcileLiveActivityStreamRaw"]>
+  ) {
+    return this.api.reconcileLiveActivityStreamRaw(...args);
+  }
+
+  endLiveActivityStreamRaw(...args: Parameters<LiveActivitiesApi["endLiveActivityStreamRaw"]>) {
+    return this.api.endLiveActivityStreamRaw(...args);
   }
 }
 
