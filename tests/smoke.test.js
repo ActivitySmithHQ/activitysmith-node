@@ -49,9 +49,18 @@ describe("smoke", () => {
         type: "segmented_progress",
       },
     });
+    await client.liveActivities.stream("prod-web-1", {
+      content_state: {
+        title: "Server Health",
+        subtitle: "prod-web-1",
+        type: "metrics",
+        metrics: [{ label: "CPU", value: 9, unit: "%" }],
+      },
+    });
 
-    expect(fetchSpy).toHaveBeenCalledTimes(2);
+    expect(fetchSpy).toHaveBeenCalledTimes(3);
     expect(String(fetchSpy.mock.calls[0][0])).toContain("/push-notification");
     expect(String(fetchSpy.mock.calls[1][0])).toContain("/live-activity/start");
+    expect(String(fetchSpy.mock.calls[2][0])).toContain("/live-activity/stream/prod-web-1");
   });
 });
