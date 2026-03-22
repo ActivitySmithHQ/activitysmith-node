@@ -200,7 +200,7 @@ Call `stream(...)` again with the same `streamKey` whenever the state changes.
 
 #### End a stream
 
-Use this when the tracked thing is finished and you no longer want the Live
+Use this when the tracked process is finished and you no longer want the Live
 Activity on devices. `content_state` is optional here; include it if you want
 to end the stream with a final state.
 
