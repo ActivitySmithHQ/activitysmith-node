@@ -117,7 +117,7 @@ await activitysmith.notifications.send({
 
 ActivitySmith supports two ways to drive Live Activities:
 
-- Recommended: stream updates with `activitysmith.liveActivities.stream(...)`
+- Simple: stream updates with `activitysmith.liveActivities.stream(...)`
 - Advanced: manual lifecycle control with `start`, `update`, and `end`
 
 Use stream updates when you want the easiest, stateless flow. You don't need to
@@ -134,7 +134,7 @@ Live Activity UI types:
 - `segmented_progress`: best for step-based workflows like deployments, backups, and ETL pipelines
 - `progress`: best for continuous jobs like uploads, reindexes, and long-running migrations tracked as a percentage
 
-### Recommended: Stream updates
+### Simple: Stream updates
 
 Use a stable `streamKey` to identify the system or workflow you are tracking,
 such as a server, deployment, build pipeline, cron job, or charging session.
