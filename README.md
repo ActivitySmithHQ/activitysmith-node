@@ -143,6 +143,10 @@ not want to store `activity_id` between runs.
 
 #### Metrics
 
+<p align="center">
+  <img src="https://cdn.activitysmith.com/features/metrics-live-activity-start.png" alt="Metrics stream example" width="680" />
+</p>
+
 ```ts
 const status = await activitysmith.liveActivities.stream("prod-web-1", {
   content_state: {
@@ -159,6 +163,10 @@ const status = await activitysmith.liveActivities.stream("prod-web-1", {
 
 #### Segmented progress
 
+<p align="center">
+  <img src="https://cdn.activitysmith.com/features/update-live-activity.png" alt="Segmented progress stream example" width="680" />
+</p>
+
 ```ts
 await activitysmith.liveActivities.stream("nightly-backup", {
   content_state: {
@@ -172,6 +180,10 @@ await activitysmith.liveActivities.stream("nightly-backup", {
 ```
 
 #### Progress
+
+<p align="center">
+  <img src="https://cdn.activitysmith.com/features/progress-live-activity-update.png" alt="Progress stream example" width="680" />
+</p>
 
 ```ts
 await activitysmith.liveActivities.stream("search-reindex", {
