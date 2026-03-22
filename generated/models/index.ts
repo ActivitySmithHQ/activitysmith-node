@@ -3,6 +3,32 @@
 /**
  * 
  * @export
+ * @interface ActivityMetric
+ */
+export interface ActivityMetric {
+    [key: string]: any | any;
+    /**
+     * 
+     * @type {string}
+     * @memberof ActivityMetric
+     */
+    label: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof ActivityMetric
+     */
+    value: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof ActivityMetric
+     */
+    unit?: string;
+}
+/**
+ * 
+ * @export
  * @interface AlertPayload
  */
 export interface AlertPayload {
@@ -55,7 +81,7 @@ export interface ChannelTarget {
     channels: Array<string>;
 }
 /**
- * End payload requires title. For segmented_progress include current_step and optionally number_of_steps. For progress include percentage or value with upper_limit. Type is optional when ending an existing activity. You can send an updated number_of_steps here if the workflow changed after start.
+ * End payload requires title. For segmented_progress include current_step and optionally number_of_steps. For progress include percentage or value with upper_limit. For metrics include a non-empty metrics array. Legacy counter/timer/countdown types also use current_step and number_of_steps. Type is optional when ending an existing activity. You can send an updated number_of_steps here if the workflow changed after start.
  * @export
  * @interface ContentStateEnd
  */
@@ -104,6 +130,12 @@ export interface ContentStateEnd {
      */
     upper_limit?: number;
     /**
+     * Use for type=metrics.
+     * @type {Array<ActivityMetric>}
+     * @memberof ContentStateEnd
+     */
+    metrics?: Array<ActivityMetric>;
+    /**
      * Optional. When omitted, the API uses the existing Live Activity type.
      * @type {string}
      * @memberof ContentStateEnd
@@ -122,6 +154,12 @@ export interface ContentStateEnd {
      */
     step_color?: ContentStateEndStepColorEnum;
     /**
+     * Optional. Colors for completed steps. When used with segmented_progress, the array length should match current_step.
+     * @type {Array<string>}
+     * @memberof ContentStateEnd
+     */
+    step_colors?: Array<ContentStateEndStepColorsEnum>;
+    /**
      * Optional. Minutes before the ended Live Activity is dismissed. Default 3. Set 0 for immediate dismissal. iOS will dismiss ended Live Activities after ~4 hours max.
      * @type {number}
      * @memberof ContentStateEnd
@@ -135,7 +173,11 @@ export interface ContentStateEnd {
  */
 export const ContentStateEndTypeEnum = {
     SegmentedProgress: 'segmented_progress',
-    Progress: 'progress'
+    Progress: 'progress',
+    Metrics: 'metrics',
+    Counter: 'counter',
+    Timer: 'timer',
+    Countdown: 'countdown'
 } as const;
 export type ContentStateEndTypeEnum = typeof ContentStateEndTypeEnum[keyof typeof ContentStateEndTypeEnum];
 
@@ -172,7 +214,23 @@ export const ContentStateEndStepColorEnum = {
 export type ContentStateEndStepColorEnum = typeof ContentStateEndStepColorEnum[keyof typeof ContentStateEndStepColorEnum];
 
 /**
- * Start payload requires title and type. For segmented_progress include number_of_steps and current_step. For progress include percentage or value with upper_limit. For segmented_progress, number_of_steps is not locked and can be changed in later update or end calls.
+ * @export
+ */
+export const ContentStateEndStepColorsEnum = {
+    Lime: 'lime',
+    Green: 'green',
+    Cyan: 'cyan',
+    Blue: 'blue',
+    Purple: 'purple',
+    Magenta: 'magenta',
+    Red: 'red',
+    Orange: 'orange',
+    Yellow: 'yellow'
+} as const;
+export type ContentStateEndStepColorsEnum = typeof ContentStateEndStepColorsEnum[keyof typeof ContentStateEndStepColorsEnum];
+
+/**
+ * Start payload requires title and type. For segmented_progress include number_of_steps and current_step. For progress include percentage or value with upper_limit. For metrics include a non-empty metrics array. Legacy counter/timer/countdown types also use current_step and number_of_steps. For segmented_progress, number_of_steps is not locked and can be changed in later update or end calls.
  * @export
  * @interface ContentStateStart
  */
@@ -221,6 +279,12 @@ export interface ContentStateStart {
      */
     upper_limit?: number;
     /**
+     * Use for type=metrics.
+     * @type {Array<ActivityMetric>}
+     * @memberof ContentStateStart
+     */
+    metrics?: Array<ActivityMetric>;
+    /**
      * 
      * @type {string}
      * @memberof ContentStateStart
@@ -238,6 +302,12 @@ export interface ContentStateStart {
      * @memberof ContentStateStart
      */
     step_color?: ContentStateStartStepColorEnum;
+    /**
+     * Optional. Colors for completed steps. When used with segmented_progress, the array length should match current_step.
+     * @type {Array<string>}
+     * @memberof ContentStateStart
+     */
+    step_colors?: Array<ContentStateStartStepColorsEnum>;
 }
 
 
@@ -246,7 +316,11 @@ export interface ContentStateStart {
  */
 export const ContentStateStartTypeEnum = {
     SegmentedProgress: 'segmented_progress',
-    Progress: 'progress'
+    Progress: 'progress',
+    Metrics: 'metrics',
+    Counter: 'counter',
+    Timer: 'timer',
+    Countdown: 'countdown'
 } as const;
 export type ContentStateStartTypeEnum = typeof ContentStateStartTypeEnum[keyof typeof ContentStateStartTypeEnum];
 
@@ -283,7 +357,23 @@ export const ContentStateStartStepColorEnum = {
 export type ContentStateStartStepColorEnum = typeof ContentStateStartStepColorEnum[keyof typeof ContentStateStartStepColorEnum];
 
 /**
- * Update payload requires title. For segmented_progress include current_step and optionally number_of_steps. For progress include percentage or value with upper_limit. Type is optional when updating an existing activity. You can increase or decrease number_of_steps during updates.
+ * @export
+ */
+export const ContentStateStartStepColorsEnum = {
+    Lime: 'lime',
+    Green: 'green',
+    Cyan: 'cyan',
+    Blue: 'blue',
+    Purple: 'purple',
+    Magenta: 'magenta',
+    Red: 'red',
+    Orange: 'orange',
+    Yellow: 'yellow'
+} as const;
+export type ContentStateStartStepColorsEnum = typeof ContentStateStartStepColorsEnum[keyof typeof ContentStateStartStepColorsEnum];
+
+/**
+ * Update payload requires title. For segmented_progress include current_step and optionally number_of_steps. For progress include percentage or value with upper_limit. For metrics include a non-empty metrics array. Legacy counter/timer/countdown types also use current_step and number_of_steps. Type is optional when updating an existing activity. You can increase or decrease number_of_steps during updates.
  * @export
  * @interface ContentStateUpdate
  */
@@ -332,6 +422,12 @@ export interface ContentStateUpdate {
      */
     upper_limit?: number;
     /**
+     * Use for type=metrics.
+     * @type {Array<ActivityMetric>}
+     * @memberof ContentStateUpdate
+     */
+    metrics?: Array<ActivityMetric>;
+    /**
      * Optional. When omitted, the API uses the existing Live Activity type.
      * @type {string}
      * @memberof ContentStateUpdate
@@ -349,6 +445,12 @@ export interface ContentStateUpdate {
      * @memberof ContentStateUpdate
      */
     step_color?: ContentStateUpdateStepColorEnum;
+    /**
+     * Optional. Colors for completed steps. When used with segmented_progress, the array length should match current_step.
+     * @type {Array<string>}
+     * @memberof ContentStateUpdate
+     */
+    step_colors?: Array<ContentStateUpdateStepColorsEnum>;
 }
 
 
@@ -357,7 +459,11 @@ export interface ContentStateUpdate {
  */
 export const ContentStateUpdateTypeEnum = {
     SegmentedProgress: 'segmented_progress',
-    Progress: 'progress'
+    Progress: 'progress',
+    Metrics: 'metrics',
+    Counter: 'counter',
+    Timer: 'timer',
+    Countdown: 'countdown'
 } as const;
 export type ContentStateUpdateTypeEnum = typeof ContentStateUpdateTypeEnum[keyof typeof ContentStateUpdateTypeEnum];
 
@@ -392,6 +498,22 @@ export const ContentStateUpdateStepColorEnum = {
     Yellow: 'yellow'
 } as const;
 export type ContentStateUpdateStepColorEnum = typeof ContentStateUpdateStepColorEnum[keyof typeof ContentStateUpdateStepColorEnum];
+
+/**
+ * @export
+ */
+export const ContentStateUpdateStepColorsEnum = {
+    Lime: 'lime',
+    Green: 'green',
+    Cyan: 'cyan',
+    Blue: 'blue',
+    Purple: 'purple',
+    Magenta: 'magenta',
+    Red: 'red',
+    Orange: 'orange',
+    Yellow: 'yellow'
+} as const;
+export type ContentStateUpdateStepColorsEnum = typeof ContentStateUpdateStepColorsEnum[keyof typeof ContentStateUpdateStepColorsEnum];
 
 /**
  * 
@@ -635,6 +757,212 @@ export interface LiveActivityStartResponse {
     timestamp: string;
 }
 /**
+ * Optional payload for ending a managed stream. When omitted, ActivitySmith ends the stream using the latest known state when possible.
+ * @export
+ * @interface LiveActivityStreamDeleteRequest
+ */
+export interface LiveActivityStreamDeleteRequest {
+    [key: string]: any | any;
+    /**
+     * 
+     * @type {StreamContentState}
+     * @memberof LiveActivityStreamDeleteRequest
+     */
+    content_state?: StreamContentState;
+    /**
+     * 
+     * @type {LiveActivityAction}
+     * @memberof LiveActivityStreamDeleteRequest
+     */
+    action?: LiveActivityAction;
+    /**
+     * 
+     * @type {AlertPayload}
+     * @memberof LiveActivityStreamDeleteRequest
+     */
+    alert?: AlertPayload;
+}
+/**
+ * Returned after a managed stream is ended and removed.
+ * @export
+ * @interface LiveActivityStreamDeleteResponse
+ */
+export interface LiveActivityStreamDeleteResponse {
+    [key: string]: any | any;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof LiveActivityStreamDeleteResponse
+     */
+    success: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof LiveActivityStreamDeleteResponse
+     */
+    operation: LiveActivityStreamDeleteResponseOperationEnum;
+    /**
+     * 
+     * @type {string}
+     * @memberof LiveActivityStreamDeleteResponse
+     */
+    stream_key: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof LiveActivityStreamDeleteResponse
+     */
+    activity_id?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof LiveActivityStreamDeleteResponse
+     */
+    devices_queued?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof LiveActivityStreamDeleteResponse
+     */
+    devices_notified?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof LiveActivityStreamDeleteResponse
+     */
+    timestamp: string;
+}
+
+
+/**
+ * @export
+ */
+export const LiveActivityStreamDeleteResponseOperationEnum = {
+    Ended: 'ended'
+} as const;
+export type LiveActivityStreamDeleteResponseOperationEnum = typeof LiveActivityStreamDeleteResponseOperationEnum[keyof typeof LiveActivityStreamDeleteResponseOperationEnum];
+
+/**
+ * Returned after a managed stream request is reconciled.
+ * @export
+ * @interface LiveActivityStreamPutResponse
+ */
+export interface LiveActivityStreamPutResponse {
+    [key: string]: any | any;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof LiveActivityStreamPutResponse
+     */
+    success: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof LiveActivityStreamPutResponse
+     */
+    operation: LiveActivityStreamPutResponseOperationEnum;
+    /**
+     * 
+     * @type {string}
+     * @memberof LiveActivityStreamPutResponse
+     */
+    stream_key: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof LiveActivityStreamPutResponse
+     */
+    activity_id?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof LiveActivityStreamPutResponse
+     */
+    previous_activity_id?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof LiveActivityStreamPutResponse
+     */
+    devices_notified?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof LiveActivityStreamPutResponse
+     */
+    devices_queued?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof LiveActivityStreamPutResponse
+     */
+    users_notified?: number;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof LiveActivityStreamPutResponse
+     */
+    effective_channel_slugs?: Array<string>;
+    /**
+     * 
+     * @type {string}
+     * @memberof LiveActivityStreamPutResponse
+     */
+    timestamp: string;
+}
+
+
+/**
+ * @export
+ */
+export const LiveActivityStreamPutResponseOperationEnum = {
+    Started: 'started',
+    Updated: 'updated',
+    Rotated: 'rotated',
+    Noop: 'noop',
+    Paused: 'paused'
+} as const;
+export type LiveActivityStreamPutResponseOperationEnum = typeof LiveActivityStreamPutResponseOperationEnum[keyof typeof LiveActivityStreamPutResponseOperationEnum];
+
+/**
+ * Send the latest state for a managed Live Activity stream. channels is the streamlined form for stream targeting. target.channels is also accepted for compatibility. If both are provided, they must match.
+ * @export
+ * @interface LiveActivityStreamRequest
+ */
+export interface LiveActivityStreamRequest {
+    [key: string]: any | any;
+    /**
+     * 
+     * @type {StreamContentState}
+     * @memberof LiveActivityStreamRequest
+     */
+    content_state: StreamContentState;
+    /**
+     * 
+     * @type {LiveActivityAction}
+     * @memberof LiveActivityStreamRequest
+     */
+    action?: LiveActivityAction;
+    /**
+     * 
+     * @type {AlertPayload}
+     * @memberof LiveActivityStreamRequest
+     */
+    alert?: AlertPayload;
+    /**
+     * Channel slugs. When omitted, API key scope determines recipients.
+     * @type {Array<string>}
+     * @memberof LiveActivityStreamRequest
+     */
+    channels?: Array<string>;
+    /**
+     * 
+     * @type {ChannelTarget}
+     * @memberof LiveActivityStreamRequest
+     */
+    target?: ChannelTarget;
+}
+/**
  * Update an existing Live Activity by activity_id.
  * @export
  * @interface LiveActivityUpdateRequest
@@ -734,6 +1062,26 @@ export interface NoRecipientsError {
      * @memberof NoRecipientsError
      */
     effective_channel_slugs?: Array<string>;
+}
+/**
+ * 
+ * @export
+ * @interface NotFoundError
+ */
+export interface NotFoundError {
+    [key: string]: any | any;
+    /**
+     * 
+     * @type {string}
+     * @memberof NotFoundError
+     */
+    error: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof NotFoundError
+     */
+    message: string;
 }
 /**
  * 
@@ -927,3 +1275,158 @@ export interface RateLimitError {
  * @export
  */
 export type SendPushNotification429Response = LiveActivityLimitError | RateLimitError;
+/**
+ * Current state for a managed Live Activity stream. Include type on the first PUT, and whenever the stream may need to start a fresh activity. Supports segmented_progress, progress, metrics, and the legacy counter/timer/countdown step-based types.
+ * @export
+ * @interface StreamContentState
+ */
+export interface StreamContentState {
+    [key: string]: any | any;
+    /**
+     * 
+     * @type {string}
+     * @memberof StreamContentState
+     */
+    title: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof StreamContentState
+     */
+    subtitle?: string;
+    /**
+     * Use for segmented_progress, counter, timer, and countdown.
+     * @type {number}
+     * @memberof StreamContentState
+     */
+    number_of_steps?: number;
+    /**
+     * Use for segmented_progress, counter, timer, and countdown.
+     * @type {number}
+     * @memberof StreamContentState
+     */
+    current_step?: number;
+    /**
+     * Use for progress. Takes precedence over value/upper_limit if both are provided.
+     * @type {number}
+     * @memberof StreamContentState
+     */
+    percentage?: number;
+    /**
+     * Current progress value. Use with upper_limit for progress.
+     * @type {number}
+     * @memberof StreamContentState
+     */
+    value?: number;
+    /**
+     * Maximum progress value. Use with value for progress.
+     * @type {number}
+     * @memberof StreamContentState
+     */
+    upper_limit?: number;
+    /**
+     * Required on the first PUT or whenever the stream cannot infer the current activity type.
+     * @type {string}
+     * @memberof StreamContentState
+     */
+    type?: StreamContentStateTypeEnum;
+    /**
+     * Optional. Accent color for the Live Activity. Defaults to blue.
+     * @type {string}
+     * @memberof StreamContentState
+     */
+    color?: StreamContentStateColorEnum;
+    /**
+     * Optional. Overrides color for the current step. Only applies to segmented_progress.
+     * @type {string}
+     * @memberof StreamContentState
+     */
+    step_color?: StreamContentStateStepColorEnum;
+    /**
+     * Optional. Colors for completed steps. When used with segmented_progress, the array length should match current_step.
+     * @type {Array<string>}
+     * @memberof StreamContentState
+     */
+    step_colors?: Array<StreamContentStateStepColorsEnum>;
+    /**
+     * Use for metrics activities.
+     * @type {Array<ActivityMetric>}
+     * @memberof StreamContentState
+     */
+    metrics?: Array<ActivityMetric>;
+    /**
+     * Optional. Seconds before the ended Live Activity is dismissed.
+     * @type {number}
+     * @memberof StreamContentState
+     */
+    auto_dismiss_seconds?: number;
+    /**
+     * Optional. Minutes before the ended Live Activity is dismissed.
+     * @type {number}
+     * @memberof StreamContentState
+     */
+    auto_dismiss_minutes?: number;
+}
+
+
+/**
+ * @export
+ */
+export const StreamContentStateTypeEnum = {
+    SegmentedProgress: 'segmented_progress',
+    Progress: 'progress',
+    Metrics: 'metrics',
+    Counter: 'counter',
+    Timer: 'timer',
+    Countdown: 'countdown'
+} as const;
+export type StreamContentStateTypeEnum = typeof StreamContentStateTypeEnum[keyof typeof StreamContentStateTypeEnum];
+
+/**
+ * @export
+ */
+export const StreamContentStateColorEnum = {
+    Lime: 'lime',
+    Green: 'green',
+    Cyan: 'cyan',
+    Blue: 'blue',
+    Purple: 'purple',
+    Magenta: 'magenta',
+    Red: 'red',
+    Orange: 'orange',
+    Yellow: 'yellow'
+} as const;
+export type StreamContentStateColorEnum = typeof StreamContentStateColorEnum[keyof typeof StreamContentStateColorEnum];
+
+/**
+ * @export
+ */
+export const StreamContentStateStepColorEnum = {
+    Lime: 'lime',
+    Green: 'green',
+    Cyan: 'cyan',
+    Blue: 'blue',
+    Purple: 'purple',
+    Magenta: 'magenta',
+    Red: 'red',
+    Orange: 'orange',
+    Yellow: 'yellow'
+} as const;
+export type StreamContentStateStepColorEnum = typeof StreamContentStateStepColorEnum[keyof typeof StreamContentStateStepColorEnum];
+
+/**
+ * @export
+ */
+export const StreamContentStateStepColorsEnum = {
+    Lime: 'lime',
+    Green: 'green',
+    Cyan: 'cyan',
+    Blue: 'blue',
+    Purple: 'purple',
+    Magenta: 'magenta',
+    Red: 'red',
+    Orange: 'orange',
+    Yellow: 'yellow'
+} as const;
+export type StreamContentStateStepColorsEnum = typeof StreamContentStateStepColorsEnum[keyof typeof StreamContentStateStepColorsEnum];
+
