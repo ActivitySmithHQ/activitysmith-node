@@ -121,7 +121,13 @@ There are three types of Live Activities:
 - `segmented_progress`: best for step-based workflows like deployments, backups, and ETL pipelines
 - `progress`: best for continuous jobs like uploads, reindexes, and long-running migrations tracked as a percentage
 
-When working with Live Activities via our API, you have two approaches tailored to different needs. First, the stateless mode is the simplest path - one API call can initiate or update an activity, and another ends it - no state tracking on your side. This is ideal if you want minimal complexity, perfect for automated workflows like cron jobs. In contrast, if you need precise lifecycle control, the classic approach offers distinct calls for start, updates, and end, giving you full control over the activity's state. In the following sections, we'll break down how to implement each method so you can choose what fits your use case best.
+When working with Live Activities via our API, you have two approaches tailored to different needs. First, the stateless mode is the simplest path - one API call can initiate or update an activity, and another ends it - no state tracking on your side.
+
+This is ideal if you want minimal complexity, perfect for automated workflows like cron jobs.
+
+In contrast, if you need precise lifecycle control, the classic approach offers distinct calls for start, updates, and end, giving you full control over the activity's state.
+
+In the following sections, we'll break down how to implement each method so you can choose what fits your use case best.
 
 ### Simple: Let ActivitySmith manage the Live Activity for you.
 
