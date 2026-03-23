@@ -120,15 +120,16 @@ ActivitySmith supports two ways to drive Live Activities:
 - Simple: stream updates with `activitysmith.liveActivities.stream(...)`
 - Advanced: manual lifecycle control with `start`, `update`, and `end`
 
-Use stream updates when you want the easiest, stateless flow. You don't need to
-store `activity_id` or manage lifecycle state yourself. Send the latest state
-for a stable `streamKey` and ActivitySmith will start or update the Live
-Activity for you. When the tracked process is over, call `endStream(...)`.
+Let ActivitySmith manage the Live Activity for you.
 
-Use the manual lifecycle methods when you need direct control over a specific
+Send the latest state for a stable `streamKey`. If the Live Activity does not
+exist yet, ActivitySmith starts it. If it already exists, ActivitySmith updates
+it. You do not need to store `activity_id` or manage the lifecycle yourself.
+
+Use the manual lifecycle methods when you need full control over a specific
 Live Activity instance.
 
-Live Activity UI types:
+Live Activity types:
 
 - `metrics`: best for live operational stats like server CPU and memory, queue depth, or replica lag
 - `segmented_progress`: best for step-based workflows like deployments, backups, and ETL pipelines
@@ -313,10 +314,10 @@ await activitysmith.liveActivities.end({
 
 ### Segmented Progress Type
 
-Use `segmented_progress` when progress is easier to follow as steps instead of a
-raw percentage. It fits jobs like backups, deployments, ETL pipelines, and
-checklists where "step 2 of 3" is more useful than "67%". `number_of_steps` is
-dynamic, so you can increase or decrease it later if the workflow changes.
+Use `segmented_progress` for jobs and workflows that move through clear steps or
+phases. It fits jobs like backups, deployments, ETL pipelines, and checklists.
+`number_of_steps` is dynamic, so you can increase or decrease it later if the
+workflow changes.
 
 #### Start
 
