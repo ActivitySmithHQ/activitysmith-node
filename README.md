@@ -112,30 +112,21 @@ await activitysmith.notifications.send({
 ## Live Activities
 
 <p align="center">
-  <img src="https://cdn.activitysmith.com/features/metrics-live-activity-action.png" alt="Live Activities example" width="680" />
+  <img src="https://cdn.activitysmith.com/features/metrics-live-activity-action.png" alt="Metrics Live Activity screenshot" width="680" />
 </p>
 
-ActivitySmith supports two ways to drive Live Activities.
-
-Let ActivitySmith manage the Live Activity for you.
-
-Send the latest state for a stable `streamKey`. If the Live Activity does not
-exist yet, ActivitySmith starts it. If it already exists, ActivitySmith updates
-it. You do not need to store `activity_id` or manage the lifecycle yourself.
-
-Use the manual lifecycle methods when you need full control over a specific
-Live Activity instance.
-
-Live Activity types:
+There are three types of Live Activities:
 
 - `metrics`: best for live operational stats like server CPU and memory, queue depth, or replica lag
 - `segmented_progress`: best for step-based workflows like deployments, backups, and ETL pipelines
 - `progress`: best for continuous jobs like uploads, reindexes, and long-running migrations tracked as a percentage
 
-### Simple: Stream updates
+When working with Live Activities via our API, you have two approaches tailored to different needs. First, the stateless mode is the simplest path - one API call can initiate or update an activity, and another ends it - no state tracking on your side. This is ideal if you want minimal complexity, perfect for automated workflows like cron jobs. In contrast, if you need precise lifecycle control, the classic approach offers distinct calls for start, updates, and end, giving you full control over the activity's state. In the following sections, we'll break down how to implement each method so you can choose what fits your use case best.
+
+### Simple: Let ActivitySmith manage the Live Activity for you.
 
 Use a stable `streamKey` to identify the system or workflow you are tracking,
-such as a server, deployment, build pipeline, cron job, or charging session.
+such as a server, deployment, or build pipeline.
 This is especially useful for cron jobs and other scheduled tasks where you do
 not want to store `activity_id` between runs.
 
@@ -228,11 +219,9 @@ Stream responses include an `operation` field:
 - `paused`: the stream is paused, so no Live Activity was started or updated
 - `ended`: returned by `endStream(...)` after the stream is ended
 
-### Advanced: Manual lifecycle control
+### Advanced: Full lifecycle control
 
-Use these methods when you want to manage the Live Activity lifecycle yourself.
-
-#### Shared flow
+Use these methods when you want to manage the Live Activity lifecycle yourself:
 
 1. Call `activitysmith.liveActivities.start(...)`.
 2. Save the returned `activity_id`.
