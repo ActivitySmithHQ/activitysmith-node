@@ -61,7 +61,7 @@ export interface UpdateLiveActivityRequest {
 export class LiveActivitiesApi extends runtime.BaseAPI {
 
     /**
-     * Ends a Live Activity and archives its lifecycle. Supports segmented_progress, progress, metrics, and the legacy counter/timer/countdown step-based activity types. For segmented_progress activities, you can send the latest number_of_steps here if the workflow changed after start.
+     * Ends a Live Activity and archives its lifecycle. Supports segmented_progress, progress, and metrics activity types. For segmented_progress activities, you can send the latest number_of_steps here if the workflow changed after start.
      * End a Live Activity
      */
     async endLiveActivityRaw(requestParameters: EndLiveActivityRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<LiveActivityEndResponse>> {
@@ -98,7 +98,7 @@ export class LiveActivitiesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Ends a Live Activity and archives its lifecycle. Supports segmented_progress, progress, metrics, and the legacy counter/timer/countdown step-based activity types. For segmented_progress activities, you can send the latest number_of_steps here if the workflow changed after start.
+     * Ends a Live Activity and archives its lifecycle. Supports segmented_progress, progress, and metrics activity types. For segmented_progress activities, you can send the latest number_of_steps here if the workflow changed after start.
      * End a Live Activity
      */
     async endLiveActivity(requestParameters: EndLiveActivityRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<LiveActivityEndResponse> {
@@ -206,7 +206,7 @@ export class LiveActivitiesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Starts a Live Activity on devices matched by API key scope and optional target channels. Supports segmented_progress, progress, metrics, and the legacy counter/timer/countdown step-based activity types. For segmented_progress activities, number_of_steps can be changed later during update or end calls if the workflow changes.
+     * Starts a Live Activity on devices matched by API key scope and optional target channels. Supports segmented_progress, progress, and metrics activity types. For segmented_progress activities, number_of_steps can be changed later during update or end calls if the workflow changes.
      * Start a Live Activity
      */
     async startLiveActivityRaw(requestParameters: StartLiveActivityRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<LiveActivityStartResponse>> {
@@ -243,7 +243,7 @@ export class LiveActivitiesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Starts a Live Activity on devices matched by API key scope and optional target channels. Supports segmented_progress, progress, metrics, and the legacy counter/timer/countdown step-based activity types. For segmented_progress activities, number_of_steps can be changed later during update or end calls if the workflow changes.
+     * Starts a Live Activity on devices matched by API key scope and optional target channels. Supports segmented_progress, progress, and metrics activity types. For segmented_progress activities, number_of_steps can be changed later during update or end calls if the workflow changes.
      * Start a Live Activity
      */
     async startLiveActivity(requestParameters: StartLiveActivityRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<LiveActivityStartResponse> {
@@ -252,7 +252,7 @@ export class LiveActivitiesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Updates an existing Live Activity. If the per-activity token is not registered yet, the update is queued. Supports segmented_progress, progress, metrics, and the legacy counter/timer/countdown step-based activity types. For segmented_progress activities, you can increase or decrease number_of_steps here as the workflow changes.
+     * Updates an existing Live Activity. If the per-activity token is not registered yet, the update is queued. Supports segmented_progress, progress, and metrics activity types. For segmented_progress activities, you can increase or decrease number_of_steps here as the workflow changes.
      * Update a Live Activity
      */
     async updateLiveActivityRaw(requestParameters: UpdateLiveActivityRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<LiveActivityUpdateResponse>> {
@@ -289,7 +289,7 @@ export class LiveActivitiesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Updates an existing Live Activity. If the per-activity token is not registered yet, the update is queued. Supports segmented_progress, progress, metrics, and the legacy counter/timer/countdown step-based activity types. For segmented_progress activities, you can increase or decrease number_of_steps here as the workflow changes.
+     * Updates an existing Live Activity. If the per-activity token is not registered yet, the update is queued. Supports segmented_progress, progress, and metrics activity types. For segmented_progress activities, you can increase or decrease number_of_steps here as the workflow changes.
      * Update a Live Activity
      */
     async updateLiveActivity(requestParameters: UpdateLiveActivityRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<LiveActivityUpdateResponse> {
