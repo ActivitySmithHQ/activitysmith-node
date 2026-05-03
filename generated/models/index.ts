@@ -1048,31 +1048,6 @@ export interface MetricError {
      */
     message?: string;
 }
-
-/**
- * 
- * @export
- */
-export const MetricFormat = {
-    Number: 'number',
-    Currency: 'currency',
-    Percent: 'percent',
-    Unit: 'unit',
-    String: 'string'
-} as const;
-export type MetricFormat = typeof MetricFormat[keyof typeof MetricFormat];
-
-
-/**
- * 
- * @export
- */
-export const MetricUnitSpacing = {
-    None: 'none',
-    Space: 'space'
-} as const;
-export type MetricUnitSpacing = typeof MetricUnitSpacing[keyof typeof MetricUnitSpacing];
-
 /**
  * Latest metric value to display in widgets.
  * @export
@@ -1108,10 +1083,10 @@ export interface MetricValueUpdateResponse {
     [key: string]: any | any;
     /**
      * 
-     * @type {WidgetMetric}
+     * @type {boolean}
      * @memberof MetricValueUpdateResponse
      */
-    metric: WidgetMetric;
+    success: boolean;
 }
 /**
  * 
@@ -1503,84 +1478,3 @@ export const StreamContentStateStepColorsEnum = {
 } as const;
 export type StreamContentStateStepColorsEnum = typeof StreamContentStateStepColorsEnum[keyof typeof StreamContentStateStepColorsEnum];
 
-/**
- * A metric configured for ActivitySmith widgets.
- * @export
- * @interface WidgetMetric
- */
-export interface WidgetMetric {
-    [key: string]: any | any;
-    /**
-     * 
-     * @type {string}
-     * @memberof WidgetMetric
-     */
-    public_id: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof WidgetMetric
-     */
-    key: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof WidgetMetric
-     */
-    label: string;
-    /**
-     * Present when format is currency.
-     * @type {string}
-     * @memberof WidgetMetric
-     */
-    currency_code: string | null;
-    /**
-     * Present when format is unit.
-     * @type {string}
-     * @memberof WidgetMetric
-     */
-    unit: string | null;
-    /**
-     * 
-     * @type {MetricUnitSpacing}
-     * @memberof WidgetMetric
-     */
-    unit_spacing: MetricUnitSpacing;
-    /**
-     * 
-     * @type {MetricFormat}
-     * @memberof WidgetMetric
-     */
-    format: MetricFormat;
-    /**
-     * 
-     * @type {WidgetMetricLatestValue}
-     * @memberof WidgetMetric
-     */
-    latest_value: WidgetMetricLatestValue | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof WidgetMetric
-     */
-    latest_value_at: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof WidgetMetric
-     */
-    created_at: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof WidgetMetric
-     */
-    updated_at: string;
-}
-/**
- * Latest metric value. Numeric formats return a number. String metrics return text.
- * @export
- * @interface WidgetMetricLatestValue
- */
-export interface WidgetMetricLatestValue {
-}
