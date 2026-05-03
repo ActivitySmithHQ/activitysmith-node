@@ -81,7 +81,7 @@ export interface ChannelTarget {
     channels: Array<string>;
 }
 /**
- * End payload requires title. For segmented_progress include current_step and optionally number_of_steps. For progress include percentage or value with upper_limit. For metrics include a non-empty metrics array. Legacy counter/timer/countdown types also use current_step and number_of_steps. Type is optional when ending an existing activity. You can send an updated number_of_steps here if the workflow changed after start.
+ * End payload requires title. For segmented_progress include current_step and optionally number_of_steps. For progress include percentage or value with upper_limit. For metrics include a non-empty metrics array. Type is optional when ending an existing activity. You can send an updated number_of_steps here if the workflow changed after start.
  * @export
  * @interface ContentStateEnd
  */
@@ -174,10 +174,7 @@ export interface ContentStateEnd {
 export const ContentStateEndTypeEnum = {
     SegmentedProgress: 'segmented_progress',
     Progress: 'progress',
-    Metrics: 'metrics',
-    Counter: 'counter',
-    Timer: 'timer',
-    Countdown: 'countdown'
+    Metrics: 'metrics'
 } as const;
 export type ContentStateEndTypeEnum = typeof ContentStateEndTypeEnum[keyof typeof ContentStateEndTypeEnum];
 
@@ -230,7 +227,7 @@ export const ContentStateEndStepColorsEnum = {
 export type ContentStateEndStepColorsEnum = typeof ContentStateEndStepColorsEnum[keyof typeof ContentStateEndStepColorsEnum];
 
 /**
- * Start payload requires title and type. For segmented_progress include number_of_steps and current_step. For progress include percentage or value with upper_limit. For metrics include a non-empty metrics array. Legacy counter/timer/countdown types also use current_step and number_of_steps. For segmented_progress, number_of_steps is not locked and can be changed in later update or end calls.
+ * Start payload requires title and type. For segmented_progress include number_of_steps and current_step. For progress include percentage or value with upper_limit. For metrics include a non-empty metrics array. For segmented_progress, number_of_steps is not locked and can be changed in later update or end calls.
  * @export
  * @interface ContentStateStart
  */
@@ -317,10 +314,7 @@ export interface ContentStateStart {
 export const ContentStateStartTypeEnum = {
     SegmentedProgress: 'segmented_progress',
     Progress: 'progress',
-    Metrics: 'metrics',
-    Counter: 'counter',
-    Timer: 'timer',
-    Countdown: 'countdown'
+    Metrics: 'metrics'
 } as const;
 export type ContentStateStartTypeEnum = typeof ContentStateStartTypeEnum[keyof typeof ContentStateStartTypeEnum];
 
@@ -373,7 +367,7 @@ export const ContentStateStartStepColorsEnum = {
 export type ContentStateStartStepColorsEnum = typeof ContentStateStartStepColorsEnum[keyof typeof ContentStateStartStepColorsEnum];
 
 /**
- * Update payload requires title. For segmented_progress include current_step and optionally number_of_steps. For progress include percentage or value with upper_limit. For metrics include a non-empty metrics array. Legacy counter/timer/countdown types also use current_step and number_of_steps. Type is optional when updating an existing activity. You can increase or decrease number_of_steps during updates.
+ * Update payload requires title. For segmented_progress include current_step and optionally number_of_steps. For progress include percentage or value with upper_limit. For metrics include a non-empty metrics array. Type is optional when updating an existing activity. You can increase or decrease number_of_steps during updates.
  * @export
  * @interface ContentStateUpdate
  */
@@ -460,10 +454,7 @@ export interface ContentStateUpdate {
 export const ContentStateUpdateTypeEnum = {
     SegmentedProgress: 'segmented_progress',
     Progress: 'progress',
-    Metrics: 'metrics',
-    Counter: 'counter',
-    Timer: 'timer',
-    Countdown: 'countdown'
+    Metrics: 'metrics'
 } as const;
 export type ContentStateUpdateTypeEnum = typeof ContentStateUpdateTypeEnum[keyof typeof ContentStateUpdateTypeEnum];
 
@@ -1040,6 +1031,91 @@ export type LiveActivityWebhookMethod = typeof LiveActivityWebhookMethod[keyof t
 /**
  * 
  * @export
+ * @interface MetricError
+ */
+export interface MetricError {
+    [key: string]: any | any;
+    /**
+     * 
+     * @type {string}
+     * @memberof MetricError
+     */
+    error: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof MetricError
+     */
+    message?: string;
+}
+
+/**
+ * 
+ * @export
+ */
+export const MetricFormat = {
+    Number: 'number',
+    Currency: 'currency',
+    Percent: 'percent',
+    Unit: 'unit',
+    String: 'string'
+} as const;
+export type MetricFormat = typeof MetricFormat[keyof typeof MetricFormat];
+
+
+/**
+ * 
+ * @export
+ */
+export const MetricUnitSpacing = {
+    None: 'none',
+    Space: 'space'
+} as const;
+export type MetricUnitSpacing = typeof MetricUnitSpacing[keyof typeof MetricUnitSpacing];
+
+/**
+ * Latest metric value to display in widgets.
+ * @export
+ * @interface MetricValueUpdateRequest
+ */
+export interface MetricValueUpdateRequest {
+    [key: string]: any | any;
+    /**
+     * 
+     * @type {MetricValueUpdateRequestValue}
+     * @memberof MetricValueUpdateRequest
+     */
+    value: MetricValueUpdateRequestValue;
+    /**
+     * Optional ISO timestamp for when the metric value was measured. Defaults to the server receive time.
+     * @type {string}
+     * @memberof MetricValueUpdateRequest
+     */
+    timestamp?: string;
+}
+/**
+ * @type MetricValueUpdateRequestValue
+ * 
+ * @export
+ */
+export type MetricValueUpdateRequestValue = number | string;
+/**
+ * 
+ * @export
+ * @interface MetricValueUpdateResponse
+ */
+export interface MetricValueUpdateResponse {
+    [key: string]: any | any;
+    /**
+     * 
+     * @type {WidgetMetric}
+     * @memberof MetricValueUpdateResponse
+     */
+    metric: WidgetMetric;
+}
+/**
+ * 
+ * @export
  * @interface NoRecipientsError
  */
 export interface NoRecipientsError {
@@ -1276,7 +1352,7 @@ export interface RateLimitError {
  */
 export type SendPushNotification429Response = LiveActivityLimitError | RateLimitError;
 /**
- * Current state for a managed Live Activity stream. Include type on the first PUT, and whenever the stream may need to start a fresh activity. Supports segmented_progress, progress, metrics, and the legacy counter/timer/countdown step-based types.
+ * Current state for a managed Live Activity stream. Include type on the first PUT, and whenever the stream may need to start a fresh activity. Supports segmented_progress, progress, and metrics types.
  * @export
  * @interface StreamContentState
  */
@@ -1295,13 +1371,13 @@ export interface StreamContentState {
      */
     subtitle?: string;
     /**
-     * Use for segmented_progress, counter, timer, and countdown.
+     * Use for segmented_progress.
      * @type {number}
      * @memberof StreamContentState
      */
     number_of_steps?: number;
     /**
-     * Use for segmented_progress, counter, timer, and countdown.
+     * Use for segmented_progress.
      * @type {number}
      * @memberof StreamContentState
      */
@@ -1375,10 +1451,7 @@ export interface StreamContentState {
 export const StreamContentStateTypeEnum = {
     SegmentedProgress: 'segmented_progress',
     Progress: 'progress',
-    Metrics: 'metrics',
-    Counter: 'counter',
-    Timer: 'timer',
-    Countdown: 'countdown'
+    Metrics: 'metrics'
 } as const;
 export type StreamContentStateTypeEnum = typeof StreamContentStateTypeEnum[keyof typeof StreamContentStateTypeEnum];
 
@@ -1430,3 +1503,84 @@ export const StreamContentStateStepColorsEnum = {
 } as const;
 export type StreamContentStateStepColorsEnum = typeof StreamContentStateStepColorsEnum[keyof typeof StreamContentStateStepColorsEnum];
 
+/**
+ * A metric configured for ActivitySmith widgets.
+ * @export
+ * @interface WidgetMetric
+ */
+export interface WidgetMetric {
+    [key: string]: any | any;
+    /**
+     * 
+     * @type {string}
+     * @memberof WidgetMetric
+     */
+    public_id: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof WidgetMetric
+     */
+    key: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof WidgetMetric
+     */
+    label: string;
+    /**
+     * Present when format is currency.
+     * @type {string}
+     * @memberof WidgetMetric
+     */
+    currency_code: string | null;
+    /**
+     * Present when format is unit.
+     * @type {string}
+     * @memberof WidgetMetric
+     */
+    unit: string | null;
+    /**
+     * 
+     * @type {MetricUnitSpacing}
+     * @memberof WidgetMetric
+     */
+    unit_spacing: MetricUnitSpacing;
+    /**
+     * 
+     * @type {MetricFormat}
+     * @memberof WidgetMetric
+     */
+    format: MetricFormat;
+    /**
+     * 
+     * @type {WidgetMetricLatestValue}
+     * @memberof WidgetMetric
+     */
+    latest_value: WidgetMetricLatestValue | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof WidgetMetric
+     */
+    latest_value_at: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof WidgetMetric
+     */
+    created_at: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof WidgetMetric
+     */
+    updated_at: string;
+}
+/**
+ * Latest metric value. Numeric formats return a number. String metrics return text.
+ * @export
+ * @interface WidgetMetricLatestValue
+ */
+export interface WidgetMetricLatestValue {
+}
