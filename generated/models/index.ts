@@ -1108,10 +1108,10 @@ export interface MetricValueUpdateResponse {
     [key: string]: any | any;
     /**
      * 
-     * @type {WidgetMetric}
+     * @type {boolean}
      * @memberof MetricValueUpdateResponse
      */
-    metric: WidgetMetric;
+    success: boolean;
 }
 /**
  * 
@@ -1533,13 +1533,13 @@ export interface WidgetMetric {
      * @type {string}
      * @memberof WidgetMetric
      */
-    currency_code: string | null;
+    currency_code: string;
     /**
      * Present when format is unit.
      * @type {string}
      * @memberof WidgetMetric
      */
-    unit: string | null;
+    unit: string;
     /**
      * 
      * @type {MetricUnitSpacing}
@@ -1553,17 +1553,17 @@ export interface WidgetMetric {
      */
     format: MetricFormat;
     /**
-     * 
-     * @type {WidgetMetricLatestValue}
+     * Latest metric value. Numeric formats return a number. String metrics return text.
+     * @type {number}
      * @memberof WidgetMetric
      */
-    latest_value: WidgetMetricLatestValue | null;
+    latest_value: number;
     /**
      * 
      * @type {string}
      * @memberof WidgetMetric
      */
-    latest_value_at: string | null;
+    latest_value_at: string;
     /**
      * 
      * @type {string}
@@ -1576,11 +1576,4 @@ export interface WidgetMetric {
      * @memberof WidgetMetric
      */
     updated_at: string;
-}
-/**
- * Latest metric value. Numeric formats return a number. String metrics return text.
- * @export
- * @interface WidgetMetricLatestValue
- */
-export interface WidgetMetricLatestValue {
 }
