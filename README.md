@@ -6,6 +6,24 @@ The ActivitySmith Node SDK provides convenient access to the ActivitySmith API f
 
 See [API reference](https://activitysmith.com/docs/api-reference/introduction)
 
+## Table of Contents
+
+- [Installation](#installation)
+- [Setup](#setup)
+- [Push Notifications](#push-notifications)
+  - [Send a Push Notification](#send-a-push-notification)
+  - [Rich Push Notifications with Media](#rich-push-notifications-with-media)
+  - [Actionable Push Notifications](#actionable-push-notifications)
+- [Live Activities](#live-activities)
+  - [Simple: Let ActivitySmith manage the Live Activity for you](#simple-let-activitysmith-manage-the-live-activity-for-you)
+  - [Advanced: Full lifecycle control](#advanced-full-lifecycle-control)
+  - [Metrics Type](#metrics-type)
+  - [Segmented Progress Type](#segmented-progress-type)
+  - [Progress Type](#progress-type)
+  - [Live Activity Action](#live-activity-action)
+- [Channels](#channels)
+- [Widgets](#widgets)
+
 ## Installation
 
 ```sh
