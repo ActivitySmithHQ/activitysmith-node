@@ -129,7 +129,7 @@ In contrast, if you need precise lifecycle control, the classic approach offers 
 
 In the following sections, we'll break down how to implement each method so you can choose what fits your use case best.
 
-### Simple: Let ActivitySmith manage the Live Activity for you.
+### Simple: Let ActivitySmith manage the Live Activity for you
 
 Use a stable `streamKey` to identify the system or workflow you are tracking,
 such as a server, deployment, or build pipeline.
@@ -499,6 +499,30 @@ await activitysmith.notifications.send({
   message: "Customer upgraded to Pro plan",
   channels: ["sales", "customer-success"], // Optional
 });
+```
+
+## Widgets
+
+<p align="center">
+  <img src="https://cdn.activitysmith.com/features/lock-screen-widgets.png" alt="Lock screen widgets" width="680" />
+</p>
+
+ActivitySmith lets you display any value on your Lock Screen with widgets - SaaS metrics, revenue, signups, uptime, habits, or anything else you want to track. Create a metric in the web app, then update the metric value using our API, add a widget to your lock screen and it will fetch the latest update automatically.
+
+<p align="center">
+  <img src="https://cdn.activitysmith.com/features/create-widget-metric.png" alt="Create widget metric" width="680" />
+</p>
+
+Use the metric key to update its value.
+
+```ts
+await activitysmith.metrics.update("deploy.success_rate", 99.9);
+```
+
+String metric values work too.
+
+```ts
+await activitysmith.metrics.update("prod.status", "healthy");
 ```
 
 ## Error Handling

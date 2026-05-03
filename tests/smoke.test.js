@@ -62,5 +62,9 @@ describe("smoke", () => {
     expect(String(fetchSpy.mock.calls[0][0])).toContain("/push-notification");
     expect(String(fetchSpy.mock.calls[1][0])).toContain("/live-activity/start");
     expect(String(fetchSpy.mock.calls[2][0])).toContain("/live-activity/stream/prod-web-1");
+
+    for (const call of fetchSpy.mock.calls) {
+      expect(call[1]?.headers?.["X-ActivitySmith-SDK"]).toBe("node-v1.1.0");
+    }
   });
 });

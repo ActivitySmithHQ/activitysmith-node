@@ -1,4 +1,8 @@
-import { Configuration, PushNotificationsApi, LiveActivitiesApi } from "../generated/index";
+import { Configuration, PushNotificationsApi, LiveActivitiesApi, MetricsApi } from "../generated/index";
+
+const SDK_VERSION = "1.1.0";
+const SDK_HEADER_NAME = "X-ActivitySmith-SDK";
+const SDK_HEADER_VALUE = `node-v${SDK_VERSION}`;
 
 export interface ActivitySmithOptions {
   apiKey: string;
@@ -16,6 +20,12 @@ type StreamRequestBody =
 type StreamDeleteRequestBody =
   Parameters<LiveActivitiesApi["endLiveActivityStream"]>[0]["liveActivityStreamDeleteRequest"];
 type LiveInitOverrides = Parameters<LiveActivitiesApi["startLiveActivity"]>[1];
+type MetricUpdateParameters = Parameters<MetricsApi["updateMetricValue"]>[0];
+type MetricRawParameters = Parameters<MetricsApi["updateMetricValueRaw"]>[0];
+type MetricUpdateRequestBody = MetricUpdateParameters["metricValueUpdateRequest"];
+type MetricValue = MetricUpdateRequestBody["value"];
+type MetricUpdateOptions = Omit<MetricUpdateRequestBody, "value">;
+type MetricInitOverrides = Parameters<MetricsApi["updateMetricValue"]>[1];
 type ChannelTargetInput = { channels?: string[] };
 type PushSendRequest = PushRequestBody & { channels?: string[] };
 type LiveStartSendRequest = StartRequestBody & { channels?: string[] };
@@ -57,6 +67,27 @@ function assertValidPushRequest(request: { media?: unknown; actions?: unknown })
   if (hasMediaValue(request.media) && hasActionsValue(request.actions)) {
     throw new Error("ActivitySmith: media cannot be combined with actions");
   }
+}
+
+function toMetricUpdateRequest(
+  valueOrRequest: MetricValue | MetricUpdateRequestBody,
+  options?: MetricUpdateOptions,
+): MetricUpdateRequestBody {
+  if (
+    typeof valueOrRequest === "object" &&
+    valueOrRequest !== null &&
+    "value" in valueOrRequest
+  ) {
+    return {
+      ...valueOrRequest,
+      ...options,
+    };
+  }
+
+  return {
+    value: valueOrRequest as MetricValue,
+    ...options,
+  };
 }
 
 export class NotificationsResource {
@@ -182,9 +213,45 @@ export class LiveActivitiesResource {
   }
 }
 
+export class MetricsResource {
+  private readonly api: MetricsApi;
+
+  constructor(api: MetricsApi) {
+    this.api = api;
+  }
+
+  update(
+    key: string,
+    valueOrRequest: MetricValue | MetricUpdateRequestBody,
+    options?: MetricUpdateOptions,
+    initOverrides?: MetricInitOverrides,
+  ) {
+    return this.api.updateMetricValue(
+      {
+        key,
+        metricValueUpdateRequest: toMetricUpdateRequest(valueOrRequest, options),
+      },
+      initOverrides,
+    );
+  }
+
+  // Backward-compatible generated-style aliases.
+  updateMetricValue(requestParameters: MetricUpdateParameters, initOverrides?: MetricInitOverrides) {
+    return this.api.updateMetricValue(requestParameters, initOverrides);
+  }
+
+  updateMetricValueRaw(
+    requestParameters: MetricRawParameters,
+    initOverrides?: MetricInitOverrides,
+  ) {
+    return this.api.updateMetricValueRaw(requestParameters, initOverrides);
+  }
+}
+
 export class ActivitySmith {
   public readonly notifications: NotificationsResource;
   public readonly liveActivities: LiveActivitiesResource;
+  public readonly metrics: MetricsResource;
 
   constructor(opts: ActivitySmithOptions) {
     if (!opts?.apiKey) {
@@ -194,9 +261,13 @@ export class ActivitySmith {
     // basePath omitted on purpose — it will use the default from the generated runtime
     const config = new Configuration({
       accessToken: opts.apiKey,
+      headers: {
+        [SDK_HEADER_NAME]: SDK_HEADER_VALUE,
+      },
     });
 
     this.notifications = new NotificationsResource(new PushNotificationsApi(config));
     this.liveActivities = new LiveActivitiesResource(new LiveActivitiesApi(config));
+    this.metrics = new MetricsResource(new MetricsApi(config));
   }
 }

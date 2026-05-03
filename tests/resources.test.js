@@ -395,4 +395,58 @@ describe("resource wrappers", () => {
     await client.liveActivities.startLiveActivity(request);
     expect(startSpy).toHaveBeenCalledWith(request);
   });
+
+  it("wraps metric values for metrics.update", async () => {
+    const ActivitySmith = require("../dist/src/index.js");
+    const generated = require("../dist/generated/index.js");
+
+    const updateSpy = vi
+      .spyOn(generated.MetricsApi.prototype, "updateMetricValue")
+      .mockResolvedValue({ metric: { key: "deploy.success_rate", latest_value: 99.9 } });
+
+    const client = new ActivitySmith({ apiKey: "test" });
+
+    await client.metrics.update("deploy.success_rate", 99.9, {
+      timestamp: "2026-05-03T12:30:00.000Z",
+    });
+    await client.metrics.update("prod.status", { value: "healthy" });
+
+    expect(updateSpy).toHaveBeenNthCalledWith(
+      1,
+      {
+        key: "deploy.success_rate",
+        metricValueUpdateRequest: {
+          value: 99.9,
+          timestamp: "2026-05-03T12:30:00.000Z",
+        },
+      },
+      undefined,
+    );
+    expect(updateSpy).toHaveBeenNthCalledWith(
+      2,
+      {
+        key: "prod.status",
+        metricValueUpdateRequest: { value: "healthy" },
+      },
+      undefined,
+    );
+  });
+
+  it("keeps long metric aliases working", async () => {
+    const ActivitySmith = require("../dist/src/index.js");
+    const generated = require("../dist/generated/index.js");
+
+    const updateSpy = vi
+      .spyOn(generated.MetricsApi.prototype, "updateMetricValue")
+      .mockResolvedValue({ metric: { key: "deploy.success_rate", latest_value: 42 } });
+
+    const client = new ActivitySmith({ apiKey: "test" });
+    const request = {
+      key: "deploy.success_rate",
+      metricValueUpdateRequest: { value: 42 },
+    };
+
+    await client.metrics.updateMetricValue(request);
+    expect(updateSpy).toHaveBeenCalledWith(request, undefined);
+  });
 });
