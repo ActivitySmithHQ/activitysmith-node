@@ -1061,12 +1061,6 @@ export interface MetricValueUpdateRequest {
      * @memberof MetricValueUpdateRequest
      */
     value: MetricValueUpdateRequestValue;
-    /**
-     * Optional ISO timestamp for when the metric value was measured. Defaults to the server receive time.
-     * @type {string}
-     * @memberof MetricValueUpdateRequest
-     */
-    timestamp?: string;
 }
 /**
  * @type MetricValueUpdateRequestValue
