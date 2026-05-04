@@ -2,6 +2,8 @@ import { createRequire } from "node:module";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 const require = createRequire(import.meta.url);
+const packageJson = require("../package.json");
+const expectedSdkHeader = `node-v${packageJson.version}`;
 
 describe("smoke", () => {
   const originalFetch = globalThis.fetch;
@@ -64,7 +66,7 @@ describe("smoke", () => {
     expect(String(fetchSpy.mock.calls[2][0])).toContain("/live-activity/stream/prod-web-1");
 
     for (const call of fetchSpy.mock.calls) {
-      expect(call[1]?.headers?.["X-ActivitySmith-SDK"]).toBe("node-v1.1.0");
+      expect(call[1]?.headers?.["X-ActivitySmith-SDK"]).toBe(expectedSdkHeader);
     }
   });
 });

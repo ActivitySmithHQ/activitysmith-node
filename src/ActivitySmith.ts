@@ -1,6 +1,6 @@
 import { Configuration, PushNotificationsApi, LiveActivitiesApi, MetricsApi } from "../generated/index";
 
-const SDK_VERSION = "1.1.0";
+const SDK_VERSION = "1.2.2";
 const SDK_HEADER_NAME = "X-ActivitySmith-SDK";
 const SDK_HEADER_VALUE = `node-v${SDK_VERSION}`;
 

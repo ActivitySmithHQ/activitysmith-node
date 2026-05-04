@@ -164,12 +164,17 @@ export class BaseAPI {
             credentials: this.configuration.credentials,
         };
 
+        const override = await initOverrideFn({
+            init: initParams,
+            context,
+        });
         const overriddenInit: RequestInit = {
             ...initParams,
-            ...(await initOverrideFn({
-                init: initParams,
-                context,
-            }))
+            ...override,
+            headers: {
+                ...headers,
+                ...(override?.headers || {}),
+            },
         };
 
         let body: any;
