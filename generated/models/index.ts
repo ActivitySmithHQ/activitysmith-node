@@ -15,17 +15,47 @@ export interface ActivityMetric {
     label: string;
     /**
      * 
-     * @type {number}
+     * @type {ActivityMetricValue}
      * @memberof ActivityMetric
      */
-    value: number;
+    value: ActivityMetricValue;
     /**
      * 
      * @type {string}
      * @memberof ActivityMetric
      */
     unit?: string;
+    /**
+     * Optional per-metric accent color for metrics and stats activities.
+     * @type {string}
+     * @memberof ActivityMetric
+     */
+    color?: ActivityMetricColorEnum;
 }
+
+
+/**
+ * @export
+ */
+export const ActivityMetricColorEnum = {
+    Lime: 'lime',
+    Green: 'green',
+    Cyan: 'cyan',
+    Blue: 'blue',
+    Purple: 'purple',
+    Magenta: 'magenta',
+    Red: 'red',
+    Orange: 'orange',
+    Yellow: 'yellow'
+} as const;
+export type ActivityMetricColorEnum = typeof ActivityMetricColorEnum[keyof typeof ActivityMetricColorEnum];
+
+/**
+ * @type ActivityMetricValue
+ * 
+ * @export
+ */
+export type ActivityMetricValue = number | string;
 /**
  * 
  * @export
