@@ -228,6 +228,33 @@ describe("resource wrappers", () => {
     expect(startSpy).toHaveBeenCalledWith({ liveActivityStartRequest: payload }, undefined);
   });
 
+  it("passes through stats content_state with metric accent colors", async () => {
+    const ActivitySmith = require("../dist/src/index.js");
+    const generated = require("../dist/generated/index.js");
+
+    const startSpy = vi
+      .spyOn(generated.LiveActivitiesApi.prototype, "startLiveActivity")
+      .mockResolvedValue({ activity_id: "act-1" });
+
+    const client = new ActivitySmith({ apiKey: "test" });
+    const payload = {
+      content_state: {
+        title: "Sales",
+        subtitle: "last hour",
+        type: ActivitySmith.liveActivityTypes.stats,
+        metrics: [
+          { label: "Revenue", value: "$2430", color: "blue" },
+          { label: "Orders", value: "37", color: "green" },
+          { label: "Conversion", value: "4.8%", color: "magenta" },
+        ],
+      },
+    };
+
+    await client.liveActivities.start(payload);
+
+    expect(startSpy).toHaveBeenCalledWith({ liveActivityStartRequest: payload }, undefined);
+  });
+
   it("wraps live activity stream payloads for short methods", async () => {
     const ActivitySmith = require("../dist/src/index.js");
     const generated = require("../dist/generated/index.js");

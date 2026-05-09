@@ -31,6 +31,13 @@ type PushSendRequest = PushRequestBody & { channels?: string[] };
 type LiveStartSendRequest = StartRequestBody & { channels?: string[] };
 type LiveStreamSendRequest = StreamRequestBody & { channels?: string[] };
 
+const LiveActivityTypes = {
+  segmentedProgress: "segmented_progress",
+  progress: "progress",
+  metrics: "metrics",
+  stats: "stats",
+} as const;
+
 function withTargetChannels<T extends { target?: ChannelTargetInput }>(
   request: T & { channels?: string[] },
 ): T {
@@ -123,6 +130,8 @@ export class NotificationsResource {
 }
 
 export class LiveActivitiesResource {
+  public static readonly types = LiveActivityTypes;
+
   private readonly api: LiveActivitiesApi;
 
   constructor(api: LiveActivitiesApi) {
@@ -249,6 +258,8 @@ export class MetricsResource {
 }
 
 export class ActivitySmith {
+  public static readonly liveActivityTypes = LiveActivityTypes;
+
   public readonly notifications: NotificationsResource;
   public readonly liveActivities: LiveActivitiesResource;
   public readonly metrics: MetricsResource;
