@@ -81,7 +81,7 @@ export interface ChannelTarget {
     channels: Array<string>;
 }
 /**
- * End payload requires title. For segmented_progress include current_step and optionally number_of_steps. For progress include percentage or value with upper_limit. For metrics include a non-empty metrics array. Type is optional when ending an existing activity. You can send an updated number_of_steps here if the workflow changed after start.
+ * End payload requires title. For segmented_progress include current_step and optionally number_of_steps. For progress include percentage or value with upper_limit. For metrics and stats include a non-empty metrics array. Type is optional when ending an existing activity. You can send an updated number_of_steps here if the workflow changed after start.
  * @export
  * @interface ContentStateEnd
  */
@@ -130,7 +130,7 @@ export interface ContentStateEnd {
      */
     upper_limit?: number;
     /**
-     * Use for type=metrics.
+     * Use for type=metrics or type=stats.
      * @type {Array<ActivityMetric>}
      * @memberof ContentStateEnd
      */
@@ -174,7 +174,8 @@ export interface ContentStateEnd {
 export const ContentStateEndTypeEnum = {
     SegmentedProgress: 'segmented_progress',
     Progress: 'progress',
-    Metrics: 'metrics'
+    Metrics: 'metrics',
+    Stats: 'stats'
 } as const;
 export type ContentStateEndTypeEnum = typeof ContentStateEndTypeEnum[keyof typeof ContentStateEndTypeEnum];
 
@@ -227,7 +228,7 @@ export const ContentStateEndStepColorsEnum = {
 export type ContentStateEndStepColorsEnum = typeof ContentStateEndStepColorsEnum[keyof typeof ContentStateEndStepColorsEnum];
 
 /**
- * Start payload requires title and type. For segmented_progress include number_of_steps and current_step. For progress include percentage or value with upper_limit. For metrics include a non-empty metrics array. For segmented_progress, number_of_steps is not locked and can be changed in later update or end calls.
+ * Start payload requires title and type. For segmented_progress include number_of_steps and current_step. For progress include percentage or value with upper_limit. For metrics and stats include a non-empty metrics array. For segmented_progress, number_of_steps is not locked and can be changed in later update or end calls.
  * @export
  * @interface ContentStateStart
  */
@@ -276,7 +277,7 @@ export interface ContentStateStart {
      */
     upper_limit?: number;
     /**
-     * Use for type=metrics.
+     * Use for type=metrics or type=stats.
      * @type {Array<ActivityMetric>}
      * @memberof ContentStateStart
      */
@@ -314,7 +315,8 @@ export interface ContentStateStart {
 export const ContentStateStartTypeEnum = {
     SegmentedProgress: 'segmented_progress',
     Progress: 'progress',
-    Metrics: 'metrics'
+    Metrics: 'metrics',
+    Stats: 'stats'
 } as const;
 export type ContentStateStartTypeEnum = typeof ContentStateStartTypeEnum[keyof typeof ContentStateStartTypeEnum];
 
@@ -367,7 +369,7 @@ export const ContentStateStartStepColorsEnum = {
 export type ContentStateStartStepColorsEnum = typeof ContentStateStartStepColorsEnum[keyof typeof ContentStateStartStepColorsEnum];
 
 /**
- * Update payload requires title. For segmented_progress include current_step and optionally number_of_steps. For progress include percentage or value with upper_limit. For metrics include a non-empty metrics array. Type is optional when updating an existing activity. You can increase or decrease number_of_steps during updates.
+ * Update payload requires title. For segmented_progress include current_step and optionally number_of_steps. For progress include percentage or value with upper_limit. For metrics and stats include a non-empty metrics array. Type is optional when updating an existing activity. You can increase or decrease number_of_steps during updates.
  * @export
  * @interface ContentStateUpdate
  */
@@ -416,7 +418,7 @@ export interface ContentStateUpdate {
      */
     upper_limit?: number;
     /**
-     * Use for type=metrics.
+     * Use for type=metrics or type=stats.
      * @type {Array<ActivityMetric>}
      * @memberof ContentStateUpdate
      */
@@ -454,7 +456,8 @@ export interface ContentStateUpdate {
 export const ContentStateUpdateTypeEnum = {
     SegmentedProgress: 'segmented_progress',
     Progress: 'progress',
-    Metrics: 'metrics'
+    Metrics: 'metrics',
+    Stats: 'stats'
 } as const;
 export type ContentStateUpdateTypeEnum = typeof ContentStateUpdateTypeEnum[keyof typeof ContentStateUpdateTypeEnum];
 
@@ -1061,12 +1064,6 @@ export interface MetricValueUpdateRequest {
      * @memberof MetricValueUpdateRequest
      */
     value: MetricValueUpdateRequestValue;
-    /**
-     * Optional ISO timestamp for when the metric value was measured. Defaults to the server receive time.
-     * @type {string}
-     * @memberof MetricValueUpdateRequest
-     */
-    timestamp?: string;
 }
 /**
  * @type MetricValueUpdateRequestValue
@@ -1327,7 +1324,7 @@ export interface RateLimitError {
  */
 export type SendPushNotification429Response = LiveActivityLimitError | RateLimitError;
 /**
- * Current state for a managed Live Activity stream. Include type on the first PUT, and whenever the stream may need to start a fresh activity. Supports segmented_progress, progress, and metrics types.
+ * Current state for a managed Live Activity stream. Include type on the first PUT, and whenever the stream may need to start a fresh activity. Supports segmented_progress, progress, metrics, and stats types.
  * @export
  * @interface StreamContentState
  */
@@ -1400,7 +1397,7 @@ export interface StreamContentState {
      */
     step_colors?: Array<StreamContentStateStepColorsEnum>;
     /**
-     * Use for metrics activities.
+     * Use for metrics and stats activities.
      * @type {Array<ActivityMetric>}
      * @memberof StreamContentState
      */
@@ -1426,7 +1423,8 @@ export interface StreamContentState {
 export const StreamContentStateTypeEnum = {
     SegmentedProgress: 'segmented_progress',
     Progress: 'progress',
-    Metrics: 'metrics'
+    Metrics: 'metrics',
+    Stats: 'stats'
 } as const;
 export type StreamContentStateTypeEnum = typeof StreamContentStateTypeEnum[keyof typeof StreamContentStateTypeEnum];
 
