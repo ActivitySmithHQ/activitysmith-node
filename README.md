@@ -17,6 +17,7 @@ See [API reference](https://activitysmith.com/docs/api-reference/introduction)
 - [Live Activities](#live-activities)
   - [Simple: Let ActivitySmith manage the Live Activity for you](#simple-let-activitysmith-manage-the-live-activity-for-you)
   - [Advanced: Full lifecycle control](#advanced-full-lifecycle-control)
+  - [Stats Type](#stats-type)
   - [Metrics Type](#metrics-type)
   - [Segmented Progress Type](#segmented-progress-type)
   - [Progress Type](#progress-type)
@@ -133,8 +134,9 @@ await activitysmith.notifications.send({
   <img src="https://cdn.activitysmith.com/features/metrics-live-activity-action.png" alt="Metrics Live Activity screenshot" width="680" />
 </p>
 
-There are three types of Live Activities:
+There are four types of Live Activities:
 
+- `stats`: best for compact business or product stats like revenue, orders, conversion, and average order value
 - `metrics`: best for live operational stats like server CPU and memory, queue depth, or replica lag
 - `segmented_progress`: best for step-based workflows like deployments, backups, and ETL pipelines
 - `progress`: best for continuous jobs like uploads, reindexes, and long-running migrations tracked as a percentage
@@ -153,6 +155,30 @@ Use a stable `streamKey` to identify the system or workflow you are tracking,
 such as a server, deployment, or build pipeline.
 This is especially useful for cron jobs and other scheduled tasks where you do
 not want to store `activity_id` between runs.
+
+#### Stats
+
+<p align="center">
+  <img src="https://cdn.activitysmith.com/features/stats-live-activity.png" alt="Stats stream example" width="680" />
+</p>
+
+```ts
+const status = await activitysmith.liveActivities.stream("sales-hourly", {
+  content_state: {
+    title: "Sales",
+    subtitle: "last hour",
+    type: "stats",
+    metrics: [
+      { label: "Revenue", value: "$2430", color: "blue" },
+      { label: "Orders", value: "37", color: "green" },
+      { label: "Conversion", value: "4.8%", color: "magenta" },
+      { label: "Avg Order", value: "$65.68", color: "yellow" },
+      { label: "Refunds", value: "$84", color: "red" },
+      { label: "New Buyers", value: "18", color: "cyan" },
+    ],
+  },
+});
+```
 
 #### Metrics
 
@@ -251,6 +277,83 @@ Use these methods when you want to manage the Live Activity lifecycle yourself:
 2. Save the returned `activity_id`.
 3. Call `activitysmith.liveActivities.update(...)` as progress changes.
 4. Call `activitysmith.liveActivities.end(...)` when the work is finished.
+
+### Stats Type
+
+Keep your key numbers on your Lock Screen. `stats` fits 1 to 8 labeled values,
+such as revenue, orders, conversion, uptime, or any other business metric you
+want visible at a glance. Each metric can use a formatted string or number as
+its `value`. Add `color` to a metric to show an accent dot next to its label;
+omit `color` to show the label without a dot.
+
+#### Start
+
+<p align="center">
+  <img src="https://cdn.activitysmith.com/features/stats-live-activity.png" alt="Stats Live Activity with sales revenue, orders, conversion, and average order value" width="680" />
+</p>
+
+```ts
+const start = await activitysmith.liveActivities.start({
+  content_state: {
+    title: "Sales",
+    subtitle: "last hour",
+    type: "stats",
+    metrics: [
+      { label: "Revenue", value: "$2430", color: "blue" },
+      { label: "Orders", value: "37", color: "green" },
+      { label: "Conversion", value: "4.8%", color: "magenta" },
+      { label: "Avg Order", value: "$65.68", color: "yellow" },
+      { label: "Refunds", value: "$84", color: "red" },
+      { label: "New Buyers", value: "18", color: "cyan" },
+    ],
+  },
+});
+
+const activityId = start.activity_id;
+```
+
+#### Update
+
+```ts
+await activitysmith.liveActivities.update({
+  activity_id: activityId,
+  content_state: {
+    title: "Sales",
+    subtitle: "last hour",
+    type: "stats",
+    metrics: [
+      { label: "Revenue", value: "$3180", color: "blue" },
+      { label: "Orders", value: "51", color: "green" },
+      { label: "Conversion", value: "5.2%", color: "magenta" },
+      { label: "Avg Order", value: "$62.35", color: "yellow" },
+      { label: "Refunds", value: "$126", color: "red" },
+      { label: "New Buyers", value: "24", color: "cyan" },
+    ],
+  },
+});
+```
+
+#### End
+
+```ts
+await activitysmith.liveActivities.end({
+  activity_id: activityId,
+  content_state: {
+    title: "Sales",
+    subtitle: "last hour",
+    type: "stats",
+    metrics: [
+      { label: "Revenue", value: "$3460", color: "blue" },
+      { label: "Orders", value: "58", color: "green" },
+      { label: "Conversion", value: "5.4%", color: "magenta" },
+      { label: "Avg Order", value: "$59.66", color: "yellow" },
+      { label: "Refunds", value: "$92", color: "red" },
+      { label: "New Buyers", value: "31", color: "cyan" },
+    ],
+    auto_dismiss_minutes: 2,
+  },
+});
+```
 
 ### Metrics Type
 
