@@ -61,8 +61,8 @@ export interface UpdateLiveActivityRequest {
 export class LiveActivitiesApi extends runtime.BaseAPI {
 
     /**
-     * Ends a Live Activity and archives its lifecycle. Supports segmented_progress, progress, metrics, and stats activity types. For segmented_progress activities, you can send the latest number_of_steps here if the workflow changed after start.
-     * End a Live Activity
+     * Legacy manual lifecycle endpoint. For new integrations, use DELETE /live-activity/stream/{stream_key} to end a managed Live Activity stream. This endpoint remains supported for existing integrations and advanced lifecycle control. Ends a Live Activity and archives its lifecycle. Supports segmented_progress, progress, metrics, and stats activity types. For segmented_progress activities, you can send the latest number_of_steps here if the workflow changed after start.
+     * End a Live Activity (legacy manual lifecycle)
      */
     async endLiveActivityRaw(requestParameters: EndLiveActivityRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<LiveActivityEndResponse>> {
         if (requestParameters['liveActivityEndRequest'] == null) {
@@ -98,8 +98,8 @@ export class LiveActivitiesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Ends a Live Activity and archives its lifecycle. Supports segmented_progress, progress, metrics, and stats activity types. For segmented_progress activities, you can send the latest number_of_steps here if the workflow changed after start.
-     * End a Live Activity
+     * Legacy manual lifecycle endpoint. For new integrations, use DELETE /live-activity/stream/{stream_key} to end a managed Live Activity stream. This endpoint remains supported for existing integrations and advanced lifecycle control. Ends a Live Activity and archives its lifecycle. Supports segmented_progress, progress, metrics, and stats activity types. For segmented_progress activities, you can send the latest number_of_steps here if the workflow changed after start.
+     * End a Live Activity (legacy manual lifecycle)
      */
     async endLiveActivity(requestParameters: EndLiveActivityRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<LiveActivityEndResponse> {
         const response = await this.endLiveActivityRaw(requestParameters, initOverrides);
@@ -153,8 +153,8 @@ export class LiveActivitiesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Use this endpoint when you want the easiest, stateless way to trigger Live Activities. You do not need to store activity_id or manage the Live Activity lifecycle yourself. Send the latest state for a stable stream_key and ActivitySmith will handle the rest for you: if there is no Live Activity yet, it starts one; if there is already one for this stream, it updates it. If you need direct lifecycle control, use /live-activity/start, /live-activity/update, and /live-activity/end instead.
-     * Send a stream update
+     * Use a stable stream_key for each ongoing thing you want to show as a Live Activity. Send the latest content_state whenever it changes, and ActivitySmith will keep the Live Activity in sync.
+     * Start a new Live Activity or update an existing one
      */
     async reconcileLiveActivityStreamRaw(requestParameters: ReconcileLiveActivityStreamRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<LiveActivityStreamPutResponse>> {
         if (requestParameters['streamKey'] == null) {
@@ -197,8 +197,8 @@ export class LiveActivitiesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Use this endpoint when you want the easiest, stateless way to trigger Live Activities. You do not need to store activity_id or manage the Live Activity lifecycle yourself. Send the latest state for a stable stream_key and ActivitySmith will handle the rest for you: if there is no Live Activity yet, it starts one; if there is already one for this stream, it updates it. If you need direct lifecycle control, use /live-activity/start, /live-activity/update, and /live-activity/end instead.
-     * Send a stream update
+     * Use a stable stream_key for each ongoing thing you want to show as a Live Activity. Send the latest content_state whenever it changes, and ActivitySmith will keep the Live Activity in sync.
+     * Start a new Live Activity or update an existing one
      */
     async reconcileLiveActivityStream(requestParameters: ReconcileLiveActivityStreamRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<LiveActivityStreamPutResponse> {
         const response = await this.reconcileLiveActivityStreamRaw(requestParameters, initOverrides);
@@ -206,8 +206,8 @@ export class LiveActivitiesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Starts a Live Activity on devices matched by API key scope and optional target channels. Supports segmented_progress, progress, metrics, and stats activity types. For segmented_progress activities, number_of_steps can be changed later during update or end calls if the workflow changes.
-     * Start a Live Activity
+     * Legacy manual lifecycle endpoint. For new integrations, use PUT /live-activity/stream/{stream_key} so ActivitySmith can manage start, update, rotation, and end state for you. This endpoint remains supported for existing integrations and advanced lifecycle control. Starts a Live Activity on devices matched by API key scope and optional target channels. Supports segmented_progress, progress, metrics, and stats activity types. For segmented_progress activities, number_of_steps can be changed later during update or end calls if the workflow changes.
+     * Start a Live Activity (legacy manual lifecycle)
      */
     async startLiveActivityRaw(requestParameters: StartLiveActivityRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<LiveActivityStartResponse>> {
         if (requestParameters['liveActivityStartRequest'] == null) {
@@ -243,8 +243,8 @@ export class LiveActivitiesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Starts a Live Activity on devices matched by API key scope and optional target channels. Supports segmented_progress, progress, metrics, and stats activity types. For segmented_progress activities, number_of_steps can be changed later during update or end calls if the workflow changes.
-     * Start a Live Activity
+     * Legacy manual lifecycle endpoint. For new integrations, use PUT /live-activity/stream/{stream_key} so ActivitySmith can manage start, update, rotation, and end state for you. This endpoint remains supported for existing integrations and advanced lifecycle control. Starts a Live Activity on devices matched by API key scope and optional target channels. Supports segmented_progress, progress, metrics, and stats activity types. For segmented_progress activities, number_of_steps can be changed later during update or end calls if the workflow changes.
+     * Start a Live Activity (legacy manual lifecycle)
      */
     async startLiveActivity(requestParameters: StartLiveActivityRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<LiveActivityStartResponse> {
         const response = await this.startLiveActivityRaw(requestParameters, initOverrides);
@@ -252,8 +252,8 @@ export class LiveActivitiesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Updates an existing Live Activity. If the per-activity token is not registered yet, the update is queued. Supports segmented_progress, progress, metrics, and stats activity types. For segmented_progress activities, you can increase or decrease number_of_steps here as the workflow changes.
-     * Update a Live Activity
+     * Legacy manual lifecycle endpoint. For new integrations, use PUT /live-activity/stream/{stream_key} so ActivitySmith can manage start, update, rotation, and end state for you. This endpoint remains supported for existing integrations and advanced lifecycle control. Updates an existing Live Activity. If the per-activity token is not registered yet, the update is queued. Supports segmented_progress, progress, metrics, and stats activity types. For segmented_progress activities, you can increase or decrease number_of_steps here as the workflow changes.
+     * Update a Live Activity (legacy manual lifecycle)
      */
     async updateLiveActivityRaw(requestParameters: UpdateLiveActivityRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<LiveActivityUpdateResponse>> {
         if (requestParameters['liveActivityUpdateRequest'] == null) {
@@ -289,8 +289,8 @@ export class LiveActivitiesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Updates an existing Live Activity. If the per-activity token is not registered yet, the update is queued. Supports segmented_progress, progress, metrics, and stats activity types. For segmented_progress activities, you can increase or decrease number_of_steps here as the workflow changes.
-     * Update a Live Activity
+     * Legacy manual lifecycle endpoint. For new integrations, use PUT /live-activity/stream/{stream_key} so ActivitySmith can manage start, update, rotation, and end state for you. This endpoint remains supported for existing integrations and advanced lifecycle control. Updates an existing Live Activity. If the per-activity token is not registered yet, the update is queued. Supports segmented_progress, progress, metrics, and stats activity types. For segmented_progress activities, you can increase or decrease number_of_steps here as the workflow changes.
+     * Update a Live Activity (legacy manual lifecycle)
      */
     async updateLiveActivity(requestParameters: UpdateLiveActivityRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<LiveActivityUpdateResponse> {
         const response = await this.updateLiveActivityRaw(requestParameters, initOverrides);
