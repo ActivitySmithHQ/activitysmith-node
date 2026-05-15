@@ -15,12 +15,8 @@ See [API reference](https://activitysmith.com/docs/api-reference/introduction)
   - [Rich Push Notifications with Media](#rich-push-notifications-with-media)
   - [Actionable Push Notifications](#actionable-push-notifications)
 - [Live Activities](#live-activities)
-  - [Simple: Let ActivitySmith manage the Live Activity for you](#simple-let-activitysmith-manage-the-live-activity-for-you)
-  - [Advanced: Full lifecycle control](#advanced-full-lifecycle-control)
-  - [Stats Type](#stats-type)
-  - [Metrics Type](#metrics-type)
-  - [Segmented Progress Type](#segmented-progress-type)
-  - [Progress Type](#progress-type)
+  - [Start & Update Live Activity](#start--update-live-activity)
+  - [End Live Activity](#end-live-activity)
   - [Live Activity Action](#live-activity-action)
 - [Channels](#channels)
 - [Widgets](#widgets)
@@ -130,40 +126,25 @@ await activitysmith.notifications.send({
 
 ## Live Activities
 
-<p align="center">
-  <img src="https://cdn.activitysmith.com/features/metrics-live-activity-action.png" alt="Metrics Live Activity screenshot" width="680" />
-</p>
-
 There are four types of Live Activities:
 
-- `stats`: best for compact business or product stats like revenue, orders, conversion, and average order value
-- `metrics`: best for live operational stats like server CPU and memory, queue depth, or replica lag
-- `segmented_progress`: best for step-based workflows like deployments, backups, and ETL pipelines
-- `progress`: best for continuous jobs like uploads, reindexes, and long-running migrations tracked as a percentage
+- `stats`: best for showing business numbers side by side, such as revenue, sales, new users, conversion, refunds, or any other value you want visible at a glance
+- `metrics`: best for live percentage values that change often, like server CPU, memory usage, disk usage, or error rate
+- `segmented_progress`: best for anything that moves through clear stages, like deployments, onboarding flows, backups, ETL pipelines, migrations, and AI agent runs
+- `progress`: best for tracking real-time progress with percentage, like tasks, backups, migrations, syncs, or uploads
 
-When working with Live Activities via our API, you have two approaches tailored to different needs. First, the stateless mode is the simplest path - one API call can initiate or update an activity, and another ends it - no state tracking on your side.
+### Start & Update Live Activity
 
-This is ideal if you want minimal complexity, perfect for automated workflows like cron jobs.
-
-In contrast, if you need precise lifecycle control, the classic approach offers distinct calls for start, updates, and end, giving you full control over the activity's state.
-
-In the following sections, we'll break down how to implement each method so you can choose what fits your use case best.
-
-### Simple: Let ActivitySmith manage the Live Activity for you
-
-Use a stable `streamKey` to identify the system or workflow you are tracking,
-such as a server, deployment, or build pipeline.
-This is especially useful for cron jobs and other scheduled tasks where you do
-not want to store `activity_id` between runs.
+Use a stable `streamKey` to identify the metric, job, deployment, or system you want to keep visible. The first `stream(...)` call starts the Live Activity. Later calls with the same `streamKey` update it.
 
 #### Stats
 
 <p align="center">
-  <img src="https://cdn.activitysmith.com/features/stats-live-activity.png" alt="Stats stream example" width="680" />
+  <img src="https://cdn.activitysmith.com/features/stats-live-activity.png" alt="Stats Live Activity stream example" width="680" />
 </p>
 
 ```ts
-const status = await activitysmith.liveActivities.stream("sales-hourly", {
+await activitysmith.liveActivities.stream("sales-hourly", {
   content_state: {
     title: "Sales",
     subtitle: "last hour",
@@ -183,11 +164,11 @@ const status = await activitysmith.liveActivities.stream("sales-hourly", {
 #### Metrics
 
 <p align="center">
-  <img src="https://cdn.activitysmith.com/features/metrics-live-activity-start.png" alt="Metrics stream example" width="680" />
+  <img src="https://cdn.activitysmith.com/features/metrics-live-activity-start.png" alt="Metrics Live Activity stream example" width="680" />
 </p>
 
 ```ts
-const status = await activitysmith.liveActivities.stream("prod-web-1", {
+await activitysmith.liveActivities.stream("prod-web-1", {
   content_state: {
     title: "Server Health",
     subtitle: "prod-web-1",
@@ -200,10 +181,10 @@ const status = await activitysmith.liveActivities.stream("prod-web-1", {
 });
 ```
 
-#### Segmented progress
+#### Segmented Progress
 
 <p align="center">
-  <img src="https://cdn.activitysmith.com/features/update-live-activity.png" alt="Segmented progress stream example" width="680" />
+  <img src="https://cdn.activitysmith.com/features/update-live-activity.png" alt="Segmented Progress Live Activity stream example" width="680" />
 </p>
 
 ```ts
@@ -221,7 +202,7 @@ await activitysmith.liveActivities.stream("nightly-backup", {
 #### Progress
 
 <p align="center">
-  <img src="https://cdn.activitysmith.com/features/progress-live-activity.png" alt="Progress stream example" width="680" />
+  <img src="https://cdn.activitysmith.com/features/progress-live-activity.png" alt="Progress Live Activity stream example" width="680" />
 </p>
 
 ```ts
@@ -235,13 +216,9 @@ await activitysmith.liveActivities.stream("search-reindex", {
 });
 ```
 
-Call `stream(...)` again with the same `streamKey` whenever the state changes.
+### End Live Activity
 
-#### End a stream
-
-Use this when the tracked process is finished and you no longer want the Live
-Activity on devices. `content_state` is optional here; include it if you want
-to end the stream with a final state.
+Call `endStream(...)` with the same `streamKey` to dismiss the Live Activity. You can include final values before it is removed. By default, iOS removes the Live Activity after two minutes. Set `auto_dismiss_minutes` to choose a different dismissal time, including `0` for immediate dismissal.
 
 ```ts
 await activitysmith.liveActivities.endStream("prod-web-1", {
@@ -253,299 +230,6 @@ await activitysmith.liveActivities.endStream("prod-web-1", {
       { label: "CPU", value: 7, unit: "%" },
       { label: "MEM", value: 38, unit: "%" },
     ],
-  },
-});
-```
-
-If you later send another `stream(...)` request with the same `streamKey`,
-ActivitySmith starts a new Live Activity for that stream again.
-
-Stream responses include an `operation` field:
-
-- `started`: ActivitySmith started a new Live Activity for this `streamKey`
-- `updated`: ActivitySmith updated the current Live Activity
-- `rotated`: ActivitySmith ended the previous Live Activity and started a new one
-- `noop`: the incoming state matched the current state, so no update was sent
-- `paused`: the stream is paused, so no Live Activity was started or updated
-- `ended`: returned by `endStream(...)` after the stream is ended
-
-### Advanced: Full lifecycle control
-
-Use these methods when you want to manage the Live Activity lifecycle yourself:
-
-1. Call `activitysmith.liveActivities.start(...)`.
-2. Save the returned `activity_id`.
-3. Call `activitysmith.liveActivities.update(...)` as progress changes.
-4. Call `activitysmith.liveActivities.end(...)` when the work is finished.
-
-### Stats Type
-
-Keep your key numbers on your Lock Screen. `stats` fits 1 to 8 labeled values,
-such as revenue, orders, conversion, uptime, or any other business metric you
-want visible at a glance. Each metric can use a formatted string or number as
-its `value`. Add `color` to a metric to show an accent dot next to its label;
-omit `color` to show the label without a dot.
-
-#### Start
-
-<p align="center">
-  <img src="https://cdn.activitysmith.com/features/stats-live-activity.png" alt="Stats Live Activity with sales revenue, orders, conversion, and average order value" width="680" />
-</p>
-
-```ts
-const start = await activitysmith.liveActivities.start({
-  content_state: {
-    title: "Sales",
-    subtitle: "last hour",
-    type: "stats",
-    metrics: [
-      { label: "Revenue", value: "$2430", color: "blue" },
-      { label: "Orders", value: "37", color: "green" },
-      { label: "Conversion", value: "4.8%", color: "magenta" },
-      { label: "Avg Order", value: "$65.68", color: "yellow" },
-      { label: "Refunds", value: "$84", color: "red" },
-      { label: "New Buyers", value: "18", color: "cyan" },
-    ],
-  },
-});
-
-const activityId = start.activity_id;
-```
-
-#### Update
-
-```ts
-await activitysmith.liveActivities.update({
-  activity_id: activityId,
-  content_state: {
-    title: "Sales",
-    subtitle: "last hour",
-    type: "stats",
-    metrics: [
-      { label: "Revenue", value: "$3180", color: "blue" },
-      { label: "Orders", value: "51", color: "green" },
-      { label: "Conversion", value: "5.2%", color: "magenta" },
-      { label: "Avg Order", value: "$62.35", color: "yellow" },
-      { label: "Refunds", value: "$126", color: "red" },
-      { label: "New Buyers", value: "24", color: "cyan" },
-    ],
-  },
-});
-```
-
-#### End
-
-```ts
-await activitysmith.liveActivities.end({
-  activity_id: activityId,
-  content_state: {
-    title: "Sales",
-    subtitle: "last hour",
-    type: "stats",
-    metrics: [
-      { label: "Revenue", value: "$3460", color: "blue" },
-      { label: "Orders", value: "58", color: "green" },
-      { label: "Conversion", value: "5.4%", color: "magenta" },
-      { label: "Avg Order", value: "$59.66", color: "yellow" },
-      { label: "Refunds", value: "$92", color: "red" },
-      { label: "New Buyers", value: "31", color: "cyan" },
-    ],
-    auto_dismiss_minutes: 2,
-  },
-});
-```
-
-### Metrics Type
-
-Use `metrics` when you want to keep a small set of live stats visible, such as
-server health, queue pressure, or database load.
-
-#### Start
-
-<p align="center">
-  <img src="https://cdn.activitysmith.com/features/metrics-live-activity-start.png" alt="Metrics start example" width="680" />
-</p>
-
-```ts
-const start = await activitysmith.liveActivities.start({
-  content_state: {
-    title: "Server Health",
-    subtitle: "prod-web-1",
-    type: "metrics",
-    metrics: [
-      { label: "CPU", value: 9, unit: "%" },
-      { label: "MEM", value: 45, unit: "%" },
-    ],
-  },
-});
-
-const activityId = start.activity_id;
-```
-
-#### Update
-
-<p align="center">
-  <img src="https://cdn.activitysmith.com/features/metrics-live-activity-update.png" alt="Metrics update example" width="680" />
-</p>
-
-```ts
-await activitysmith.liveActivities.update({
-  activity_id: activityId,
-  content_state: {
-    title: "Server Health",
-    subtitle: "prod-web-1",
-    type: "metrics",
-    metrics: [
-      { label: "CPU", value: 76, unit: "%" },
-      { label: "MEM", value: 52, unit: "%" },
-    ],
-  },
-});
-```
-
-#### End
-
-<p align="center">
-  <img src="https://cdn.activitysmith.com/features/metrics-live-activity-end.png" alt="Metrics end example" width="680" />
-</p>
-
-```ts
-await activitysmith.liveActivities.end({
-  activity_id: activityId,
-  content_state: {
-    title: "Server Health",
-    subtitle: "prod-web-1",
-    type: "metrics",
-    metrics: [
-      { label: "CPU", value: 7, unit: "%" },
-      { label: "MEM", value: 38, unit: "%" },
-    ],
-    auto_dismiss_minutes: 2,
-  },
-});
-```
-
-### Segmented Progress Type
-
-Use `segmented_progress` for jobs and workflows that move through clear steps or
-phases. It fits jobs like backups, deployments, ETL pipelines, and checklists.
-`number_of_steps` is dynamic, so you can increase or decrease it later if the
-workflow changes.
-
-#### Start
-
-<p align="center">
-  <img src="https://cdn.activitysmith.com/features/start-live-activity.png" alt="Segmented progress start example" width="680" />
-</p>
-
-```ts
-const start = await activitysmith.liveActivities.start({
-  content_state: {
-    title: "Nightly database backup",
-    subtitle: "create snapshot",
-    number_of_steps: 3,
-    current_step: 1,
-    type: "segmented_progress",
-    color: "yellow",
-  },
-});
-
-const activityId = start.activity_id;
-```
-
-#### Update
-
-<p align="center">
-  <img src="https://cdn.activitysmith.com/features/update-live-activity.png" alt="Segmented progress update example" width="680" />
-</p>
-
-```ts
-await activitysmith.liveActivities.update({
-  activity_id: activityId,
-  content_state: {
-    title: "Nightly database backup",
-    subtitle: "upload archive",
-    number_of_steps: 3,
-    current_step: 2,
-  },
-});
-```
-
-#### End
-
-<p align="center">
-  <img src="https://cdn.activitysmith.com/features/end-live-activity.png" alt="Segmented progress end example" width="680" />
-</p>
-
-```ts
-await activitysmith.liveActivities.end({
-  activity_id: activityId,
-  content_state: {
-    title: "Nightly database backup",
-    subtitle: "verify restore",
-    number_of_steps: 3,
-    current_step: 3,
-    auto_dismiss_minutes: 2,
-  },
-});
-```
-
-### Progress Type
-
-Use `progress` when the state is naturally continuous. It fits charging,
-downloads, sync jobs, uploads, timers, and any flow where a percentage or
-numeric range is the clearest signal.
-
-#### Start
-
-<p align="center">
-  <img src="https://cdn.activitysmith.com/features/progress-live-activity-start.png" alt="Progress start example" width="680" />
-</p>
-
-```ts
-const start = await activitysmith.liveActivities.start({
-  content_state: {
-    title: "EV Charging",
-    subtitle: "Added 30 mi range",
-    type: "progress",
-    percentage: 15,
-    color: "lime",
-  },
-});
-
-const activityId = start.activity_id;
-```
-
-#### Update
-
-<p align="center">
-  <img src="https://cdn.activitysmith.com/features/progress-live-activity-update.png" alt="Progress update example" width="680" />
-</p>
-
-```ts
-await activitysmith.liveActivities.update({
-  activity_id: activityId,
-  content_state: {
-    title: "EV Charging",
-    subtitle: "Added 120 mi range",
-    percentage: 60,
-  },
-});
-```
-
-#### End
-
-<p align="center">
-  <img src="https://cdn.activitysmith.com/features/progress-live-activity-end.png" alt="Progress end example" width="680" />
-</p>
-
-```ts
-await activitysmith.liveActivities.end({
-  activity_id: activityId,
-  content_state: {
-    title: "EV Charging",
-    subtitle: "Added 200 mi range",
-    percentage: 100,
     auto_dismiss_minutes: 2,
   },
 });
@@ -553,16 +237,16 @@ await activitysmith.liveActivities.end({
 
 ### Live Activity Action
 
-Just like Actionable Push Notifications, Live Activities can have a button that opens provided URL in a browser or triggers a webhook. Webhooks are executed by the ActivitySmith backend.
+Live Activities can include one optional action button. Use it to open a URL from the Live Activity or trigger a backend webhook.
+
+<p align="center">
+  <img src="https://cdn.activitysmith.com/features/live-activity-with-action.png?v=20260319-1" alt="Live Activity with action button" width="680" />
+</p>
 
 #### Open URL action
 
-<p align="center">
-  <img src="https://cdn.activitysmith.com/features/metrics-live-activity-action.png" alt="Metrics Live Activity with action" width="680" />
-</p>
-
 ```ts
-const start = await activitysmith.liveActivities.start({
+await activitysmith.liveActivities.stream("prod-web-1", {
   content_state: {
     title: "Server Health",
     subtitle: "prod-web-1",
@@ -578,22 +262,16 @@ const start = await activitysmith.liveActivities.start({
     url: "https://ops.example.com/servers/prod-web-1",
   },
 });
-
-const activityId = start.activity_id;
 ```
 
 #### Webhook action
 
-<p align="center">
-  <img src="https://cdn.activitysmith.com/features/live-activity-with-action.png?v=20260319-1" alt="Live Activity with action" width="680" />
-</p>
-
 ```ts
-await activitysmith.liveActivities.update({
-  activity_id: activityId,
+await activitysmith.liveActivities.stream("search-reindex", {
   content_state: {
     title: "Reindexing product search",
     subtitle: "Shard 7 of 12",
+    type: "segmented_progress",
     number_of_steps: 12,
     current_step: 7,
   },
