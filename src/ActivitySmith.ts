@@ -1,6 +1,6 @@
 import { Configuration, PushNotificationsApi, LiveActivitiesApi, MetricsApi } from "../generated/index";
 
-const SDK_VERSION = "1.3.1";
+const SDK_VERSION = "1.4.0";
 const SDK_HEADER_NAME = "X-ActivitySmith-SDK";
 const SDK_HEADER_VALUE = `node-v${SDK_VERSION}`;
 
@@ -28,18 +28,57 @@ type MetricUpdateOptions = Omit<MetricUpdateRequestBody, "value">;
 type MetricInitOverrides = Parameters<MetricsApi["updateMetricValue"]>[1];
 type ChannelTargetInput = { channels?: string[] };
 type PushSendRequest = PushRequestBody & { channels?: string[] };
-type LiveStartSendRequest = StartRequestBody & { channels?: string[] };
-type LiveStreamSendRequest = StreamRequestBody & { channels?: string[] };
 
 const LiveActivityTypes = {
   segmentedProgress: "segmented_progress",
   progress: "progress",
   metrics: "metrics",
   stats: "stats",
+  alert: "alert",
 } as const;
 
-function withTargetChannels<T extends { target?: ChannelTargetInput }>(
-  request: T & { channels?: string[] },
+export type LiveActivityType = (typeof LiveActivityTypes)[keyof typeof LiveActivityTypes];
+
+export type LiveActivityAlertIcon = {
+  symbol: string;
+  color?: string;
+};
+
+export type LiveActivityAlertBadge = {
+  title: string;
+  color?: string;
+};
+
+export type LiveActivityContentState = Record<string, unknown> & {
+  title?: string;
+  subtitle?: string;
+  type?: LiveActivityType | string;
+  message?: string;
+  icon?: LiveActivityAlertIcon;
+  badge?: LiveActivityAlertBadge;
+  color?: string;
+};
+
+type LiveStartSendRequest = Omit<StartRequestBody, "content_state"> & {
+  content_state: LiveActivityContentState;
+  channels?: string[];
+};
+type LiveUpdateSendRequest = Omit<UpdateRequestBody, "content_state"> & {
+  content_state: LiveActivityContentState;
+};
+type LiveEndSendRequest = Omit<EndRequestBody, "content_state"> & {
+  content_state: LiveActivityContentState;
+};
+type LiveStreamSendRequest = Omit<StreamRequestBody, "content_state"> & {
+  content_state: LiveActivityContentState;
+  channels?: string[];
+};
+type LiveStreamDeleteSendRequest = Omit<StreamDeleteRequestBody, "content_state"> & {
+  content_state?: LiveActivityContentState;
+};
+
+function withTargetChannels<T extends object>(
+  request: T & { target?: ChannelTargetInput; channels?: string[] },
 ): T {
   const channels = request.channels;
   if (!channels || channels.length === 0 || request.target) {
@@ -52,6 +91,20 @@ function withTargetChannels<T extends { target?: ChannelTargetInput }>(
     ...rest,
     target: { channels },
   } as T;
+}
+
+function withoutAlertRootColor<T extends { content_state?: LiveActivityContentState }>(
+  request: T,
+): T {
+  if (request.content_state?.type !== LiveActivityTypes.alert || !("color" in request.content_state)) {
+    return request;
+  }
+
+  const { color: _ignored, ...contentState } = request.content_state;
+  return {
+    ...request,
+    content_state: contentState,
+  };
 }
 
 function hasMediaValue(media: unknown): boolean {
@@ -140,24 +193,36 @@ export class LiveActivitiesResource {
 
   start(request: LiveStartSendRequest, initOverrides?: LiveInitOverrides) {
     return this.api.startLiveActivity(
-      { liveActivityStartRequest: withTargetChannels(request) },
+      {
+        liveActivityStartRequest: withoutAlertRootColor(
+          withTargetChannels<LiveStartSendRequest>(request),
+        ) as StartRequestBody,
+      },
       initOverrides,
     );
   }
 
-  update(request: UpdateRequestBody, initOverrides?: LiveInitOverrides) {
-    return this.api.updateLiveActivity({ liveActivityUpdateRequest: request }, initOverrides);
+  update(request: LiveUpdateSendRequest, initOverrides?: LiveInitOverrides) {
+    return this.api.updateLiveActivity(
+      { liveActivityUpdateRequest: withoutAlertRootColor(request) as UpdateRequestBody },
+      initOverrides,
+    );
   }
 
-  end(request: EndRequestBody, initOverrides?: LiveInitOverrides) {
-    return this.api.endLiveActivity({ liveActivityEndRequest: request }, initOverrides);
+  end(request: LiveEndSendRequest, initOverrides?: LiveInitOverrides) {
+    return this.api.endLiveActivity(
+      { liveActivityEndRequest: withoutAlertRootColor(request) as EndRequestBody },
+      initOverrides,
+    );
   }
 
   stream(streamKey: string, request: LiveStreamSendRequest, initOverrides?: LiveInitOverrides) {
     return this.api.reconcileLiveActivityStream(
       {
         streamKey,
-        liveActivityStreamRequest: withTargetChannels(request),
+        liveActivityStreamRequest: withoutAlertRootColor(
+          withTargetChannels<LiveStreamSendRequest>(request),
+        ) as StreamRequestBody,
       },
       initOverrides,
     );
@@ -165,12 +230,17 @@ export class LiveActivitiesResource {
 
   endStream(
     streamKey: string,
-    request?: StreamDeleteRequestBody,
+    request?: LiveStreamDeleteSendRequest,
     initOverrides?: LiveInitOverrides,
   ) {
     if (request) {
       return this.api.endLiveActivityStream(
-        { streamKey, liveActivityStreamDeleteRequest: request },
+        {
+          streamKey,
+          liveActivityStreamDeleteRequest: withoutAlertRootColor(
+            request,
+          ) as StreamDeleteRequestBody,
+        },
         initOverrides,
       );
     }
