@@ -46,7 +46,8 @@ export const ActivityMetricColorEnum = {
     Magenta: 'magenta',
     Red: 'red',
     Orange: 'orange',
-    Yellow: 'yellow'
+    Yellow: 'yellow',
+    Gray: 'gray'
 } as const;
 export type ActivityMetricColorEnum = typeof ActivityMetricColorEnum[keyof typeof ActivityMetricColorEnum];
 
@@ -111,7 +112,7 @@ export interface ChannelTarget {
     channels: Array<string>;
 }
 /**
- * End payload requires title. For segmented_progress include current_step and optionally number_of_steps. For progress include percentage or value with upper_limit. For metrics and stats include a non-empty metrics array. Type is optional when ending an existing activity. You can send an updated number_of_steps here if the workflow changed after start.
+ * End payload requires title. For segmented_progress include current_step and optionally number_of_steps. For progress include percentage or value with upper_limit. For metrics and stats include a non-empty metrics array. For alert include message, with optional icon and badge. Type is optional when ending an existing activity. You can send an updated number_of_steps here if the workflow changed after start.
  * @export
  * @interface ContentStateEnd
  */
@@ -166,13 +167,31 @@ export interface ContentStateEnd {
      */
     metrics?: Array<ActivityMetric>;
     /**
+     * Alert message. Use for type=alert.
+     * @type {string}
+     * @memberof ContentStateEnd
+     */
+    message?: string;
+    /**
+     * Optional SF Symbol icon for type=alert.
+     * @type {LiveActivityAlertIcon}
+     * @memberof ContentStateEnd
+     */
+    icon?: LiveActivityAlertIcon;
+    /**
+     * Optional badge for type=alert.
+     * @type {LiveActivityAlertBadge}
+     * @memberof ContentStateEnd
+     */
+    badge?: LiveActivityAlertBadge;
+    /**
      * Optional. When omitted, the API uses the existing Live Activity type.
      * @type {string}
      * @memberof ContentStateEnd
      */
     type?: ContentStateEndTypeEnum;
     /**
-     * Optional. Accent color for the Live Activity. Defaults to blue.
+     * Optional. Accent color for progress, segmented_progress, and metrics Live Activities.
      * @type {string}
      * @memberof ContentStateEnd
      */
@@ -205,7 +224,8 @@ export const ContentStateEndTypeEnum = {
     SegmentedProgress: 'segmented_progress',
     Progress: 'progress',
     Metrics: 'metrics',
-    Stats: 'stats'
+    Stats: 'stats',
+    Alert: 'alert'
 } as const;
 export type ContentStateEndTypeEnum = typeof ContentStateEndTypeEnum[keyof typeof ContentStateEndTypeEnum];
 
@@ -221,7 +241,8 @@ export const ContentStateEndColorEnum = {
     Magenta: 'magenta',
     Red: 'red',
     Orange: 'orange',
-    Yellow: 'yellow'
+    Yellow: 'yellow',
+    Gray: 'gray'
 } as const;
 export type ContentStateEndColorEnum = typeof ContentStateEndColorEnum[keyof typeof ContentStateEndColorEnum];
 
@@ -237,7 +258,8 @@ export const ContentStateEndStepColorEnum = {
     Magenta: 'magenta',
     Red: 'red',
     Orange: 'orange',
-    Yellow: 'yellow'
+    Yellow: 'yellow',
+    Gray: 'gray'
 } as const;
 export type ContentStateEndStepColorEnum = typeof ContentStateEndStepColorEnum[keyof typeof ContentStateEndStepColorEnum];
 
@@ -253,12 +275,13 @@ export const ContentStateEndStepColorsEnum = {
     Magenta: 'magenta',
     Red: 'red',
     Orange: 'orange',
-    Yellow: 'yellow'
+    Yellow: 'yellow',
+    Gray: 'gray'
 } as const;
 export type ContentStateEndStepColorsEnum = typeof ContentStateEndStepColorsEnum[keyof typeof ContentStateEndStepColorsEnum];
 
 /**
- * Start payload requires title and type. For segmented_progress include number_of_steps and current_step. For progress include percentage or value with upper_limit. For metrics and stats include a non-empty metrics array. For segmented_progress, number_of_steps is not locked and can be changed in later update or end calls.
+ * Start payload requires title and type. For segmented_progress include number_of_steps and current_step. For progress include percentage or value with upper_limit. For metrics and stats include a non-empty metrics array. For alert include message, with optional icon and badge. For segmented_progress, number_of_steps is not locked and can be changed in later update or end calls.
  * @export
  * @interface ContentStateStart
  */
@@ -313,13 +336,31 @@ export interface ContentStateStart {
      */
     metrics?: Array<ActivityMetric>;
     /**
+     * Required for type=alert.
+     * @type {string}
+     * @memberof ContentStateStart
+     */
+    message?: string;
+    /**
+     * Optional SF Symbol icon for type=alert.
+     * @type {LiveActivityAlertIcon}
+     * @memberof ContentStateStart
+     */
+    icon?: LiveActivityAlertIcon;
+    /**
+     * Optional badge for type=alert.
+     * @type {LiveActivityAlertBadge}
+     * @memberof ContentStateStart
+     */
+    badge?: LiveActivityAlertBadge;
+    /**
      * 
      * @type {string}
      * @memberof ContentStateStart
      */
     type: ContentStateStartTypeEnum;
     /**
-     * Optional. Accent color for the Live Activity. Defaults to blue.
+     * Optional. Accent color for progress, segmented_progress, and metrics Live Activities.
      * @type {string}
      * @memberof ContentStateStart
      */
@@ -346,7 +387,8 @@ export const ContentStateStartTypeEnum = {
     SegmentedProgress: 'segmented_progress',
     Progress: 'progress',
     Metrics: 'metrics',
-    Stats: 'stats'
+    Stats: 'stats',
+    Alert: 'alert'
 } as const;
 export type ContentStateStartTypeEnum = typeof ContentStateStartTypeEnum[keyof typeof ContentStateStartTypeEnum];
 
@@ -362,7 +404,8 @@ export const ContentStateStartColorEnum = {
     Magenta: 'magenta',
     Red: 'red',
     Orange: 'orange',
-    Yellow: 'yellow'
+    Yellow: 'yellow',
+    Gray: 'gray'
 } as const;
 export type ContentStateStartColorEnum = typeof ContentStateStartColorEnum[keyof typeof ContentStateStartColorEnum];
 
@@ -378,7 +421,8 @@ export const ContentStateStartStepColorEnum = {
     Magenta: 'magenta',
     Red: 'red',
     Orange: 'orange',
-    Yellow: 'yellow'
+    Yellow: 'yellow',
+    Gray: 'gray'
 } as const;
 export type ContentStateStartStepColorEnum = typeof ContentStateStartStepColorEnum[keyof typeof ContentStateStartStepColorEnum];
 
@@ -394,12 +438,13 @@ export const ContentStateStartStepColorsEnum = {
     Magenta: 'magenta',
     Red: 'red',
     Orange: 'orange',
-    Yellow: 'yellow'
+    Yellow: 'yellow',
+    Gray: 'gray'
 } as const;
 export type ContentStateStartStepColorsEnum = typeof ContentStateStartStepColorsEnum[keyof typeof ContentStateStartStepColorsEnum];
 
 /**
- * Update payload requires title. For segmented_progress include current_step and optionally number_of_steps. For progress include percentage or value with upper_limit. For metrics and stats include a non-empty metrics array. Type is optional when updating an existing activity. You can increase or decrease number_of_steps during updates.
+ * Update payload requires title. For segmented_progress include current_step and optionally number_of_steps. For progress include percentage or value with upper_limit. For metrics and stats include a non-empty metrics array. For alert include message, with optional icon and badge. Type is optional when updating an existing activity. You can increase or decrease number_of_steps during updates.
  * @export
  * @interface ContentStateUpdate
  */
@@ -454,13 +499,31 @@ export interface ContentStateUpdate {
      */
     metrics?: Array<ActivityMetric>;
     /**
+     * Alert message. Use for type=alert.
+     * @type {string}
+     * @memberof ContentStateUpdate
+     */
+    message?: string;
+    /**
+     * Optional SF Symbol icon for type=alert.
+     * @type {LiveActivityAlertIcon}
+     * @memberof ContentStateUpdate
+     */
+    icon?: LiveActivityAlertIcon;
+    /**
+     * Optional badge for type=alert.
+     * @type {LiveActivityAlertBadge}
+     * @memberof ContentStateUpdate
+     */
+    badge?: LiveActivityAlertBadge;
+    /**
      * Optional. When omitted, the API uses the existing Live Activity type.
      * @type {string}
      * @memberof ContentStateUpdate
      */
     type?: ContentStateUpdateTypeEnum;
     /**
-     * Optional. Accent color for the Live Activity. Defaults to blue.
+     * Optional. Accent color for progress, segmented_progress, and metrics Live Activities.
      * @type {string}
      * @memberof ContentStateUpdate
      */
@@ -487,7 +550,8 @@ export const ContentStateUpdateTypeEnum = {
     SegmentedProgress: 'segmented_progress',
     Progress: 'progress',
     Metrics: 'metrics',
-    Stats: 'stats'
+    Stats: 'stats',
+    Alert: 'alert'
 } as const;
 export type ContentStateUpdateTypeEnum = typeof ContentStateUpdateTypeEnum[keyof typeof ContentStateUpdateTypeEnum];
 
@@ -503,7 +567,8 @@ export const ContentStateUpdateColorEnum = {
     Magenta: 'magenta',
     Red: 'red',
     Orange: 'orange',
-    Yellow: 'yellow'
+    Yellow: 'yellow',
+    Gray: 'gray'
 } as const;
 export type ContentStateUpdateColorEnum = typeof ContentStateUpdateColorEnum[keyof typeof ContentStateUpdateColorEnum];
 
@@ -519,7 +584,8 @@ export const ContentStateUpdateStepColorEnum = {
     Magenta: 'magenta',
     Red: 'red',
     Orange: 'orange',
-    Yellow: 'yellow'
+    Yellow: 'yellow',
+    Gray: 'gray'
 } as const;
 export type ContentStateUpdateStepColorEnum = typeof ContentStateUpdateStepColorEnum[keyof typeof ContentStateUpdateStepColorEnum];
 
@@ -535,7 +601,8 @@ export const ContentStateUpdateStepColorsEnum = {
     Magenta: 'magenta',
     Red: 'red',
     Orange: 'orange',
-    Yellow: 'yellow'
+    Yellow: 'yellow',
+    Gray: 'gray'
 } as const;
 export type ContentStateUpdateStepColorsEnum = typeof ContentStateUpdateStepColorsEnum[keyof typeof ContentStateUpdateStepColorsEnum];
 
@@ -607,6 +674,65 @@ export const LiveActivityActionType = {
     Webhook: 'webhook'
 } as const;
 export type LiveActivityActionType = typeof LiveActivityActionType[keyof typeof LiveActivityActionType];
+
+/**
+ * Optional badge for alert Live Activities.
+ * @export
+ * @interface LiveActivityAlertBadge
+ */
+export interface LiveActivityAlertBadge {
+    [key: string]: any | any;
+    /**
+     * 
+     * @type {string}
+     * @memberof LiveActivityAlertBadge
+     */
+    title: string;
+    /**
+     * Optional badge color.
+     * @type {LiveActivityColor}
+     * @memberof LiveActivityAlertBadge
+     */
+    color?: LiveActivityColor;
+}
+/**
+ * Optional SF Symbol icon for alert Live Activities.
+ * @export
+ * @interface LiveActivityAlertIcon
+ */
+export interface LiveActivityAlertIcon {
+    [key: string]: any | any;
+    /**
+     * Apple SF Symbol name.
+     * @type {string}
+     * @memberof LiveActivityAlertIcon
+     */
+    symbol: string;
+    /**
+     * Optional icon color.
+     * @type {LiveActivityColor}
+     * @memberof LiveActivityAlertIcon
+     */
+    color?: LiveActivityColor;
+}
+
+/**
+ * 
+ * @export
+ */
+export const LiveActivityColor = {
+    Lime: 'lime',
+    Green: 'green',
+    Cyan: 'cyan',
+    Blue: 'blue',
+    Purple: 'purple',
+    Magenta: 'magenta',
+    Red: 'red',
+    Orange: 'orange',
+    Yellow: 'yellow',
+    Gray: 'gray'
+} as const;
+export type LiveActivityColor = typeof LiveActivityColor[keyof typeof LiveActivityColor];
 
 /**
  * End an existing Live Activity by activity_id.
@@ -1360,7 +1486,7 @@ export interface RateLimitError {
  */
 export type SendPushNotification429Response = LiveActivityLimitError | RateLimitError;
 /**
- * Current state for a managed Live Activity stream. Include type on the first PUT, and whenever the stream may need to start a fresh activity. Supports segmented_progress, progress, metrics, and stats types.
+ * Current state for a managed Live Activity stream. Include type on the first PUT, and whenever the stream may need to start a fresh activity. Supports segmented_progress, progress, metrics, stats, and alert types.
  * @export
  * @interface StreamContentState
  */
@@ -1415,7 +1541,7 @@ export interface StreamContentState {
      */
     type?: StreamContentStateTypeEnum;
     /**
-     * Optional. Accent color for the Live Activity. Defaults to blue.
+     * Optional. Accent color for progress, segmented_progress, and metrics Live Activities.
      * @type {string}
      * @memberof StreamContentState
      */
@@ -1439,6 +1565,24 @@ export interface StreamContentState {
      */
     metrics?: Array<ActivityMetric>;
     /**
+     * Required for type=alert.
+     * @type {string}
+     * @memberof StreamContentState
+     */
+    message?: string;
+    /**
+     * Optional SF Symbol icon for type=alert.
+     * @type {LiveActivityAlertIcon}
+     * @memberof StreamContentState
+     */
+    icon?: LiveActivityAlertIcon;
+    /**
+     * Optional badge for type=alert.
+     * @type {LiveActivityAlertBadge}
+     * @memberof StreamContentState
+     */
+    badge?: LiveActivityAlertBadge;
+    /**
      * Optional. Seconds before the ended Live Activity is dismissed.
      * @type {number}
      * @memberof StreamContentState
@@ -1460,7 +1604,8 @@ export const StreamContentStateTypeEnum = {
     SegmentedProgress: 'segmented_progress',
     Progress: 'progress',
     Metrics: 'metrics',
-    Stats: 'stats'
+    Stats: 'stats',
+    Alert: 'alert'
 } as const;
 export type StreamContentStateTypeEnum = typeof StreamContentStateTypeEnum[keyof typeof StreamContentStateTypeEnum];
 
@@ -1476,7 +1621,8 @@ export const StreamContentStateColorEnum = {
     Magenta: 'magenta',
     Red: 'red',
     Orange: 'orange',
-    Yellow: 'yellow'
+    Yellow: 'yellow',
+    Gray: 'gray'
 } as const;
 export type StreamContentStateColorEnum = typeof StreamContentStateColorEnum[keyof typeof StreamContentStateColorEnum];
 
@@ -1492,7 +1638,8 @@ export const StreamContentStateStepColorEnum = {
     Magenta: 'magenta',
     Red: 'red',
     Orange: 'orange',
-    Yellow: 'yellow'
+    Yellow: 'yellow',
+    Gray: 'gray'
 } as const;
 export type StreamContentStateStepColorEnum = typeof StreamContentStateStepColorEnum[keyof typeof StreamContentStateStepColorEnum];
 
@@ -1508,7 +1655,8 @@ export const StreamContentStateStepColorsEnum = {
     Magenta: 'magenta',
     Red: 'red',
     Orange: 'orange',
-    Yellow: 'yellow'
+    Yellow: 'yellow',
+    Gray: 'gray'
 } as const;
 export type StreamContentStateStepColorsEnum = typeof StreamContentStateStepColorsEnum[keyof typeof StreamContentStateStepColorsEnum];
 
