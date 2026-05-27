@@ -265,20 +265,14 @@ describe("resource wrappers", () => {
 
     const client = new ActivitySmith({ apiKey: "test" });
     const payload = {
-      content_state: {
+      content_state: ActivitySmith.contentState({
         title: "Reactivation",
         message: "Lumen came back after 2 weeks",
         type: ActivitySmith.liveActivityTypes.alert,
         color: "red",
-        icon: {
-          symbol: "sparkles",
-          color: "yellow",
-        },
-        badge: {
-          title: "Customer",
-          color: "magenta",
-        },
-      },
+        icon: ActivitySmith.alertIcon("cloud.sun", { color: "yellow" }),
+        badge: ActivitySmith.alertBadge("Customer", { color: "magenta" }),
+      }),
     };
 
     await client.liveActivities.stream("customer-ops", payload);
@@ -291,14 +285,9 @@ describe("resource wrappers", () => {
             title: "Reactivation",
             message: "Lumen came back after 2 weeks",
             type: ActivitySmith.liveActivityTypes.alert,
-            icon: {
-              symbol: "sparkles",
-              color: "yellow",
-            },
-            badge: {
-              title: "Customer",
-              color: "magenta",
-            },
+            color: "red",
+            icon: { symbol: "cloud.sun", color: "yellow" },
+            badge: { title: "Customer", color: "magenta" },
           },
         },
       },

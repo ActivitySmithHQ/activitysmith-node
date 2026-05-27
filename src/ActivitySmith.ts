@@ -59,6 +59,14 @@ export type LiveActivityContentState = Record<string, unknown> & {
   color?: string;
 };
 
+type LiveActivityAlertIconOptions = {
+  color?: string;
+};
+
+type LiveActivityAlertBadgeOptions = {
+  color?: string;
+};
+
 type LiveStartSendRequest = Omit<StartRequestBody, "content_state"> & {
   content_state: LiveActivityContentState;
   channels?: string[];
@@ -93,18 +101,28 @@ function withTargetChannels<T extends object>(
   } as T;
 }
 
-function withoutAlertRootColor<T extends { content_state?: LiveActivityContentState }>(
-  request: T,
-): T {
-  if (request.content_state?.type !== LiveActivityTypes.alert || !("color" in request.content_state)) {
-    return request;
-  }
+function compactObject<T extends Record<string, unknown>>(value: T): T {
+  return Object.fromEntries(
+    Object.entries(value).filter(([, entryValue]) => entryValue !== undefined),
+  ) as T;
+}
 
-  const { color: _ignored, ...contentState } = request.content_state;
-  return {
-    ...request,
-    content_state: contentState,
-  };
+function contentState(value: LiveActivityContentState): LiveActivityContentState {
+  return compactObject(value);
+}
+
+function alertIcon(
+  symbol: string,
+  options: LiveActivityAlertIconOptions = {},
+): LiveActivityAlertIcon {
+  return compactObject({ symbol, color: options.color });
+}
+
+function alertBadge(
+  title: string,
+  options: LiveActivityAlertBadgeOptions = {},
+): LiveActivityAlertBadge {
+  return compactObject({ title, color: options.color });
 }
 
 function hasMediaValue(media: unknown): boolean {
@@ -194,8 +212,8 @@ export class LiveActivitiesResource {
   start(request: LiveStartSendRequest, initOverrides?: LiveInitOverrides) {
     return this.api.startLiveActivity(
       {
-        liveActivityStartRequest: withoutAlertRootColor(
-          withTargetChannels<LiveStartSendRequest>(request),
+        liveActivityStartRequest: withTargetChannels<LiveStartSendRequest>(
+          request,
         ) as StartRequestBody,
       },
       initOverrides,
@@ -204,14 +222,14 @@ export class LiveActivitiesResource {
 
   update(request: LiveUpdateSendRequest, initOverrides?: LiveInitOverrides) {
     return this.api.updateLiveActivity(
-      { liveActivityUpdateRequest: withoutAlertRootColor(request) as UpdateRequestBody },
+      { liveActivityUpdateRequest: request as UpdateRequestBody },
       initOverrides,
     );
   }
 
   end(request: LiveEndSendRequest, initOverrides?: LiveInitOverrides) {
     return this.api.endLiveActivity(
-      { liveActivityEndRequest: withoutAlertRootColor(request) as EndRequestBody },
+      { liveActivityEndRequest: request as EndRequestBody },
       initOverrides,
     );
   }
@@ -220,8 +238,8 @@ export class LiveActivitiesResource {
     return this.api.reconcileLiveActivityStream(
       {
         streamKey,
-        liveActivityStreamRequest: withoutAlertRootColor(
-          withTargetChannels<LiveStreamSendRequest>(request),
+        liveActivityStreamRequest: withTargetChannels<LiveStreamSendRequest>(
+          request,
         ) as StreamRequestBody,
       },
       initOverrides,
@@ -237,9 +255,7 @@ export class LiveActivitiesResource {
       return this.api.endLiveActivityStream(
         {
           streamKey,
-          liveActivityStreamDeleteRequest: withoutAlertRootColor(
-            request,
-          ) as StreamDeleteRequestBody,
+          liveActivityStreamDeleteRequest: request as StreamDeleteRequestBody,
         },
         initOverrides,
       );
@@ -329,6 +345,9 @@ export class MetricsResource {
 
 export class ActivitySmith {
   public static readonly liveActivityTypes = LiveActivityTypes;
+  public static readonly contentState = contentState;
+  public static readonly alertIcon = alertIcon;
+  public static readonly alertBadge = alertBadge;
 
   public readonly notifications: NotificationsResource;
   public readonly liveActivities: LiveActivitiesResource;
