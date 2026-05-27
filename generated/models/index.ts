@@ -191,7 +191,7 @@ export interface ContentStateEnd {
      */
     type?: ContentStateEndTypeEnum;
     /**
-     * Optional. Accent color for progress, segmented_progress, and metrics Live Activities.
+     * Optional. Accent color for progress, segmented_progress, and metrics Live Activities. For alert Live Activities, this tints the action button when action is included.
      * @type {string}
      * @memberof ContentStateEnd
      */
@@ -360,7 +360,7 @@ export interface ContentStateStart {
      */
     type: ContentStateStartTypeEnum;
     /**
-     * Optional. Accent color for progress, segmented_progress, and metrics Live Activities.
+     * Optional. Accent color for progress, segmented_progress, and metrics Live Activities. For alert Live Activities, this tints the action button when action is included.
      * @type {string}
      * @memberof ContentStateStart
      */
@@ -523,7 +523,7 @@ export interface ContentStateUpdate {
      */
     type?: ContentStateUpdateTypeEnum;
     /**
-     * Optional. Accent color for progress, segmented_progress, and metrics Live Activities.
+     * Optional. Accent color for progress, segmented_progress, and metrics Live Activities. For alert Live Activities, this tints the action button when action is included.
      * @type {string}
      * @memberof ContentStateUpdate
      */
@@ -1541,7 +1541,7 @@ export interface StreamContentState {
      */
     type?: StreamContentStateTypeEnum;
     /**
-     * Optional. Accent color for progress, segmented_progress, and metrics Live Activities.
+     * Optional. Accent color for progress, segmented_progress, and metrics Live Activities. For alert Live Activities, this tints the action button when action is included.
      * @type {string}
      * @memberof StreamContentState
      */
