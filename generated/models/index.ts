@@ -191,7 +191,7 @@ export interface ContentStateEnd {
      */
     type?: ContentStateEndTypeEnum;
     /**
-     * Optional. Accent color for progress, segmented_progress, and metrics Live Activities.
+     * Optional. Accent color for progress, segmented_progress, and metrics Live Activities. For Alert Live Activities, this tints the action button when action is included.
      * @type {string}
      * @memberof ContentStateEnd
      */
@@ -360,7 +360,7 @@ export interface ContentStateStart {
      */
     type: ContentStateStartTypeEnum;
     /**
-     * Optional. Accent color for progress, segmented_progress, and metrics Live Activities.
+     * Optional. Accent color for progress, segmented_progress, and metrics Live Activities. For Alert Live Activities, this tints the action button when action is included.
      * @type {string}
      * @memberof ContentStateStart
      */
@@ -523,7 +523,7 @@ export interface ContentStateUpdate {
      */
     type?: ContentStateUpdateTypeEnum;
     /**
-     * Optional. Accent color for progress, segmented_progress, and metrics Live Activities.
+     * Optional. Accent color for progress, segmented_progress, and metrics Live Activities. For Alert Live Activities, this tints the action button when action is included.
      * @type {string}
      * @memberof ContentStateUpdate
      */
@@ -676,7 +676,7 @@ export const LiveActivityActionType = {
 export type LiveActivityActionType = typeof LiveActivityActionType[keyof typeof LiveActivityActionType];
 
 /**
- * Optional badge for alert Live Activities.
+ * Optional badge for Alert Live Activities.
  * @export
  * @interface LiveActivityAlertBadge
  */
@@ -696,7 +696,7 @@ export interface LiveActivityAlertBadge {
     color?: LiveActivityColor;
 }
 /**
- * Optional SF Symbol icon for alert Live Activities.
+ * Optional SF Symbol icon for Alert Live Activities.
  * @export
  * @interface LiveActivityAlertIcon
  */
@@ -1541,7 +1541,7 @@ export interface StreamContentState {
      */
     type?: StreamContentStateTypeEnum;
     /**
-     * Optional. Accent color for progress, segmented_progress, and metrics Live Activities.
+     * Optional. Accent color for progress, segmented_progress, and metrics Live Activities. For Alert Live Activities, this tints the action button when action is included.
      * @type {string}
      * @memberof StreamContentState
      */

@@ -255,6 +255,46 @@ describe("resource wrappers", () => {
     expect(startSpy).toHaveBeenCalledWith({ liveActivityStartRequest: payload }, undefined);
   });
 
+  it("passes through alert content_state with icon and badge colors", async () => {
+    const ActivitySmith = require("../dist/src/index.js");
+    const generated = require("../dist/generated/index.js");
+
+    const streamSpy = vi
+      .spyOn(generated.LiveActivitiesApi.prototype, "reconcileLiveActivityStream")
+      .mockResolvedValue({ operation: "started", stream_key: "customer-ops" });
+
+    const client = new ActivitySmith({ apiKey: "test" });
+    const payload = {
+      content_state: ActivitySmith.contentState({
+        title: "Reactivation",
+        message: "Lumen came back after 2 weeks",
+        type: ActivitySmith.liveActivityTypes.alert,
+        color: "red",
+        icon: ActivitySmith.alertIcon("cloud.sun", { color: "yellow" }),
+        badge: ActivitySmith.alertBadge("Customer", { color: "magenta" }),
+      }),
+    };
+
+    await client.liveActivities.stream("customer-ops", payload);
+
+    expect(streamSpy).toHaveBeenCalledWith(
+      {
+        streamKey: "customer-ops",
+        liveActivityStreamRequest: {
+          content_state: {
+            title: "Reactivation",
+            message: "Lumen came back after 2 weeks",
+            type: ActivitySmith.liveActivityTypes.alert,
+            color: "red",
+            icon: { symbol: "cloud.sun", color: "yellow" },
+            badge: { title: "Customer", color: "magenta" },
+          },
+        },
+      },
+      undefined,
+    );
+  });
+
   it("wraps live activity stream payloads for short methods", async () => {
     const ActivitySmith = require("../dist/src/index.js");
     const generated = require("../dist/generated/index.js");

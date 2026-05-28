@@ -126,12 +126,13 @@ await activitysmith.notifications.send({
 
 ## Live Activities
 
-There are four types of Live Activities:
+There are five types of Live Activities:
 
 - `stats`: best for showing business numbers side by side, such as revenue, sales, new users, conversion, refunds, or any other value you want visible at a glance
 - `metrics`: best for live percentage values that change often, like server CPU, memory usage, disk usage, or error rate
 - `segmented_progress`: best for anything that moves through clear stages, like deployments, onboarding flows, backups, ETL pipelines, migrations, and AI agent runs
 - `progress`: best for tracking real-time progress with percentage, like tasks, backups, migrations, syncs, or uploads
+- `alert`: best for status updates, such as feature adoption, reactivation, onboarding blockers, incidents, escalations, and other operational states
 
 ### Start & Update Live Activity
 
@@ -216,6 +217,32 @@ await activitysmith.liveActivities.stream("search-reindex", {
 });
 ```
 
+#### Alert
+
+<p align="center">
+  <img src="https://cdn.activitysmith.com/features/alert-live-activity.png" alt="Alert Live Activity stream example" width="680" />
+</p>
+
+```ts
+await activitysmith.liveActivities.stream("customer-ops", {
+  content_state: ActivitySmith.contentState({
+    title: "Reactivation",
+    message: "Lumen came back after 2 weeks",
+    type: "alert",
+    icon: ActivitySmith.alertIcon("cloud.sun", { color: "yellow" }),
+    badge: ActivitySmith.alertBadge("Customer", { color: "magenta" }),
+  }),
+});
+```
+
+The `icon.symbol` value is an Apple SF Symbol name. Browse the catalog with one of these tools:
+
+- [ActivitySmith app](https://apps.apple.com/us/app/activitysmith/id6752254835) - Open Settings -> SF Symbols to browse 45 hand-picked icons ready to use
+- [SF Symbols](https://developer.apple.com/sf-symbols/) - Apple's official macOS app
+- [Interactful](https://apps.apple.com/app/interactful/id1528095640) - free third-party iOS app listing all SF Symbols under Foundations -> Iconography
+
+`icon` and `badge` are optional. If you omit either one, that element is not shown in the Live Activity.
+
 ### End Live Activity
 
 Call `endStream(...)` with the same `streamKey` to dismiss the Live Activity. You can include final values before it is removed. By default, iOS removes the Live Activity after two minutes. Set `auto_dismiss_minutes` to choose a different dismissal time, including `0` for immediate dismissal.
@@ -238,6 +265,7 @@ await activitysmith.liveActivities.endStream("prod-web-1", {
 ### Live Activity Action
 
 Live Activities can include one optional action button. Use it to open a URL from the Live Activity or trigger a backend webhook.
+For Alert Live Activities, set `content_state.color` to tint the action button. `icon.color` and `badge.color` only affect the icon and badge.
 
 <p align="center">
   <img src="https://cdn.activitysmith.com/features/live-activity-with-action.png?v=20260319-1" alt="Live Activity with action button" width="680" />
