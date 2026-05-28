@@ -265,7 +265,7 @@ await activitysmith.liveActivities.endStream("prod-web-1", {
 ### Live Activity Action
 
 Live Activities can include one optional action button. Use it to open a URL from the Live Activity or trigger a backend webhook.
-For alert Live Activities, set `content_state.color` to tint the action button. `icon.color` and `badge.color` only affect the icon and badge.
+For Alert Live Activities, set `content_state.color` to tint the action button. `icon.color` and `badge.color` only affect the icon and badge.
 
 <p align="center">
   <img src="https://cdn.activitysmith.com/features/live-activity-with-action.png?v=20260319-1" alt="Live Activity with action button" width="680" />
