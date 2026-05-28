@@ -137,7 +137,7 @@ export interface ContentStateEnd {
      */
     number_of_steps?: number;
     /**
-     * Current step. Use for type=segmented_progress.
+     * Current completed step count. Use for type=segmented_progress. Must be less than or equal to number_of_steps when number_of_steps is provided.
      * @type {number}
      * @memberof ContentStateEnd
      */
@@ -306,7 +306,7 @@ export interface ContentStateStart {
      */
     number_of_steps?: number;
     /**
-     * Current step. Use for type=segmented_progress.
+     * Current completed step count. Use for type=segmented_progress. Set 0 when the activity has started but no segment is complete yet. Must be less than or equal to number_of_steps.
      * @type {number}
      * @memberof ContentStateStart
      */
@@ -469,7 +469,7 @@ export interface ContentStateUpdate {
      */
     number_of_steps?: number;
     /**
-     * Current step. Use for type=segmented_progress.
+     * Current completed step count. Use for type=segmented_progress. Set 0 when no segment is complete yet. Must be less than or equal to number_of_steps when number_of_steps is provided.
      * @type {number}
      * @memberof ContentStateUpdate
      */
@@ -1511,7 +1511,7 @@ export interface StreamContentState {
      */
     number_of_steps?: number;
     /**
-     * Use for segmented_progress.
+     * Use for segmented_progress. Set 0 when no segment is complete yet. Must be less than or equal to number_of_steps when number_of_steps is provided.
      * @type {number}
      * @memberof StreamContentState
      */
