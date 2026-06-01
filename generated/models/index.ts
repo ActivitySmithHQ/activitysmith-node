@@ -112,7 +112,7 @@ export interface ChannelTarget {
     channels: Array<string>;
 }
 /**
- * End payload requires title. For segmented_progress include current_step and optionally number_of_steps. For progress include percentage or value with upper_limit. For metrics and stats include a non-empty metrics array. For alert include message, with optional icon and badge. Type is optional when ending an existing activity. You can send an updated number_of_steps here if the workflow changed after start.
+ * End payload requires title. For segmented_progress include current_step and optionally number_of_steps. For progress include percentage or value with upper_limit. For metrics and stats include a non-empty metrics array. For alert include message. Optional icon is supported by all Live Activity types. Optional badge is supported by alert, progress, and segmented_progress. Type is optional when ending an existing activity. You can send an updated number_of_steps here if the workflow changed after start.
  * @export
  * @interface ContentStateEnd
  */
@@ -173,13 +173,13 @@ export interface ContentStateEnd {
      */
     message?: string;
     /**
-     * Optional SF Symbol icon for type=alert.
+     * Optional SF Symbol icon. Supported by alert, progress, segmented_progress, metrics, and stats.
      * @type {LiveActivityAlertIcon}
      * @memberof ContentStateEnd
      */
     icon?: LiveActivityAlertIcon;
     /**
-     * Optional badge for type=alert.
+     * Optional badge. Supported by alert, progress, and segmented_progress.
      * @type {LiveActivityAlertBadge}
      * @memberof ContentStateEnd
      */
@@ -281,7 +281,7 @@ export const ContentStateEndStepColorsEnum = {
 export type ContentStateEndStepColorsEnum = typeof ContentStateEndStepColorsEnum[keyof typeof ContentStateEndStepColorsEnum];
 
 /**
- * Start payload requires title and type. For segmented_progress include number_of_steps and current_step. For progress include percentage or value with upper_limit. For metrics and stats include a non-empty metrics array. For alert include message, with optional icon and badge. For segmented_progress, number_of_steps is not locked and can be changed in later update or end calls.
+ * Start payload requires title and type. For segmented_progress include number_of_steps and current_step. For progress include percentage or value with upper_limit. For metrics and stats include a non-empty metrics array. For alert include message. Optional icon is supported by all Live Activity types. Optional badge is supported by alert, progress, and segmented_progress. For segmented_progress, number_of_steps is not locked and can be changed in later update or end calls.
  * @export
  * @interface ContentStateStart
  */
@@ -342,13 +342,13 @@ export interface ContentStateStart {
      */
     message?: string;
     /**
-     * Optional SF Symbol icon for type=alert.
+     * Optional SF Symbol icon. Supported by alert, progress, segmented_progress, metrics, and stats.
      * @type {LiveActivityAlertIcon}
      * @memberof ContentStateStart
      */
     icon?: LiveActivityAlertIcon;
     /**
-     * Optional badge for type=alert.
+     * Optional badge. Supported by alert, progress, and segmented_progress.
      * @type {LiveActivityAlertBadge}
      * @memberof ContentStateStart
      */
@@ -444,7 +444,7 @@ export const ContentStateStartStepColorsEnum = {
 export type ContentStateStartStepColorsEnum = typeof ContentStateStartStepColorsEnum[keyof typeof ContentStateStartStepColorsEnum];
 
 /**
- * Update payload requires title. For segmented_progress include current_step and optionally number_of_steps. For progress include percentage or value with upper_limit. For metrics and stats include a non-empty metrics array. For alert include message, with optional icon and badge. Type is optional when updating an existing activity. You can increase or decrease number_of_steps during updates.
+ * Update payload requires title. For segmented_progress include current_step and optionally number_of_steps. For progress include percentage or value with upper_limit. For metrics and stats include a non-empty metrics array. For alert include message. Optional icon is supported by all Live Activity types. Optional badge is supported by alert, progress, and segmented_progress. Type is optional when updating an existing activity. You can increase or decrease number_of_steps during updates.
  * @export
  * @interface ContentStateUpdate
  */
@@ -505,13 +505,13 @@ export interface ContentStateUpdate {
      */
     message?: string;
     /**
-     * Optional SF Symbol icon for type=alert.
+     * Optional SF Symbol icon. Supported by alert, progress, segmented_progress, metrics, and stats.
      * @type {LiveActivityAlertIcon}
      * @memberof ContentStateUpdate
      */
     icon?: LiveActivityAlertIcon;
     /**
-     * Optional badge for type=alert.
+     * Optional badge. Supported by alert, progress, and segmented_progress.
      * @type {LiveActivityAlertBadge}
      * @memberof ContentStateUpdate
      */
@@ -646,7 +646,7 @@ export interface LiveActivityAction {
      */
     type: LiveActivityActionType;
     /**
-     * HTTPS URL. For open_url it is opened in browser. For webhook it is called by ActivitySmith backend.
+     * Action URL. For open_url, use an HTTPS or shortcuts:// URL. For webhook, use an HTTPS URL called by the ActivitySmith backend.
      * @type {string}
      * @memberof LiveActivityAction
      */
@@ -676,7 +676,7 @@ export const LiveActivityActionType = {
 export type LiveActivityActionType = typeof LiveActivityActionType[keyof typeof LiveActivityActionType];
 
 /**
- * Optional badge for Alert Live Activities.
+ * Optional badge for Live Activities.
  * @export
  * @interface LiveActivityAlertBadge
  */
@@ -696,7 +696,7 @@ export interface LiveActivityAlertBadge {
     color?: LiveActivityColor;
 }
 /**
- * Optional SF Symbol icon for Alert Live Activities.
+ * Optional SF Symbol icon for Live Activities.
  * @export
  * @interface LiveActivityAlertIcon
  */
@@ -1313,7 +1313,7 @@ export interface PushNotificationAction {
      */
     type: PushNotificationActionType;
     /**
-     * HTTPS URL. For open_url it is opened in browser. For webhook it is called by ActivitySmith backend.
+     * Action URL. For open_url, use an HTTPS or shortcuts:// URL. For webhook, use an HTTPS URL called by the ActivitySmith backend.
      * @type {string}
      * @memberof PushNotificationAction
      */
@@ -1374,7 +1374,7 @@ export interface PushNotificationRequest {
      */
     media?: string;
     /**
-     * Optional HTTPS URL opened when user taps the notification body. Overrides the default tap target from `media` when both are provided.
+     * Optional HTTPS or shortcuts:// URL opened when user taps the notification body. Overrides the default tap target from `media` when both are provided.
      * @type {string}
      * @memberof PushNotificationRequest
      */
@@ -1571,13 +1571,13 @@ export interface StreamContentState {
      */
     message?: string;
     /**
-     * Optional SF Symbol icon for type=alert.
+     * Optional SF Symbol icon. Supported by alert, progress, segmented_progress, metrics, and stats.
      * @type {LiveActivityAlertIcon}
      * @memberof StreamContentState
      */
     icon?: LiveActivityAlertIcon;
     /**
-     * Optional badge for type=alert.
+     * Optional badge. Supported by alert, progress, and segmented_progress.
      * @type {LiveActivityAlertBadge}
      * @memberof StreamContentState
      */
