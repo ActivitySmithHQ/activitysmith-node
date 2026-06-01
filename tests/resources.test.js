@@ -69,6 +69,50 @@ describe("resource wrappers", () => {
     expect(sendSpy).toHaveBeenCalledWith({ pushNotificationRequest: payload }, undefined);
   });
 
+  it("preserves shortcuts redirection for notifications.send", async () => {
+    const ActivitySmith = require("../dist/src/index.js");
+    const generated = require("../dist/generated/index.js");
+
+    const sendSpy = vi
+      .spyOn(generated.PushNotificationsApi.prototype, "sendPushNotification")
+      .mockResolvedValue({ success: true });
+
+    const client = new ActivitySmith({ apiKey: "test" });
+    const payload = {
+      title: "Task finished",
+      redirection: "shortcuts://run-shortcut?name=Jarvis",
+    };
+
+    await client.notifications.send(payload);
+
+    expect(sendSpy).toHaveBeenCalledWith({ pushNotificationRequest: payload }, undefined);
+  });
+
+  it("preserves shortcuts open_url actions for notifications.send", async () => {
+    const ActivitySmith = require("../dist/src/index.js");
+    const generated = require("../dist/generated/index.js");
+
+    const sendSpy = vi
+      .spyOn(generated.PushNotificationsApi.prototype, "sendPushNotification")
+      .mockResolvedValue({ success: true });
+
+    const client = new ActivitySmith({ apiKey: "test" });
+    const payload = {
+      title: "Task finished",
+      actions: [
+        {
+          title: "Run Shortcut",
+          type: "open_url",
+          url: "shortcuts://run-shortcut?name=Jarvis",
+        },
+      ],
+    };
+
+    await client.notifications.send(payload);
+
+    expect(sendSpy).toHaveBeenCalledWith({ pushNotificationRequest: payload }, undefined);
+  });
+
   it("rejects media with actions for notifications.send", async () => {
     const ActivitySmith = require("../dist/src/index.js");
 
@@ -295,6 +339,68 @@ describe("resource wrappers", () => {
     );
   });
 
+  it("passes through icon and badge on non-alert live activity types", async () => {
+    const ActivitySmith = require("../dist/src/index.js");
+    const generated = require("../dist/generated/index.js");
+
+    const streamSpy = vi
+      .spyOn(generated.LiveActivitiesApi.prototype, "reconcileLiveActivityStream")
+      .mockResolvedValue({ operation: "started", stream_key: "prod-web-1" });
+
+    const client = new ActivitySmith({ apiKey: "test" });
+    await client.liveActivities.stream("prod-web-1", {
+      content_state: ActivitySmith.contentState({
+        title: "Server Health",
+        subtitle: "prod-web-1",
+        type: ActivitySmith.liveActivityTypes.metrics,
+        icon: ActivitySmith.alertIcon("server.rack", { color: "blue" }),
+        metrics: [{ label: "CPU", value: 18, unit: "%" }],
+      }),
+    });
+    await client.liveActivities.stream("nightly-database-backup", {
+      content_state: ActivitySmith.contentState({
+        title: "Nightly Database Backup",
+        subtitle: "verify restore",
+        type: ActivitySmith.liveActivityTypes.progress,
+        badge: ActivitySmith.alertBadge("S3", { color: "cyan" }),
+        percentage: 62,
+      }),
+    });
+
+    expect(streamSpy).toHaveBeenNthCalledWith(
+      1,
+      {
+        streamKey: "prod-web-1",
+        liveActivityStreamRequest: {
+          content_state: {
+            title: "Server Health",
+            subtitle: "prod-web-1",
+            type: ActivitySmith.liveActivityTypes.metrics,
+            icon: { symbol: "server.rack", color: "blue" },
+            metrics: [{ label: "CPU", value: 18, unit: "%" }],
+          },
+        },
+      },
+      undefined,
+    );
+    expect(streamSpy).toHaveBeenNthCalledWith(
+      2,
+      {
+        streamKey: "nightly-database-backup",
+        liveActivityStreamRequest: {
+          content_state: {
+            title: "Nightly Database Backup",
+            subtitle: "verify restore",
+            type: ActivitySmith.liveActivityTypes.progress,
+            badge: { title: "S3", color: "cyan" },
+            percentage: 62,
+          },
+        },
+      },
+      undefined,
+    );
+  });
+
   it("wraps live activity stream payloads for short methods", async () => {
     const ActivitySmith = require("../dist/src/index.js");
     const generated = require("../dist/generated/index.js");
@@ -394,7 +500,7 @@ describe("resource wrappers", () => {
       action: {
         title: "Open Workflow",
         type: "open_url",
-        url: "https://github.com/acme/payments-api/actions/runs/1234567890",
+        url: "shortcuts://run-shortcut?name=Deploy%20Status",
       },
     };
 
@@ -426,7 +532,7 @@ describe("resource wrappers", () => {
       action: {
         title: "Open Workflow",
         type: "open_url",
-        url: "https://github.com/acme/payments-api/actions/runs/1234567890",
+        url: "shortcuts://run-shortcut?name=Deploy%20Status",
       },
     };
 
