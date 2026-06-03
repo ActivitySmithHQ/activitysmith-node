@@ -646,7 +646,7 @@ export interface LiveActivityAction {
      */
     type: LiveActivityActionType;
     /**
-     * Action URL. For open_url, use an HTTPS or shortcuts:// URL. For webhook, use an HTTPS URL called by the ActivitySmith backend.
+     * Action URL. For open_url, use an HTTPS URL or a shortcuts://run-shortcut?name=... URL. For webhook, use an HTTPS URL called by the ActivitySmith backend.
      * @type {string}
      * @memberof LiveActivityAction
      */
@@ -1313,7 +1313,7 @@ export interface PushNotificationAction {
      */
     type: PushNotificationActionType;
     /**
-     * Action URL. For open_url, use an HTTPS or shortcuts:// URL. For webhook, use an HTTPS URL called by the ActivitySmith backend.
+     * Action URL. For open_url, use an HTTPS URL or a shortcuts://run-shortcut?name=... URL. For webhook, use an HTTPS URL called by the ActivitySmith backend.
      * @type {string}
      * @memberof PushNotificationAction
      */
@@ -1374,7 +1374,7 @@ export interface PushNotificationRequest {
      */
     media?: string;
     /**
-     * Optional HTTPS or shortcuts:// URL opened when user taps the notification body. Overrides the default tap target from `media` when both are provided.
+     * Optional HTTPS URL or shortcuts://run-shortcut?name=... URL opened when user taps the notification body. Overrides the default tap target from `media` when both are provided.
      * @type {string}
      * @memberof PushNotificationRequest
      */
