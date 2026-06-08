@@ -1,6 +1,6 @@
 import { Configuration, PushNotificationsApi, LiveActivitiesApi, MetricsApi } from "../generated/index";
 
-const SDK_VERSION = "1.6.0";
+const SDK_VERSION = "1.7.0";
 const SDK_HEADER_NAME = "X-ActivitySmith-SDK";
 const SDK_HEADER_VALUE = `node-v${SDK_VERSION}`;
 
@@ -35,6 +35,7 @@ const LiveActivityTypes = {
   metrics: "metrics",
   stats: "stats",
   alert: "alert",
+  timer: "timer",
 } as const;
 
 export type LiveActivityType = (typeof LiveActivityTypes)[keyof typeof LiveActivityTypes];
@@ -57,6 +58,8 @@ export type LiveActivityContentState = Record<string, unknown> & {
   icon?: LiveActivityAlertIcon;
   badge?: LiveActivityAlertBadge;
   color?: string;
+  duration_seconds?: number;
+  counts_down?: boolean;
 };
 
 type LiveActivityAlertIconOptions = {

@@ -272,6 +272,39 @@ describe("resource wrappers", () => {
     expect(startSpy).toHaveBeenCalledWith({ liveActivityStartRequest: payload }, undefined);
   });
 
+  it("passes through timer content_state fields", async () => {
+    const ActivitySmith = require("../dist/src/index.js");
+    const generated = require("../dist/generated/index.js");
+
+    const startSpy = vi
+      .spyOn(generated.LiveActivitiesApi.prototype, "startLiveActivity")
+      .mockResolvedValue({ activity_id: "act-1" });
+
+    const client = new ActivitySmith({ apiKey: "test" });
+    const payload = {
+      content_state: ActivitySmith.contentState({
+        title: "Benchmark Run",
+        subtitle: "sampling performance",
+        type: ActivitySmith.liveActivityTypes.timer,
+        duration_seconds: 300,
+        counts_down: true,
+        color: "cyan",
+      }),
+    };
+
+    await client.liveActivities.start(payload);
+
+    expect(payload.content_state).toEqual({
+      title: "Benchmark Run",
+      subtitle: "sampling performance",
+      type: "timer",
+      duration_seconds: 300,
+      counts_down: true,
+      color: "cyan",
+    });
+    expect(startSpy).toHaveBeenCalledWith({ liveActivityStartRequest: payload }, undefined);
+  });
+
   it("passes through stats content_state with metric accent colors", async () => {
     const ActivitySmith = require("../dist/src/index.js");
     const generated = require("../dist/generated/index.js");
