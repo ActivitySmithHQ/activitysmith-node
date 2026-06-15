@@ -209,7 +209,7 @@ export interface ContentStateEnd {
      */
     type?: ContentStateEndTypeEnum;
     /**
-     * Optional. Accent color for progress, segmented_progress, metrics, and timer Live Activities. For Alert Live Activities, this tints the action button when action is included.
+     * Optional. Accent color for progress, segmented_progress, metrics, and timer Live Activities. For Alert Live Activities, this tints action and secondary_action buttons when included.
      * @type {string}
      * @memberof ContentStateEnd
      */
@@ -397,7 +397,7 @@ export interface ContentStateStart {
      */
     type: ContentStateStartTypeEnum;
     /**
-     * Optional. Accent color for progress, segmented_progress, metrics, and timer Live Activities. For Alert Live Activities, this tints the action button when action is included.
+     * Optional. Accent color for progress, segmented_progress, metrics, and timer Live Activities. For Alert Live Activities, this tints action and secondary_action buttons when included.
      * @type {string}
      * @memberof ContentStateStart
      */
@@ -579,7 +579,7 @@ export interface ContentStateUpdate {
      */
     type?: ContentStateUpdateTypeEnum;
     /**
-     * Optional. Accent color for progress, segmented_progress, metrics, and timer Live Activities. For Alert Live Activities, this tints the action button when action is included.
+     * Optional. Accent color for progress, segmented_progress, metrics, and timer Live Activities. For Alert Live Activities, this tints action and secondary_action buttons when included.
      * @type {string}
      * @memberof ContentStateUpdate
      */
@@ -684,7 +684,7 @@ export interface ForbiddenError {
     message: string;
 }
 /**
- * Optional single action button shown in the Live Activity UI.
+ * Optional action button shown in the Live Activity UI. Use action for the primary button, or secondary_action for a secondary button on alert, progress, and segmented_progress Live Activities.
  * @export
  * @interface LiveActivityAction
  */
@@ -816,6 +816,12 @@ export interface LiveActivityEndRequest {
      * @memberof LiveActivityEndRequest
      */
     action?: LiveActivityAction;
+    /**
+     * Optional secondary action button. Supported only for alert, progress, and segmented_progress Live Activities. Uses the same open_url, shortcuts://, and webhook shapes as action.
+     * @type {LiveActivityAction}
+     * @memberof LiveActivityEndRequest
+     */
+    secondary_action?: LiveActivityAction;
 }
 /**
  * Returned after a Live Activity end event is sent or queued.
@@ -907,6 +913,12 @@ export interface LiveActivityStartRequest {
      */
     action?: LiveActivityAction;
     /**
+     * Optional secondary action button. Supported only for alert, progress, and segmented_progress Live Activities. Uses the same open_url, shortcuts://, and webhook shapes as action.
+     * @type {LiveActivityAction}
+     * @memberof LiveActivityStartRequest
+     */
+    secondary_action?: LiveActivityAction;
+    /**
      * 
      * @type {AlertPayload}
      * @memberof LiveActivityStartRequest
@@ -982,6 +994,12 @@ export interface LiveActivityStreamDeleteRequest {
      * @memberof LiveActivityStreamDeleteRequest
      */
     action?: LiveActivityAction;
+    /**
+     * Optional secondary action button. Supported only for alert, progress, and segmented_progress Live Activities. Uses the same open_url, shortcuts://, and webhook shapes as action.
+     * @type {LiveActivityAction}
+     * @memberof LiveActivityStreamDeleteRequest
+     */
+    secondary_action?: LiveActivityAction;
     /**
      * 
      * @type {AlertPayload}
@@ -1151,6 +1169,12 @@ export interface LiveActivityStreamRequest {
      */
     action?: LiveActivityAction;
     /**
+     * Optional secondary action button. Supported only for alert, progress, and segmented_progress Live Activities. Uses the same open_url, shortcuts://, and webhook shapes as action.
+     * @type {LiveActivityAction}
+     * @memberof LiveActivityStreamRequest
+     */
+    secondary_action?: LiveActivityAction;
+    /**
      * 
      * @type {AlertPayload}
      * @memberof LiveActivityStreamRequest
@@ -1194,6 +1218,12 @@ export interface LiveActivityUpdateRequest {
      * @memberof LiveActivityUpdateRequest
      */
     action?: LiveActivityAction;
+    /**
+     * Optional secondary action button. Supported only for alert, progress, and segmented_progress Live Activities. Uses the same open_url, shortcuts://, and webhook shapes as action.
+     * @type {LiveActivityAction}
+     * @memberof LiveActivityUpdateRequest
+     */
+    secondary_action?: LiveActivityAction;
 }
 /**
  * Returned after a Live Activity update is sent or queued.
@@ -1616,7 +1646,7 @@ export interface StreamContentState {
      */
     type?: StreamContentStateTypeEnum;
     /**
-     * Optional. Accent color for progress, segmented_progress, metrics, and timer Live Activities. For Alert Live Activities, this tints the action button when action is included.
+     * Optional. Accent color for progress, segmented_progress, metrics, and timer Live Activities. For Alert Live Activities, this tints action and secondary_action buttons when included.
      * @type {string}
      * @memberof StreamContentState
      */
