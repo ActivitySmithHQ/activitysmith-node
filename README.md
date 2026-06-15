@@ -286,7 +286,7 @@ await activitysmith.liveActivities.endStream("prod-web-1", {
 
 ### Live Activity Action
 
-Live Activities can include one optional action button.
+Live Activities can include a primary action button. `secondary_action` adds a secondary button for `alert`, `progress`, and `segmented_progress` Live Activities, using the same `open_url`, `shortcuts://`, and `webhook` payload shapes as `action`.
 
 - `open_url`: open an HTTPS URL.
 - `open_url` with a `shortcuts://run-shortcut?name=...` URL: run a specific iPhone Shortcut, for example to open an app.
@@ -356,6 +356,11 @@ await activitysmith.liveActivities.stream("search-reindex", {
       job_id: "reindex-2026-03-19",
       requested_by: "activitysmith-node",
     },
+  },
+  secondary_action: {
+    title: "Open Runbook",
+    type: "open_url",
+    url: "https://ops.example.com/runbooks/search-reindex",
   },
 });
 ```
