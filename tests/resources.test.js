@@ -535,6 +535,12 @@ describe("resource wrappers", () => {
         type: "open_url",
         url: "shortcuts://run-shortcut?name=Deploy%20Status",
       },
+      secondary_action: {
+        title: "Deny",
+        type: "webhook",
+        url: "https://ops.example.com/hooks/deploy/deny",
+        method: "POST",
+      },
     };
 
     const updatePayload = {
@@ -552,6 +558,11 @@ describe("resource wrappers", () => {
         method: "POST",
         body: { job_id: "reindex-2026-03-19" },
       },
+      secondary_action: {
+        title: "Open Runbook",
+        type: "open_url",
+        url: "https://ops.example.com/runbooks/search-reindex",
+      },
     };
 
     const endPayload = {
@@ -566,6 +577,11 @@ describe("resource wrappers", () => {
         title: "Open Workflow",
         type: "open_url",
         url: "shortcuts://run-shortcut?name=Deploy%20Status",
+      },
+      secondary_action: {
+        title: "Archive",
+        type: "webhook",
+        url: "https://ops.example.com/hooks/deploy/archive",
       },
     };
 
