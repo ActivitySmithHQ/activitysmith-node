@@ -523,6 +523,14 @@ Pass `0` to clear the badge.
 await activitysmith.badgeCount(0);
 ```
 
+Use `channels` to target specific team members or devices.
+
+```ts
+await activitysmith.badgeCount(3, {
+  channels: ["sales", "customer-success"],
+});
+```
+
 ## Error Handling
 
 ```ts
