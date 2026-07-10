@@ -14,6 +14,8 @@ See [API reference](https://activitysmith.com/docs/api-reference/introduction)
   - [Send a Push Notification](#send-a-push-notification)
   - [Rich Push Notifications with Media](#rich-push-notifications-with-media)
   - [Actionable Push Notifications](#actionable-push-notifications)
+- [App Icon Badge Count](#app-icon-badge-count)
+  - [Update App Icon Badge Count](#update-app-icon-badge-count)
 - [Live Activities](#live-activities)
   - [Start & Update Live Activity](#start--update-live-activity)
   - [End Live Activity](#end-live-activity)
@@ -128,6 +130,30 @@ await activitysmith.notifications.send({
       },
     },
   ], // Optional (max 4)
+});
+```
+
+## App Icon Badge Count
+
+Set the number shown on the ActivitySmith app icon across devices in your API key's account scope. This is separate from push notifications.
+
+### Update App Icon Badge Count
+
+```ts
+await activitysmith.appIconBadge.update(12);
+```
+
+Pass `0` to clear the count:
+
+```ts
+await activitysmith.appIconBadge.update(0);
+```
+
+Use `channels` to update only devices in selected channels:
+
+```ts
+await activitysmith.appIconBadge.update(3, {
+  channels: ["sales", "customer-success"],
 });
 ```
 

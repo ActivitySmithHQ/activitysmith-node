@@ -1,4 +1,10 @@
-import { Configuration, PushNotificationsApi, LiveActivitiesApi, MetricsApi } from "../generated/index";
+import {
+  AppIconBadgesApi,
+  Configuration,
+  LiveActivitiesApi,
+  MetricsApi,
+  PushNotificationsApi,
+} from "../generated/index";
 
 const SDK_VERSION = "1.8.0";
 const SDK_HEADER_NAME = "X-ActivitySmith-SDK";
@@ -26,6 +32,11 @@ type MetricUpdateRequestBody = MetricUpdateParameters["metricValueUpdateRequest"
 type MetricValue = MetricUpdateRequestBody["value"];
 type MetricUpdateOptions = Omit<MetricUpdateRequestBody, "value">;
 type MetricInitOverrides = Parameters<MetricsApi["updateMetricValue"]>[1];
+type AppIconBadgeUpdateParameters = Parameters<AppIconBadgesApi["updateAppIconBadgeCount"]>[0];
+type AppIconBadgeRawParameters = Parameters<AppIconBadgesApi["updateAppIconBadgeCountRaw"]>[0];
+type AppIconBadgeRequestBody = AppIconBadgeUpdateParameters["appIconBadgeCountUpdateRequest"];
+type AppIconBadgeUpdateOptions = Omit<AppIconBadgeRequestBody, "badge"> & { channels?: string[] };
+type AppIconBadgeInitOverrides = Parameters<AppIconBadgesApi["updateAppIconBadgeCount"]>[1];
 type ChannelTargetInput = { channels?: string[] };
 type PushSendRequest = PushRequestBody & { channels?: string[] };
 
@@ -346,6 +357,45 @@ export class MetricsResource {
   }
 }
 
+export class AppIconBadgeResource {
+  private readonly api: AppIconBadgesApi;
+
+  constructor(api: AppIconBadgesApi) {
+    this.api = api;
+  }
+
+  update(
+    badge: number,
+    options: AppIconBadgeUpdateOptions = {},
+    initOverrides?: AppIconBadgeInitOverrides,
+  ) {
+    return this.api.updateAppIconBadgeCount(
+      {
+        appIconBadgeCountUpdateRequest: withTargetChannels({
+          badge,
+          ...options,
+        }) as AppIconBadgeRequestBody,
+      },
+      initOverrides,
+    );
+  }
+
+  // Backward-compatible generated-style aliases.
+  updateAppIconBadgeCount(
+    requestParameters: AppIconBadgeUpdateParameters,
+    initOverrides?: AppIconBadgeInitOverrides,
+  ) {
+    return this.api.updateAppIconBadgeCount(requestParameters, initOverrides);
+  }
+
+  updateAppIconBadgeCountRaw(
+    requestParameters: AppIconBadgeRawParameters,
+    initOverrides?: AppIconBadgeInitOverrides,
+  ) {
+    return this.api.updateAppIconBadgeCountRaw(requestParameters, initOverrides);
+  }
+}
+
 export class ActivitySmith {
   public static readonly liveActivityTypes = LiveActivityTypes;
   public static readonly contentState = contentState;
@@ -355,6 +405,7 @@ export class ActivitySmith {
   public readonly notifications: NotificationsResource;
   public readonly liveActivities: LiveActivitiesResource;
   public readonly metrics: MetricsResource;
+  public readonly appIconBadge: AppIconBadgeResource;
 
   constructor(opts: ActivitySmithOptions) {
     if (!opts?.apiKey) {
@@ -372,5 +423,6 @@ export class ActivitySmith {
     this.notifications = new NotificationsResource(new PushNotificationsApi(config));
     this.liveActivities = new LiveActivitiesResource(new LiveActivitiesApi(config));
     this.metrics = new MetricsResource(new MetricsApi(config));
+    this.appIconBadge = new AppIconBadgeResource(new AppIconBadgesApi(config));
   }
 }
