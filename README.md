@@ -471,7 +471,7 @@ Choose from these colors for the Live Activity accent, including progress bars a
 
 ## Channels
 
-Channels are used to target specific team members or devices. Can be used for both push notifications and live activities.
+Use `channels` to target specific team members or devices.
 
 ```ts
 await activitysmith.notifications.send({
