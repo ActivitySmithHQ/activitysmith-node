@@ -514,7 +514,7 @@ await activitysmith.metrics.update("prod.status", "healthy");
 Show the number you care about on your ActivitySmith app icon. Track MRR, a customer count, a stock price, or any other value you want to keep in view.
 
 ```ts
-await activitysmith.badgeCount(12);
+await activitysmith.badgeCount(8333);
 ```
 
 Pass `0` to clear the badge.
