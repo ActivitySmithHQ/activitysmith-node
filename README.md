@@ -471,7 +471,7 @@ Choose from these colors for the Live Activity accent, including progress bars a
 
 ## Channels
 
-Use `channels` to target specific team members or devices.
+Use `channels` to target specific team members or devices
 
 ```ts
 await activitysmith.notifications.send({
@@ -523,7 +523,7 @@ Pass `0` to clear the badge.
 await activitysmith.badgeCount(0);
 ```
 
-Use `channels` to target specific team members or devices.
+Use `channels` to target specific team members or devices
 
 ```ts
 await activitysmith.badgeCount(3, {
