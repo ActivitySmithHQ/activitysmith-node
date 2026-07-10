@@ -14,8 +14,6 @@ See [API reference](https://activitysmith.com/docs/api-reference/introduction)
   - [Send a Push Notification](#send-a-push-notification)
   - [Rich Push Notifications with Media](#rich-push-notifications-with-media)
   - [Actionable Push Notifications](#actionable-push-notifications)
-- [App Icon Badge Count](#app-icon-badge-count)
-  - [Update App Icon Badge Count](#update-app-icon-badge-count)
 - [Live Activities](#live-activities)
   - [Start & Update Live Activity](#start--update-live-activity)
   - [End Live Activity](#end-live-activity)
@@ -24,6 +22,7 @@ See [API reference](https://activitysmith.com/docs/api-reference/introduction)
   - [Live Activity Colors](#live-activity-colors)
 - [Channels](#channels)
 - [Widgets](#widgets)
+- [App Icon Badge Count](#app-icon-badge-count)
 
 ## Installation
 
@@ -130,30 +129,6 @@ await activitysmith.notifications.send({
       },
     },
   ], // Optional (max 4)
-});
-```
-
-## App Icon Badge Count
-
-Set the number shown on the ActivitySmith app icon across devices in your API key's account scope. This is separate from push notifications.
-
-### Update App Icon Badge Count
-
-```ts
-await activitysmith.appIconBadge.update(12);
-```
-
-Pass `0` to clear the count:
-
-```ts
-await activitysmith.appIconBadge.update(0);
-```
-
-Use `channels` to update only devices in selected channels:
-
-```ts
-await activitysmith.appIconBadge.update(3, {
-  channels: ["sales", "customer-success"],
 });
 ```
 
@@ -528,6 +503,32 @@ String metric values work too.
 
 ```ts
 await activitysmith.metrics.update("prod.status", "healthy");
+```
+
+## App Icon Badge Count
+
+<p align="center">
+  <img src="https://cdn.activitysmith.com/features/badge-count.png" alt="ActivitySmith app icon with an App Icon Badge Count" width="680" />
+</p>
+
+Keep the numbers you care about on your ActivitySmith app icon. Show MRR, a customer count, a stock price, or any other value you want to keep in view.
+
+```ts
+await activitysmith.badgeCount(12);
+```
+
+Pass `0` to clear the badge.
+
+```ts
+await activitysmith.badgeCount(0);
+```
+
+To target specific devices, pass their channel slugs in `channels`.
+
+```ts
+await activitysmith.badgeCount(3, {
+  channels: ["sales", "customer-success"],
+});
 ```
 
 ## Error Handling

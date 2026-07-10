@@ -167,7 +167,7 @@ describe("resource wrappers", () => {
       .mockResolvedValue({ success: true, badge: 0 });
 
     const client = new ActivitySmith({ apiKey: "test" });
-    const result = await client.appIconBadge.update(0);
+    const result = await client.badgeCount(0);
 
     expect(result).toEqual({ success: true, badge: 0 });
     expect(updateSpy).toHaveBeenCalledWith(
@@ -176,7 +176,7 @@ describe("resource wrappers", () => {
     );
   });
 
-  it("maps top-level channels to target.channels for appIconBadge.update", async () => {
+  it("maps channels to target.channels for badgeCount", async () => {
     const ActivitySmith = require("../dist/src/index.js");
     const generated = require("../dist/generated/index.js");
 
@@ -185,7 +185,7 @@ describe("resource wrappers", () => {
       .mockResolvedValue({ success: true, badge: 3 });
 
     const client = new ActivitySmith({ apiKey: "test" });
-    await client.appIconBadge.update(3, { channels: ["sales", "customer-success"] });
+    await client.badgeCount(3, { channels: ["sales", "customer-success"] });
 
     expect(updateSpy).toHaveBeenCalledWith(
       {
