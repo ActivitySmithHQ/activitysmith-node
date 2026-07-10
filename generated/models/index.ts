@@ -6,7 +6,6 @@
  * @interface ActivityMetric
  */
 export interface ActivityMetric {
-    [key: string]: any | any;
     /**
      * 
      * @type {string}
@@ -63,7 +62,6 @@ export type ActivityMetricValue = number | string;
  * @interface AlertPayload
  */
 export interface AlertPayload {
-    [key: string]: any | any;
     /**
      * 
      * @type {string}
@@ -78,12 +76,73 @@ export interface AlertPayload {
     body?: string;
 }
 /**
+ * App Icon Badge Count update. Send badge 0 to clear the count.
+ * @export
+ * @interface AppIconBadgeCountUpdateRequest
+ */
+export interface AppIconBadgeCountUpdateRequest {
+    /**
+     * The count to show on the ActivitySmith app icon. Send 0 to clear it.
+     * @type {number}
+     * @memberof AppIconBadgeCountUpdateRequest
+     */
+    badge: number;
+    /**
+     * 
+     * @type {ChannelTarget}
+     * @memberof AppIconBadgeCountUpdateRequest
+     */
+    target?: ChannelTarget;
+}
+/**
+ * 
+ * @export
+ * @interface AppIconBadgeCountUpdateResponse
+ */
+export interface AppIconBadgeCountUpdateResponse {
+    /**
+     * 
+     * @type {boolean}
+     * @memberof AppIconBadgeCountUpdateResponse
+     */
+    success: boolean;
+    /**
+     * 
+     * @type {number}
+     * @memberof AppIconBadgeCountUpdateResponse
+     */
+    badge: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof AppIconBadgeCountUpdateResponse
+     */
+    devices_notified: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof AppIconBadgeCountUpdateResponse
+     */
+    users_notified: number;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof AppIconBadgeCountUpdateResponse
+     */
+    effective_channel_slugs: Array<string>;
+    /**
+     * 
+     * @type {string}
+     * @memberof AppIconBadgeCountUpdateResponse
+     */
+    timestamp: string;
+}
+/**
  * 
  * @export
  * @interface BadRequestError
  */
 export interface BadRequestError {
-    [key: string]: any | any;
     /**
      * 
      * @type {string}
@@ -103,7 +162,6 @@ export interface BadRequestError {
  * @interface ChannelTarget
  */
 export interface ChannelTarget {
-    [key: string]: any | any;
     /**
      * Channel slugs. When omitted, API key scope determines recipients.
      * @type {Array<string>}
@@ -117,7 +175,6 @@ export interface ChannelTarget {
  * @interface ContentStateEnd
  */
 export interface ContentStateEnd {
-    [key: string]: any | any;
     /**
      * 
      * @type {string}
@@ -305,7 +362,6 @@ export type ContentStateEndStepColorsEnum = typeof ContentStateEndStepColorsEnum
  * @interface ContentStateStart
  */
 export interface ContentStateStart {
-    [key: string]: any | any;
     /**
      * 
      * @type {string}
@@ -487,7 +543,6 @@ export type ContentStateStartStepColorsEnum = typeof ContentStateStartStepColors
  * @interface ContentStateUpdate
  */
 export interface ContentStateUpdate {
-    [key: string]: any | any;
     /**
      * 
      * @type {string}
@@ -669,7 +724,6 @@ export type ContentStateUpdateStepColorsEnum = typeof ContentStateUpdateStepColo
  * @interface ForbiddenError
  */
 export interface ForbiddenError {
-    [key: string]: any | any;
     /**
      * 
      * @type {string}
@@ -716,10 +770,10 @@ export interface LiveActivityAction {
     method?: LiveActivityWebhookMethod;
     /**
      * Optional webhook payload body. Used only when type=webhook.
-     * @type {{ [key: string]: any; }}
+     * @type {object}
      * @memberof LiveActivityAction
      */
-    body?: { [key: string]: any; };
+    body?: object;
 }
 
 /**
@@ -738,7 +792,6 @@ export type LiveActivityActionType = typeof LiveActivityActionType[keyof typeof 
  * @interface LiveActivityAlertBadge
  */
 export interface LiveActivityAlertBadge {
-    [key: string]: any | any;
     /**
      * 
      * @type {string}
@@ -758,7 +811,6 @@ export interface LiveActivityAlertBadge {
  * @interface LiveActivityAlertIcon
  */
 export interface LiveActivityAlertIcon {
-    [key: string]: any | any;
     /**
      * Apple SF Symbol name.
      * @type {string}
@@ -797,7 +849,6 @@ export type LiveActivityColor = typeof LiveActivityColor[keyof typeof LiveActivi
  * @interface LiveActivityEndRequest
  */
 export interface LiveActivityEndRequest {
-    [key: string]: any | any;
     /**
      * 
      * @type {string}
@@ -829,7 +880,6 @@ export interface LiveActivityEndRequest {
  * @interface LiveActivityEndResponse
  */
 export interface LiveActivityEndResponse {
-    [key: string]: any | any;
     /**
      * 
      * @type {boolean}
@@ -867,7 +917,6 @@ export interface LiveActivityEndResponse {
  * @interface LiveActivityLimitError
  */
 export interface LiveActivityLimitError {
-    [key: string]: any | any;
     /**
      * 
      * @type {string}
@@ -899,7 +948,6 @@ export interface LiveActivityLimitError {
  * @interface LiveActivityStartRequest
  */
 export interface LiveActivityStartRequest {
-    [key: string]: any | any;
     /**
      * 
      * @type {ContentStateStart}
@@ -937,7 +985,6 @@ export interface LiveActivityStartRequest {
  * @interface LiveActivityStartResponse
  */
 export interface LiveActivityStartResponse {
-    [key: string]: any | any;
     /**
      * 
      * @type {boolean}
@@ -981,7 +1028,6 @@ export interface LiveActivityStartResponse {
  * @interface LiveActivityStreamDeleteRequest
  */
 export interface LiveActivityStreamDeleteRequest {
-    [key: string]: any | any;
     /**
      * 
      * @type {StreamContentState}
@@ -1013,7 +1059,6 @@ export interface LiveActivityStreamDeleteRequest {
  * @interface LiveActivityStreamDeleteResponse
  */
 export interface LiveActivityStreamDeleteResponse {
-    [key: string]: any | any;
     /**
      * 
      * @type {boolean}
@@ -1073,7 +1118,6 @@ export type LiveActivityStreamDeleteResponseOperationEnum = typeof LiveActivityS
  * @interface LiveActivityStreamPutResponse
  */
 export interface LiveActivityStreamPutResponse {
-    [key: string]: any | any;
     /**
      * 
      * @type {boolean}
@@ -1155,7 +1199,6 @@ export type LiveActivityStreamPutResponseOperationEnum = typeof LiveActivityStre
  * @interface LiveActivityStreamRequest
  */
 export interface LiveActivityStreamRequest {
-    [key: string]: any | any;
     /**
      * 
      * @type {StreamContentState}
@@ -1199,7 +1242,6 @@ export interface LiveActivityStreamRequest {
  * @interface LiveActivityUpdateRequest
  */
 export interface LiveActivityUpdateRequest {
-    [key: string]: any | any;
     /**
      * 
      * @type {string}
@@ -1231,7 +1273,6 @@ export interface LiveActivityUpdateRequest {
  * @interface LiveActivityUpdateResponse
  */
 export interface LiveActivityUpdateResponse {
-    [key: string]: any | any;
     /**
      * 
      * @type {boolean}
@@ -1280,7 +1321,6 @@ export type LiveActivityWebhookMethod = typeof LiveActivityWebhookMethod[keyof t
  * @interface MetricError
  */
 export interface MetricError {
-    [key: string]: any | any;
     /**
      * 
      * @type {string}
@@ -1300,7 +1340,6 @@ export interface MetricError {
  * @interface MetricValueUpdateRequest
  */
 export interface MetricValueUpdateRequest {
-    [key: string]: any | any;
     /**
      * 
      * @type {MetricValueUpdateRequestValue}
@@ -1326,7 +1365,6 @@ export type MetricValueUpdateRequestValue = number | string;
  * @interface MetricValueUpdateResponse
  */
 export interface MetricValueUpdateResponse {
-    [key: string]: any | any;
     /**
      * 
      * @type {boolean}
@@ -1340,7 +1378,6 @@ export interface MetricValueUpdateResponse {
  * @interface NoRecipientsError
  */
 export interface NoRecipientsError {
-    [key: string]: any | any;
     /**
      * 
      * @type {string}
@@ -1366,7 +1403,6 @@ export interface NoRecipientsError {
  * @interface NotFoundError
  */
 export interface NotFoundError {
-    [key: string]: any | any;
     /**
      * 
      * @type {string}
@@ -1413,10 +1449,10 @@ export interface PushNotificationAction {
     method?: PushNotificationWebhookMethod;
     /**
      * Optional webhook payload body. Used only when type=webhook.
-     * @type {{ [key: string]: any; }}
+     * @type {object}
      * @memberof PushNotificationAction
      */
-    body?: { [key: string]: any; };
+    body?: object;
 }
 
 /**
@@ -1474,10 +1510,10 @@ export interface PushNotificationRequest {
     actions?: Array<PushNotificationAction>;
     /**
      * 
-     * @type {{ [key: string]: any; }}
+     * @type {object}
      * @memberof PushNotificationRequest
      */
-    payload?: { [key: string]: any; };
+    payload?: object;
     /**
      * 
      * @type {number}
@@ -1503,7 +1539,6 @@ export interface PushNotificationRequest {
  * @interface PushNotificationResponse
  */
 export interface PushNotificationResponse {
-    [key: string]: any | any;
     /**
      * 
      * @type {boolean}
@@ -1552,7 +1587,6 @@ export type PushNotificationWebhookMethod = typeof PushNotificationWebhookMethod
  * @interface RateLimitError
  */
 export interface RateLimitError {
-    [key: string]: any | any;
     /**
      * 
      * @type {string}
@@ -1578,7 +1612,6 @@ export type SendPushNotification429Response = LiveActivityLimitError | RateLimit
  * @interface StreamContentState
  */
 export interface StreamContentState {
-    [key: string]: any | any;
     /**
      * 
      * @type {string}
