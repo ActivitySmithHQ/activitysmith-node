@@ -158,6 +158,46 @@ describe("resource wrappers", () => {
     ).toThrow("ActivitySmith: media cannot be combined with actions");
   });
 
+  it("passes zero through to clear the app icon badge count", async () => {
+    const ActivitySmith = require("../dist/src/index.js");
+    const generated = require("../dist/generated/index.js");
+
+    const updateSpy = vi
+      .spyOn(generated.AppIconBadgesApi.prototype, "updateAppIconBadgeCount")
+      .mockResolvedValue({ success: true, badge: 0 });
+
+    const client = new ActivitySmith({ apiKey: "test" });
+    const result = await client.badgeCount(0);
+
+    expect(result).toEqual({ success: true, badge: 0 });
+    expect(updateSpy).toHaveBeenCalledWith(
+      { appIconBadgeCountUpdateRequest: { badge: 0 } },
+      undefined,
+    );
+  });
+
+  it("maps channels to target.channels for badgeCount", async () => {
+    const ActivitySmith = require("../dist/src/index.js");
+    const generated = require("../dist/generated/index.js");
+
+    const updateSpy = vi
+      .spyOn(generated.AppIconBadgesApi.prototype, "updateAppIconBadgeCount")
+      .mockResolvedValue({ success: true, badge: 3 });
+
+    const client = new ActivitySmith({ apiKey: "test" });
+    await client.badgeCount(3, { channels: ["sales", "customer-success"] });
+
+    expect(updateSpy).toHaveBeenCalledWith(
+      {
+        appIconBadgeCountUpdateRequest: {
+          badge: 3,
+          target: { channels: ["sales", "customer-success"] },
+        },
+      },
+      undefined,
+    );
+  });
+
   it("wraps live activity payloads for short methods", async () => {
     const ActivitySmith = require("../dist/src/index.js");
     const generated = require("../dist/generated/index.js");

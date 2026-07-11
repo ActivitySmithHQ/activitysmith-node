@@ -1,6 +1,12 @@
-import { Configuration, PushNotificationsApi, LiveActivitiesApi, MetricsApi } from "../generated/index";
+import {
+  AppIconBadgesApi,
+  Configuration,
+  LiveActivitiesApi,
+  MetricsApi,
+  PushNotificationsApi,
+} from "../generated/index";
 
-const SDK_VERSION = "1.8.0";
+const SDK_VERSION = "1.9.0";
 const SDK_HEADER_NAME = "X-ActivitySmith-SDK";
 const SDK_HEADER_VALUE = `node-v${SDK_VERSION}`;
 
@@ -26,8 +32,15 @@ type MetricUpdateRequestBody = MetricUpdateParameters["metricValueUpdateRequest"
 type MetricValue = MetricUpdateRequestBody["value"];
 type MetricUpdateOptions = Omit<MetricUpdateRequestBody, "value">;
 type MetricInitOverrides = Parameters<MetricsApi["updateMetricValue"]>[1];
+type AppIconBadgeRequestBody =
+  Parameters<AppIconBadgesApi["updateAppIconBadgeCount"]>[0]["appIconBadgeCountUpdateRequest"];
+type AppIconBadgeInitOverrides = Parameters<AppIconBadgesApi["updateAppIconBadgeCount"]>[1];
 type ChannelTargetInput = { channels?: string[] };
 type PushSendRequest = PushRequestBody & { channels?: string[] };
+
+export type BadgeCountOptions = {
+  channels?: string[];
+};
 
 const LiveActivityTypes = {
   segmentedProgress: "segmented_progress",
@@ -355,6 +368,7 @@ export class ActivitySmith {
   public readonly notifications: NotificationsResource;
   public readonly liveActivities: LiveActivitiesResource;
   public readonly metrics: MetricsResource;
+  private readonly appIconBadgesApi: AppIconBadgesApi;
 
   constructor(opts: ActivitySmithOptions) {
     if (!opts?.apiKey) {
@@ -372,5 +386,22 @@ export class ActivitySmith {
     this.notifications = new NotificationsResource(new PushNotificationsApi(config));
     this.liveActivities = new LiveActivitiesResource(new LiveActivitiesApi(config));
     this.metrics = new MetricsResource(new MetricsApi(config));
+    this.appIconBadgesApi = new AppIconBadgesApi(config);
+  }
+
+  badgeCount(
+    badge: number,
+    options: BadgeCountOptions = {},
+    initOverrides?: AppIconBadgeInitOverrides,
+  ) {
+    return this.appIconBadgesApi.updateAppIconBadgeCount(
+      {
+        appIconBadgeCountUpdateRequest: withTargetChannels({
+          badge,
+          ...options,
+        }) as AppIconBadgeRequestBody,
+      },
+      initOverrides,
+    );
   }
 }
