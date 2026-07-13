@@ -76,7 +76,7 @@ export interface AlertPayload {
     body?: string;
 }
 /**
- * App Icon Badge Count update. Send badge 0 to clear the count.
+ * 
  * @export
  * @interface AppIconBadgeCountUpdateRequest
  */
@@ -868,7 +868,7 @@ export interface LiveActivityEndRequest {
      */
     action?: LiveActivityAction;
     /**
-     * Optional secondary action button. Supported only for alert, progress, and segmented_progress Live Activities. Uses the same open_url, shortcuts://, and webhook shapes as action.
+     * Optional secondary action button. Supported for alert, progress, and segmented_progress Live Activities. Uses the same open_url, shortcuts://, and webhook shapes as action.
      * @type {LiveActivityAction}
      * @memberof LiveActivityEndRequest
      */
@@ -961,7 +961,7 @@ export interface LiveActivityStartRequest {
      */
     action?: LiveActivityAction;
     /**
-     * Optional secondary action button. Supported only for alert, progress, and segmented_progress Live Activities. Uses the same open_url, shortcuts://, and webhook shapes as action.
+     * Optional secondary action button. Supported for alert, progress, and segmented_progress Live Activities. Uses the same open_url, shortcuts://, and webhook shapes as action.
      * @type {LiveActivityAction}
      * @memberof LiveActivityStartRequest
      */
@@ -1041,7 +1041,7 @@ export interface LiveActivityStreamDeleteRequest {
      */
     action?: LiveActivityAction;
     /**
-     * Optional secondary action button. Supported only for alert, progress, and segmented_progress Live Activities. Uses the same open_url, shortcuts://, and webhook shapes as action.
+     * Optional secondary action button. Supported for alert, progress, and segmented_progress Live Activities. Uses the same open_url, shortcuts://, and webhook shapes as action.
      * @type {LiveActivityAction}
      * @memberof LiveActivityStreamDeleteRequest
      */
@@ -1212,7 +1212,7 @@ export interface LiveActivityStreamRequest {
      */
     action?: LiveActivityAction;
     /**
-     * Optional secondary action button. Supported only for alert, progress, and segmented_progress Live Activities. Uses the same open_url, shortcuts://, and webhook shapes as action.
+     * Optional secondary action button. Supported for alert, progress, and segmented_progress Live Activities. Uses the same open_url, shortcuts://, and webhook shapes as action.
      * @type {LiveActivityAction}
      * @memberof LiveActivityStreamRequest
      */
@@ -1261,7 +1261,7 @@ export interface LiveActivityUpdateRequest {
      */
     action?: LiveActivityAction;
     /**
-     * Optional secondary action button. Supported only for alert, progress, and segmented_progress Live Activities. Uses the same open_url, shortcuts://, and webhook shapes as action.
+     * Optional secondary action button. Supported for alert, progress, and segmented_progress Live Activities. Uses the same open_url, shortcuts://, and webhook shapes as action.
      * @type {LiveActivityAction}
      * @memberof LiveActivityUpdateRequest
      */

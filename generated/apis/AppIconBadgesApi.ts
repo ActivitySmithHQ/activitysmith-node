@@ -33,8 +33,8 @@ export interface UpdateAppIconBadgeCountRequest {
 export class AppIconBadgesApi extends runtime.BaseAPI {
 
     /**
-     * Updates the App Icon Badge Count on devices matched by API key scope and optional target channels. Send `badge: 0` to clear the count. Badge updates are independent of push notifications and do not create a push notification history item.
-     * Update App Icon Badge Count
+     * Shows a number on the ActivitySmith app icon.
+     * Set App Icon Badge Count
      */
     async updateAppIconBadgeCountRaw(requestParameters: UpdateAppIconBadgeCountRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AppIconBadgeCountUpdateResponse>> {
         if (requestParameters['appIconBadgeCountUpdateRequest'] == null) {
@@ -70,8 +70,8 @@ export class AppIconBadgesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Updates the App Icon Badge Count on devices matched by API key scope and optional target channels. Send `badge: 0` to clear the count. Badge updates are independent of push notifications and do not create a push notification history item.
-     * Update App Icon Badge Count
+     * Shows a number on the ActivitySmith app icon.
+     * Set App Icon Badge Count
      */
     async updateAppIconBadgeCount(requestParameters: UpdateAppIconBadgeCountRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AppIconBadgeCountUpdateResponse> {
         const response = await this.updateAppIconBadgeCountRaw(requestParameters, initOverrides);
