@@ -23,6 +23,7 @@ See [API reference](https://activitysmith.com/docs/api-reference/introduction)
 - [Widgets](#widgets)
 - [App Icon Badge Count](#app-icon-badge-count)
 - [Channels](#channels)
+- [Tags](#tags)
 
 ## Installation
 
@@ -546,6 +547,18 @@ await activitysmith.liveActivities.start({
 ```ts
 await activitysmith.badgeCount(3, {
   channels: ["sales", "customer-success"],
+});
+```
+
+## Tags
+
+Use `tags` to organize and filter your Push Notification and Live Activity history. Tags are created automatically when you first use them.
+
+```ts
+await activitysmith.notifications.send({
+  title: "New subscription 💸",
+  message: "Customer upgraded to Pro plan",
+  tags: ["user:382", "billing"],
 });
 ```
 
