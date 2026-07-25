@@ -49,6 +49,31 @@ describe("resource wrappers", () => {
     );
   });
 
+  it("passes tags through notifications.send", async () => {
+    const ActivitySmith = require("../dist/src/index.js");
+    const generated = require("../dist/generated/index.js");
+
+    const sendSpy = vi
+      .spyOn(generated.PushNotificationsApi.prototype, "sendPushNotification")
+      .mockResolvedValue({ success: true });
+
+    const client = new ActivitySmith({ apiKey: "test" });
+    await client.notifications.send({
+      title: "Build Failed",
+      tags: ["user:382", "environment:production"],
+    });
+
+    expect(sendSpy).toHaveBeenCalledWith(
+      {
+        pushNotificationRequest: {
+          title: "Build Failed",
+          tags: ["user:382", "environment:production"],
+        },
+      },
+      undefined,
+    );
+  });
+
   it("preserves media and redirection for notifications.send", async () => {
     const ActivitySmith = require("../dist/src/index.js");
     const generated = require("../dist/generated/index.js");
@@ -288,6 +313,41 @@ describe("resource wrappers", () => {
     );
   });
 
+  it("passes tags through liveActivities.start", async () => {
+    const ActivitySmith = require("../dist/src/index.js");
+    const generated = require("../dist/generated/index.js");
+
+    const startSpy = vi
+      .spyOn(generated.LiveActivitiesApi.prototype, "startLiveActivity")
+      .mockResolvedValue({ activity_id: "act-1" });
+
+    const client = new ActivitySmith({ apiKey: "test" });
+    await client.liveActivities.start({
+      content_state: {
+        title: "Deploy",
+        number_of_steps: 4,
+        current_step: 1,
+        type: "segmented_progress",
+      },
+      tags: ["user:382", "deployment"],
+    });
+
+    expect(startSpy).toHaveBeenCalledWith(
+      {
+        liveActivityStartRequest: {
+          content_state: {
+            title: "Deploy",
+            number_of_steps: 4,
+            current_step: 1,
+            type: "segmented_progress",
+          },
+          tags: ["user:382", "deployment"],
+        },
+      },
+      undefined,
+    );
+  });
+
   it("passes through progress content_state without segmented fields", async () => {
     const ActivitySmith = require("../dist/src/index.js");
     const generated = require("../dist/generated/index.js");
@@ -519,6 +579,40 @@ describe("resource wrappers", () => {
       undefined,
     );
     expect(endStreamSpy).toHaveBeenCalledWith({ streamKey: "prod-web-1" }, undefined);
+  });
+
+  it("passes tags through liveActivities.stream", async () => {
+    const ActivitySmith = require("../dist/src/index.js");
+    const generated = require("../dist/generated/index.js");
+
+    const streamSpy = vi
+      .spyOn(generated.LiveActivitiesApi.prototype, "reconcileLiveActivityStream")
+      .mockResolvedValue({ operation: "started", stream_key: "prod-web-1" });
+
+    const client = new ActivitySmith({ apiKey: "test" });
+    await client.liveActivities.stream("prod-web-1", {
+      content_state: {
+        title: "Server Health",
+        type: "metrics",
+        metrics: [{ label: "CPU", value: 9, unit: "%" }],
+      },
+      tags: ["user:382", "environment:production"],
+    });
+
+    expect(streamSpy).toHaveBeenCalledWith(
+      {
+        streamKey: "prod-web-1",
+        liveActivityStreamRequest: {
+          content_state: {
+            title: "Server Health",
+            type: "metrics",
+            metrics: [{ label: "CPU", value: 9, unit: "%" }],
+          },
+          tags: ["user:382", "environment:production"],
+        },
+      },
+      undefined,
+    );
   });
 
   it("keeps long stream aliases working", async () => {

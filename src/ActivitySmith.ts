@@ -36,7 +36,8 @@ type AppIconBadgeRequestBody =
   Parameters<AppIconBadgesApi["updateAppIconBadgeCount"]>[0]["appIconBadgeCountUpdateRequest"];
 type AppIconBadgeInitOverrides = Parameters<AppIconBadgesApi["updateAppIconBadgeCount"]>[1];
 type ChannelTargetInput = { channels?: string[] };
-type PushSendRequest = PushRequestBody & { channels?: string[] };
+type HistoryTagsInput = { tags?: string[] };
+type PushSendRequest = PushRequestBody & { channels?: string[] } & HistoryTagsInput;
 
 export type BadgeCountOptions = {
   channels?: string[];
@@ -86,7 +87,7 @@ type LiveActivityAlertBadgeOptions = {
 type LiveStartSendRequest = Omit<StartRequestBody, "content_state"> & {
   content_state: LiveActivityContentState;
   channels?: string[];
-};
+} & HistoryTagsInput;
 type LiveUpdateSendRequest = Omit<UpdateRequestBody, "content_state"> & {
   content_state: LiveActivityContentState;
 };
@@ -96,7 +97,7 @@ type LiveEndSendRequest = Omit<EndRequestBody, "content_state"> & {
 type LiveStreamSendRequest = Omit<StreamRequestBody, "content_state"> & {
   content_state: LiveActivityContentState;
   channels?: string[];
-};
+} & HistoryTagsInput;
 type LiveStreamDeleteSendRequest = Omit<StreamDeleteRequestBody, "content_state"> & {
   content_state?: LiveActivityContentState;
 };
