@@ -76,7 +76,7 @@ export interface AlertPayload {
     body?: string;
 }
 /**
- * App Icon Badge Count update. Send badge 0 to clear the count.
+ * 
  * @export
  * @interface AppIconBadgeCountUpdateRequest
  */
@@ -757,7 +757,7 @@ export interface LiveActivityAction {
      */
     type: LiveActivityActionType;
     /**
-     * Action URL. For open_url, use an HTTPS URL or a shortcuts://run-shortcut?name=... URL that runs a specific iPhone Shortcut. For webhook, use an HTTPS URL called by the ActivitySmith backend.
+     * Action URL. For open_url, use an HTTP or HTTPS URL or a shortcuts://run-shortcut?name=... URL that runs a specific iPhone Shortcut. For webhook, use an HTTPS URL called by the ActivitySmith backend.
      * @type {string}
      * @memberof LiveActivityAction
      */
@@ -868,7 +868,7 @@ export interface LiveActivityEndRequest {
      */
     action?: LiveActivityAction;
     /**
-     * Optional secondary action button. Supported only for alert, progress, and segmented_progress Live Activities. Uses the same open_url, shortcuts://, and webhook shapes as action.
+     * Optional secondary action button. Supported for alert, progress, and segmented_progress Live Activities. Uses the same open_url, shortcuts://, and webhook shapes as action.
      * @type {LiveActivityAction}
      * @memberof LiveActivityEndRequest
      */
@@ -961,7 +961,7 @@ export interface LiveActivityStartRequest {
      */
     action?: LiveActivityAction;
     /**
-     * Optional secondary action button. Supported only for alert, progress, and segmented_progress Live Activities. Uses the same open_url, shortcuts://, and webhook shapes as action.
+     * Optional secondary action button. Supported for alert, progress, and segmented_progress Live Activities. Uses the same open_url, shortcuts://, and webhook shapes as action.
      * @type {LiveActivityAction}
      * @memberof LiveActivityStartRequest
      */
@@ -978,6 +978,12 @@ export interface LiveActivityStartRequest {
      * @memberof LiveActivityStartRequest
      */
     target?: ChannelTarget;
+    /**
+     * Optional tags to organize and filter notification history.
+     * @type {Array<string>}
+     * @memberof LiveActivityStartRequest
+     */
+    tags?: Array<string>;
 }
 /**
  * Returned after a Live Activity starts. Save activity_id and use it for all later updates and for the final end call.
@@ -1016,6 +1022,12 @@ export interface LiveActivityStartResponse {
      */
     effective_channel_slugs?: Array<string>;
     /**
+     * Optional tags to organize and filter notification history.
+     * @type {Array<string>}
+     * @memberof LiveActivityStartResponse
+     */
+    tags?: Array<string>;
+    /**
      * 
      * @type {string}
      * @memberof LiveActivityStartResponse
@@ -1041,7 +1053,7 @@ export interface LiveActivityStreamDeleteRequest {
      */
     action?: LiveActivityAction;
     /**
-     * Optional secondary action button. Supported only for alert, progress, and segmented_progress Live Activities. Uses the same open_url, shortcuts://, and webhook shapes as action.
+     * Optional secondary action button. Supported for alert, progress, and segmented_progress Live Activities. Uses the same open_url, shortcuts://, and webhook shapes as action.
      * @type {LiveActivityAction}
      * @memberof LiveActivityStreamDeleteRequest
      */
@@ -1173,6 +1185,12 @@ export interface LiveActivityStreamPutResponse {
      */
     effective_channel_slugs?: Array<string>;
     /**
+     * Optional tags to organize and filter notification history.
+     * @type {Array<string>}
+     * @memberof LiveActivityStreamPutResponse
+     */
+    tags?: Array<string>;
+    /**
      * 
      * @type {string}
      * @memberof LiveActivityStreamPutResponse
@@ -1212,7 +1230,7 @@ export interface LiveActivityStreamRequest {
      */
     action?: LiveActivityAction;
     /**
-     * Optional secondary action button. Supported only for alert, progress, and segmented_progress Live Activities. Uses the same open_url, shortcuts://, and webhook shapes as action.
+     * Optional secondary action button. Supported for alert, progress, and segmented_progress Live Activities. Uses the same open_url, shortcuts://, and webhook shapes as action.
      * @type {LiveActivityAction}
      * @memberof LiveActivityStreamRequest
      */
@@ -1235,6 +1253,12 @@ export interface LiveActivityStreamRequest {
      * @memberof LiveActivityStreamRequest
      */
     target?: ChannelTarget;
+    /**
+     * Optional tags to organize and filter notification history.
+     * @type {Array<string>}
+     * @memberof LiveActivityStreamRequest
+     */
+    tags?: Array<string>;
 }
 /**
  * Update an existing Live Activity by activity_id.
@@ -1261,7 +1285,7 @@ export interface LiveActivityUpdateRequest {
      */
     action?: LiveActivityAction;
     /**
-     * Optional secondary action button. Supported only for alert, progress, and segmented_progress Live Activities. Uses the same open_url, shortcuts://, and webhook shapes as action.
+     * Optional secondary action button. Supported for alert, progress, and segmented_progress Live Activities. Uses the same open_url, shortcuts://, and webhook shapes as action.
      * @type {LiveActivityAction}
      * @memberof LiveActivityUpdateRequest
      */
@@ -1436,7 +1460,7 @@ export interface PushNotificationAction {
      */
     type: PushNotificationActionType;
     /**
-     * Action URL. For open_url, use an HTTPS URL or a shortcuts://run-shortcut?name=... URL that runs a specific iPhone Shortcut. For webhook, use an HTTPS URL called by the ActivitySmith backend.
+     * Action URL. For open_url, use an HTTP or HTTPS URL or a shortcuts://run-shortcut?name=... URL that runs a specific iPhone Shortcut. For webhook, use an HTTPS URL called by the ActivitySmith backend.
      * @type {string}
      * @memberof PushNotificationAction
      */
@@ -1497,7 +1521,7 @@ export interface PushNotificationRequest {
      */
     media?: string;
     /**
-     * Optional HTTPS URL or shortcuts://run-shortcut?name=... URL opened when the user taps the notification body. Use shortcuts://run-shortcut?name=... to run a specific iPhone Shortcut that already exists on the user's device. Overrides the default tap target from `media` when both are provided.
+     * Optional HTTP URL, HTTPS URL, or shortcuts://run-shortcut?name=... URL opened when the user taps the notification body. Use shortcuts://run-shortcut?name=... to run a specific iPhone Shortcut that already exists on the user's device. Overrides the default tap target from `media` when both are provided.
      * @type {string}
      * @memberof PushNotificationRequest
      */
@@ -1532,6 +1556,12 @@ export interface PushNotificationRequest {
      * @memberof PushNotificationRequest
      */
     target?: ChannelTarget;
+    /**
+     * Optional tags to organize and filter notification history.
+     * @type {Array<string>}
+     * @memberof PushNotificationRequest
+     */
+    tags?: Array<string>;
 }
 /**
  * 
@@ -1563,6 +1593,12 @@ export interface PushNotificationResponse {
      * @memberof PushNotificationResponse
      */
     effective_channel_slugs?: Array<string>;
+    /**
+     * Optional tags to organize and filter notification history.
+     * @type {Array<string>}
+     * @memberof PushNotificationResponse
+     */
+    tags?: Array<string>;
     /**
      * 
      * @type {string}
