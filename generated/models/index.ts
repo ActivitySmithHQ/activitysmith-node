@@ -78,6 +78,79 @@ export interface AlertPayload {
 /**
  * 
  * @export
+ * @interface AppIconBadgeCountUpdateError
+ */
+export interface AppIconBadgeCountUpdateError {
+    /**
+     * 
+     * @type {string}
+     * @memberof AppIconBadgeCountUpdateError
+     */
+    error: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof AppIconBadgeCountUpdateError
+     */
+    code: AppIconBadgeCountUpdateErrorCodeEnum;
+    /**
+     * 
+     * @type {string}
+     * @memberof AppIconBadgeCountUpdateError
+     */
+    message: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof AppIconBadgeCountUpdateError
+     */
+    badge: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof AppIconBadgeCountUpdateError
+     */
+    devices_targeted?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof AppIconBadgeCountUpdateError
+     */
+    devices_updated: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof AppIconBadgeCountUpdateError
+     */
+    users_updated?: number;
+    /**
+     * Deprecated compatibility alias for devices_updated.
+     * @type {number}
+     * @memberof AppIconBadgeCountUpdateError
+     * @deprecated
+     */
+    devices_notified?: number;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof AppIconBadgeCountUpdateError
+     */
+    effective_channel_slugs?: Array<string>;
+}
+
+
+/**
+ * @export
+ */
+export const AppIconBadgeCountUpdateErrorCodeEnum = {
+    DeviceDisconnected: 'badge_device_disconnected',
+    UpdateFailed: 'badge_update_failed'
+} as const;
+export type AppIconBadgeCountUpdateErrorCodeEnum = typeof AppIconBadgeCountUpdateErrorCodeEnum[keyof typeof AppIconBadgeCountUpdateErrorCodeEnum];
+
+/**
+ * 
+ * @export
  * @interface AppIconBadgeCountUpdateRequest
  */
 export interface AppIconBadgeCountUpdateRequest {
@@ -113,17 +186,31 @@ export interface AppIconBadgeCountUpdateResponse {
      */
     badge: number;
     /**
-     * 
+     * Number of devices whose App Icon Badge Count was updated.
      * @type {number}
      * @memberof AppIconBadgeCountUpdateResponse
      */
-    devices_notified: number;
+    devices_updated: number;
     /**
-     * 
+     * Number of account users with at least one updated device.
      * @type {number}
      * @memberof AppIconBadgeCountUpdateResponse
      */
-    users_notified: number;
+    users_updated: number;
+    /**
+     * Deprecated compatibility alias for devices_updated.
+     * @type {number}
+     * @memberof AppIconBadgeCountUpdateResponse
+     * @deprecated
+     */
+    devices_notified?: number;
+    /**
+     * Deprecated compatibility alias for users_updated.
+     * @type {number}
+     * @memberof AppIconBadgeCountUpdateResponse
+     * @deprecated
+     */
+    users_notified?: number;
     /**
      * 
      * @type {Array<string>}
@@ -936,11 +1023,23 @@ export interface LiveActivityLimitError {
      */
     limit: number;
     /**
-     * Current number of active Live Activities.
+     * Highest number of active Live Activities among the targeted devices.
      * @type {number}
      * @memberof LiveActivityLimitError
      */
     active: number;
+    /**
+     * Number of targeted devices that have reached the enforced iOS Live Activity concurrency threshold. Included only when targeted devices have mixed capacity.
+     * @type {number}
+     * @memberof LiveActivityLimitError
+     */
+    blocked_devices?: number;
+    /**
+     * Total number of targeted devices. Included only when targeted devices have mixed capacity.
+     * @type {number}
+     * @memberof LiveActivityLimitError
+     */
+    targeted_devices?: number;
 }
 /**
  * Start a new Live Activity. The response includes activity_id for later update and end calls.
@@ -1835,3 +1934,9 @@ export const StreamContentStateStepColorsEnum = {
 } as const;
 export type StreamContentStateStepColorsEnum = typeof StreamContentStateStepColorsEnum[keyof typeof StreamContentStateStepColorsEnum];
 
+/**
+ * @type UpdateAppIconBadgeCount422Response
+ * 
+ * @export
+ */
+export type UpdateAppIconBadgeCount422Response = AppIconBadgeCountUpdateError | NoRecipientsError;
