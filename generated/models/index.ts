@@ -936,11 +936,11 @@ export interface LiveActivityLimitError {
      */
     limit: number;
     /**
-     * Current number of active Live Activities.
+     * Number of targeted devices that have reached the enforced iOS Live Activity concurrency threshold.
      * @type {number}
      * @memberof LiveActivityLimitError
      */
-    active: number;
+    blocked_devices: number;
 }
 /**
  * Start a new Live Activity. The response includes activity_id for later update and end calls.
