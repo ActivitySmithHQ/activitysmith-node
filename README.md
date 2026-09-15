@@ -508,6 +508,26 @@ Pass `0` to clear the badge.
 await activitysmith.badgeCount(0);
 ```
 
+## Metadata
+
+Metadata adds information to Push Notification and Live Activity details in ActivitySmith. It does not appear in the notification or Live Activity on your device.
+
+```js
+await activitysmith.notifications.send({
+  title: "New subscription 💸",
+  metadata: { customer_id: "382", plan: "Pro", amount: 29, trial: false },
+});
+
+await activitysmith.liveActivities.stream("customer-import", {
+  content_state: { title: "Customer Import", type: "progress", percentage: 60 },
+  metadata: { job_id: "import-382", records: 1200 },
+});
+```
+
+Supported on Push Notifications, Live Activity streams (including stream ending), and legacy `start`, `update`, and `end` calls. On updates or end calls, omit `metadata` to keep it, supply an object to replace it, or send `{}` to clear it.
+
+Values can be strings, numbers, or booleans. Metadata supports up to 50 entries and 16 KB of JSON, with keys up to 100 characters and strings up to 4,000 characters. Nested objects, arrays, and null values are not supported.
+
 ## Tags
 
 Use `tags` to organize and filter your Push Notification and Live Activity history. Tags are created automatically when you first use them.
@@ -531,26 +551,6 @@ await activitysmith.liveActivities.update({
 ```
 
 `endStream` also accepts final Tags and Metadata. Omit them to preserve existing values, or supply empty collections to clear them.
-
-## Metadata
-
-Metadata adds information to Push Notification and Live Activity details in ActivitySmith. It does not appear in the notification or Live Activity on your device.
-
-```js
-await activitysmith.notifications.send({
-  title: "New subscription 💸",
-  metadata: { customer_id: "382", plan: "Pro", amount: 29, trial: false },
-});
-
-await activitysmith.liveActivities.stream("customer-import", {
-  content_state: { title: "Customer Import", type: "progress", percentage: 60 },
-  metadata: { job_id: "import-382", records: 1200 },
-});
-```
-
-Supported on Push Notifications, Live Activity streams (including stream ending), and legacy `start`, `update`, and `end` calls. On updates or end calls, omit `metadata` to keep it, supply an object to replace it, or send `{}` to clear it.
-
-Values can be strings, numbers, or booleans. Metadata supports up to 50 entries and 16 KB of JSON, with keys up to 100 characters and strings up to 4,000 characters. Nested objects, arrays, and null values are not supported.
 
 ## Channels
 
