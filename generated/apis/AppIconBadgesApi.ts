@@ -15,12 +15,13 @@
 
 import * as runtime from '../runtime';
 import type {
+  AppIconBadgeCountUpdateError,
   AppIconBadgeCountUpdateRequest,
   AppIconBadgeCountUpdateResponse,
   BadRequestError,
   ForbiddenError,
-  NoRecipientsError,
   RateLimitError,
+  UpdateAppIconBadgeCount422Response,
 } from '../models/index';
 
 export interface UpdateAppIconBadgeCountRequest {
