@@ -1,6 +1,6 @@
 {
   "name": "activitysmith",
-  "version": "1.10.0",
+  "version": "1.11.0",
   "description": "Official ActivitySmith Node.js SDK",
   "keywords": [
     "activitysmith",
@@ -44,7 +44,7 @@
     "node": ">=18"
   },
   "scripts": {
-    "clean": "tsc -b --clean",
+    "clean": "tsc -b --clean && node -e \"require('node:fs').rmSync('dist', { recursive: true, force: true })\"",
     "build": "npm run clean && tsc -b",
     "prepublishOnly": "npm run build",
     "test": "npm run build && vitest run"

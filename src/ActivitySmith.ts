@@ -6,12 +6,17 @@ import {
   PushNotificationsApi,
 } from "../generated/index";
 
-const SDK_VERSION = "1.10.0";
+const SDK_VERSION = "1.11.0";
 const SDK_HEADER_NAME = "X-ActivitySmith-SDK";
-const SDK_HEADER_VALUE = `node-v${SDK_VERSION}`;
+const DEFAULT_SDK_NAME = "node";
+const SDK_HEADER_VALUE = `${DEFAULT_SDK_NAME}-v${SDK_VERSION}`;
 
 export interface ActivitySmithOptions {
   apiKey: string;
+  sdk?: {
+    name: string;
+    version: string;
+  };
 }
 
 type PushRequestBody = Parameters<PushNotificationsApi["sendPushNotification"]>[0]["pushNotificationRequest"];
@@ -121,6 +126,24 @@ function compactObject<T extends Record<string, unknown>>(value: T): T {
   return Object.fromEntries(
     Object.entries(value).filter(([, entryValue]) => entryValue !== undefined),
   ) as T;
+}
+
+function sdkHeaderValue(sdk: ActivitySmithOptions["sdk"]): string {
+  if (!sdk) {
+    return SDK_HEADER_VALUE;
+  }
+
+  const name = sdk.name.trim().toLowerCase();
+  const version = sdk.version.trim();
+
+  if (!/^[a-z][a-z0-9]*$/.test(name)) {
+    throw new Error("ActivitySmith: sdk.name must start with a letter and contain only letters and numbers");
+  }
+  if (!version) {
+    throw new Error("ActivitySmith: sdk.version is required");
+  }
+
+  return `${name}-v${version}`;
 }
 
 function contentState(value: LiveActivityContentState): LiveActivityContentState {
@@ -379,7 +402,7 @@ export class ActivitySmith {
     const config = new Configuration({
       accessToken: opts.apiKey,
       headers: {
-        [SDK_HEADER_NAME]: SDK_HEADER_VALUE,
+        [SDK_HEADER_NAME]: sdkHeaderValue(opts.sdk),
       },
     });
 

@@ -78,6 +78,79 @@ export interface AlertPayload {
 /**
  * 
  * @export
+ * @interface AppIconBadgeCountUpdateError
+ */
+export interface AppIconBadgeCountUpdateError {
+    /**
+     * 
+     * @type {string}
+     * @memberof AppIconBadgeCountUpdateError
+     */
+    error: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof AppIconBadgeCountUpdateError
+     */
+    code: AppIconBadgeCountUpdateErrorCodeEnum;
+    /**
+     * 
+     * @type {string}
+     * @memberof AppIconBadgeCountUpdateError
+     */
+    message: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof AppIconBadgeCountUpdateError
+     */
+    badge: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof AppIconBadgeCountUpdateError
+     */
+    devices_targeted?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof AppIconBadgeCountUpdateError
+     */
+    devices_updated: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof AppIconBadgeCountUpdateError
+     */
+    users_updated?: number;
+    /**
+     * Deprecated compatibility alias for devices_updated.
+     * @type {number}
+     * @memberof AppIconBadgeCountUpdateError
+     * @deprecated
+     */
+    devices_notified?: number;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof AppIconBadgeCountUpdateError
+     */
+    effective_channel_slugs?: Array<string>;
+}
+
+
+/**
+ * @export
+ */
+export const AppIconBadgeCountUpdateErrorCodeEnum = {
+    DeviceDisconnected: 'badge_device_disconnected',
+    UpdateFailed: 'badge_update_failed'
+} as const;
+export type AppIconBadgeCountUpdateErrorCodeEnum = typeof AppIconBadgeCountUpdateErrorCodeEnum[keyof typeof AppIconBadgeCountUpdateErrorCodeEnum];
+
+/**
+ * 
+ * @export
  * @interface AppIconBadgeCountUpdateRequest
  */
 export interface AppIconBadgeCountUpdateRequest {
@@ -113,17 +186,31 @@ export interface AppIconBadgeCountUpdateResponse {
      */
     badge: number;
     /**
-     * 
+     * Number of devices whose App Icon Badge Count was updated.
      * @type {number}
      * @memberof AppIconBadgeCountUpdateResponse
      */
-    devices_notified: number;
+    devices_updated: number;
     /**
-     * 
+     * Number of account users with at least one updated device.
      * @type {number}
      * @memberof AppIconBadgeCountUpdateResponse
      */
-    users_notified: number;
+    users_updated: number;
+    /**
+     * Deprecated compatibility alias for devices_updated.
+     * @type {number}
+     * @memberof AppIconBadgeCountUpdateResponse
+     * @deprecated
+     */
+    devices_notified?: number;
+    /**
+     * Deprecated compatibility alias for users_updated.
+     * @type {number}
+     * @memberof AppIconBadgeCountUpdateResponse
+     * @deprecated
+     */
+    users_notified?: number;
     /**
      * 
      * @type {Array<string>}
@@ -850,11 +937,23 @@ export type LiveActivityColor = typeof LiveActivityColor[keyof typeof LiveActivi
  */
 export interface LiveActivityEndRequest {
     /**
+     * Additional information shown in notification and Live Activity details in ActivitySmith. Not displayed in the Push Notification or Live Activity on the device. Values must be strings, finite numbers, or booleans. At most 50 entries and 16 KB of serialized UTF-8 JSON. Omit on updates to preserve existing Metadata; send {} to clear it.
+     * @type {{ [key: string]: MetadataValue; }}
+     * @memberof LiveActivityEndRequest
+     */
+    metadata?: { [key: string]: MetadataValue; };
+    /**
      * 
      * @type {string}
      * @memberof LiveActivityEndRequest
      */
     activity_id: string;
+    /**
+     * Tags for notification history. Omit to keep existing Tags, supply an array to replace them, or send an empty array to clear them.
+     * @type {Array<string>}
+     * @memberof LiveActivityEndRequest
+     */
+    tags?: Array<string>;
     /**
      * 
      * @type {ContentStateEnd}
@@ -936,11 +1035,23 @@ export interface LiveActivityLimitError {
      */
     limit: number;
     /**
-     * Current number of active Live Activities.
+     * Highest number of active Live Activities among the targeted devices.
      * @type {number}
      * @memberof LiveActivityLimitError
      */
     active: number;
+    /**
+     * Number of targeted devices that have reached the enforced iOS Live Activity concurrency threshold. Included only when targeted devices have mixed capacity.
+     * @type {number}
+     * @memberof LiveActivityLimitError
+     */
+    blocked_devices?: number;
+    /**
+     * Total number of targeted devices. Included only when targeted devices have mixed capacity.
+     * @type {number}
+     * @memberof LiveActivityLimitError
+     */
+    targeted_devices?: number;
 }
 /**
  * Start a new Live Activity. The response includes activity_id for later update and end calls.
@@ -948,6 +1059,12 @@ export interface LiveActivityLimitError {
  * @interface LiveActivityStartRequest
  */
 export interface LiveActivityStartRequest {
+    /**
+     * Additional information shown in notification and Live Activity details in ActivitySmith. Not displayed in the Push Notification or Live Activity on the device. Values must be strings, finite numbers, or booleans. At most 50 entries and 16 KB of serialized UTF-8 JSON. Omit on updates to preserve existing Metadata; send {} to clear it.
+     * @type {{ [key: string]: MetadataValue; }}
+     * @memberof LiveActivityStartRequest
+     */
+    metadata?: { [key: string]: MetadataValue; };
     /**
      * 
      * @type {ContentStateStart}
@@ -1040,6 +1157,18 @@ export interface LiveActivityStartResponse {
  * @interface LiveActivityStreamDeleteRequest
  */
 export interface LiveActivityStreamDeleteRequest {
+    /**
+     * Additional information shown in notification and Live Activity details in ActivitySmith. Not displayed in the Push Notification or Live Activity on the device. Values must be strings, finite numbers, or booleans. At most 50 entries and 16 KB of serialized UTF-8 JSON. Omit on updates to preserve existing Metadata; send {} to clear it.
+     * @type {{ [key: string]: MetadataValue; }}
+     * @memberof LiveActivityStreamDeleteRequest
+     */
+    metadata?: { [key: string]: MetadataValue; };
+    /**
+     * Optional tags to organize and filter notification history.
+     * @type {Array<string>}
+     * @memberof LiveActivityStreamDeleteRequest
+     */
+    tags?: Array<string>;
     /**
      * 
      * @type {StreamContentState}
@@ -1218,6 +1347,12 @@ export type LiveActivityStreamPutResponseOperationEnum = typeof LiveActivityStre
  */
 export interface LiveActivityStreamRequest {
     /**
+     * Additional information shown in notification and Live Activity details in ActivitySmith. Not displayed in the Push Notification or Live Activity on the device. Values must be strings, finite numbers, or booleans. At most 50 entries and 16 KB of serialized UTF-8 JSON. Omit on updates to preserve existing Metadata; send {} to clear it.
+     * @type {{ [key: string]: MetadataValue; }}
+     * @memberof LiveActivityStreamRequest
+     */
+    metadata?: { [key: string]: MetadataValue; };
+    /**
      * 
      * @type {StreamContentState}
      * @memberof LiveActivityStreamRequest
@@ -1267,11 +1402,23 @@ export interface LiveActivityStreamRequest {
  */
 export interface LiveActivityUpdateRequest {
     /**
+     * Additional information shown in notification and Live Activity details in ActivitySmith. Not displayed in the Push Notification or Live Activity on the device. Values must be strings, finite numbers, or booleans. At most 50 entries and 16 KB of serialized UTF-8 JSON. Omit on updates to preserve existing Metadata; send {} to clear it.
+     * @type {{ [key: string]: MetadataValue; }}
+     * @memberof LiveActivityUpdateRequest
+     */
+    metadata?: { [key: string]: MetadataValue; };
+    /**
      * 
      * @type {string}
      * @memberof LiveActivityUpdateRequest
      */
     activity_id: string;
+    /**
+     * Tags for notification history. Omit to keep existing Tags, supply an array to replace them, or send an empty array to clear them.
+     * @type {Array<string>}
+     * @memberof LiveActivityUpdateRequest
+     */
+    tags?: Array<string>;
     /**
      * 
      * @type {ContentStateUpdate}
@@ -1339,6 +1486,12 @@ export const LiveActivityWebhookMethod = {
 } as const;
 export type LiveActivityWebhookMethod = typeof LiveActivityWebhookMethod[keyof typeof LiveActivityWebhookMethod];
 
+/**
+ * @type MetadataValue
+ * 
+ * @export
+ */
+export type MetadataValue = boolean | number | string;
 /**
  * 
  * @export
@@ -1460,7 +1613,7 @@ export interface PushNotificationAction {
      */
     type: PushNotificationActionType;
     /**
-     * Action URL. For open_url, use an HTTP or HTTPS URL or a shortcuts://run-shortcut?name=... URL that runs a specific iPhone Shortcut. For webhook, use an HTTPS URL called by the ActivitySmith backend.
+     * Action URL. For open_url, use HTTP, HTTPS, Shortcuts, or an installed app’s custom URL scheme, such as spotify:// or spotify:track:123. Custom app schemes require iOS 1.13.4 build 2 or later; no web fallback is provided. Internal and executable schemes are blocked. For webhook, use an HTTPS URL called by the ActivitySmith backend.
      * @type {string}
      * @memberof PushNotificationAction
      */
@@ -1497,6 +1650,12 @@ export type PushNotificationActionType = typeof PushNotificationActionType[keyof
 export interface PushNotificationRequest {
     [key: string]: any | any;
     /**
+     * Additional information shown in notification and Live Activity details in ActivitySmith. Not displayed in the Push Notification or Live Activity on the device. Values must be strings, finite numbers, or booleans. At most 50 entries and 16 KB of serialized UTF-8 JSON. Omit on updates to preserve existing Metadata; send {} to clear it.
+     * @type {{ [key: string]: MetadataValue; }}
+     * @memberof PushNotificationRequest
+     */
+    metadata?: { [key: string]: MetadataValue; };
+    /**
      * 
      * @type {string}
      * @memberof PushNotificationRequest
@@ -1521,7 +1680,7 @@ export interface PushNotificationRequest {
      */
     media?: string;
     /**
-     * Optional HTTP URL, HTTPS URL, or shortcuts://run-shortcut?name=... URL opened when the user taps the notification body. Use shortcuts://run-shortcut?name=... to run a specific iPhone Shortcut that already exists on the user's device. Overrides the default tap target from `media` when both are provided.
+     * Optional HTTP, HTTPS, Shortcuts, or installed app URL opened when the user taps the notification body. Custom schemes such as spotify:// and spotify:track:123 require iOS 1.13.4 build 2 or later and an installed handler; no web fallback is provided. Internal and executable schemes are blocked. Overrides the default tap target from media.
      * @type {string}
      * @memberof PushNotificationRequest
      */
@@ -1835,3 +1994,9 @@ export const StreamContentStateStepColorsEnum = {
 } as const;
 export type StreamContentStateStepColorsEnum = typeof StreamContentStateStepColorsEnum[keyof typeof StreamContentStateStepColorsEnum];
 
+/**
+ * @type UpdateAppIconBadgeCount422Response
+ * 
+ * @export
+ */
+export type UpdateAppIconBadgeCount422Response = AppIconBadgeCountUpdateError | NoRecipientsError;
