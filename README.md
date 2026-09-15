@@ -516,12 +516,24 @@ Metadata adds extra information to Push Notification and Live Activity details i
 await activitysmith.notifications.send({
   title: "New subscription 💸",
   message: "Customer upgraded to Pro plan",
-  metadata: { customer_id: "382", plan: "Pro", amount: 29, trial: false },
+  metadata: {
+    customer_id: "382",
+    plan: "Pro",
+    amount: 29,
+    trial: false,
+  },
 });
 
 await activitysmith.liveActivities.stream("customer-import", {
-  content_state: { title: "Customer Import", type: "progress", percentage: 60 },
-  metadata: { job_id: "import-382", records: 1200 },
+  content_state: {
+    title: "Customer Import",
+    type: "progress",
+    percentage: 60,
+  },
+  metadata: {
+    job_id: "import-382",
+    records: 1200,
+  },
 });
 ```
 
