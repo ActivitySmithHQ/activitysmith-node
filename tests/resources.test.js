@@ -806,3 +806,73 @@ describe("resource wrappers", () => {
     expect(updateSpy).toHaveBeenCalledWith(request, undefined);
   });
 });
+
+
+describe("legacy Tags serialization", () => {
+  afterEach(() => vi.unstubAllGlobals());
+  for (const method of ["update", "end"]) {
+    for (const tags of [undefined, ["billing"], []]) {
+      it(`${method} serializes Tags ${JSON.stringify(tags)}`, async () => {
+        const ActivitySmith = require("../dist/src/index.js");
+        let body;
+        vi.stubGlobal("fetch", async (_url, init) => {
+          body = JSON.parse(init.body);
+          return new Response(JSON.stringify({success: true}), {status: 200, headers: {"Content-Type": "application/json"}});
+        });
+        const client = new ActivitySmith({ apiKey: "test" });
+        await client.liveActivities[method]({activity_id: "activity-1", content_state: {title: "Job"}, tags});
+        expect(Object.hasOwn(body, "tags")).toBe(tags !== undefined);
+        expect(body.tags).toEqual(tags);
+      });
+    }
+  }
+});
+
+
+describe("Metadata serialization", () => {
+  afterEach(() => vi.unstubAllGlobals());
+  for (const method of ["send", "start", "update", "end", "stream", "endStream"]) {
+    for (const metadata of [undefined, {}, { order: "382", ready: false, count: 0, empty: "", ratio: 1.25 }]) {
+      it(`${method} preserves Metadata ${JSON.stringify(metadata)}`, async () => {
+        const ActivitySmith = require("../dist/src/index.js");
+        let body;
+        vi.stubGlobal("fetch", async (_url, init) => {
+          body = JSON.parse(init.body);
+          return new Response(JSON.stringify({success: true}), {status: 200, headers: {"Content-Type": "application/json"}});
+        });
+        const client = new ActivitySmith({apiKey: "test"});
+        if (method === "send") await client.notifications.send({title: "Job", metadata});
+        else {
+          const request = {activity_id: "activity-1", content_state: {title: "Job"}, metadata};
+          if (method === "stream" || method === "endStream") await client.liveActivities[method]("job", request);
+          else await client.liveActivities[method](request);
+        }
+        expect(Object.hasOwn(body, "metadata")).toBe(metadata !== undefined);
+        expect(body.metadata).toEqual(metadata);
+        expect(body.content_state?.metadata).toBeUndefined();
+      });
+    }
+  }
+});
+
+
+describe("External URLs and final stream fields", () => {
+  afterEach(() => vi.unstubAllGlobals());
+  it("preserves custom destinations and explicit empty final history fields", async () => {
+    const ActivitySmith = require("../dist/src/index.js");
+    let body;
+    vi.stubGlobal("fetch", async (_url, init) => {
+      body = JSON.parse(init.body);
+      return new Response(JSON.stringify({success:true}), {status:200, headers:{"Content-Type":"application/json"}});
+    });
+    const client = new ActivitySmith({apiKey:"test"});
+    for (const url of ["http://example.com", "https://example.com", "shortcuts://run-shortcut?name=Test", "spotify://", "spotify:track:123"]) {
+      await client.notifications.send({title:"Job",redirection:url,actions:[{title:"Open",type:"open_url",url}]});
+      expect(body.redirection).toBe(url); expect(body.actions[0].url).toBe(url);
+    }
+    for (const tags of [undefined, [], ["finished"]]) {
+      await client.liveActivities.endStream("job", {tags, metadata:{}});
+      expect(body.tags).toEqual(tags); expect(body.metadata).toEqual({});
+    }
+  });
+});

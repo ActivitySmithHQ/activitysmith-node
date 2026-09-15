@@ -4,6 +4,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 const require = createRequire(import.meta.url);
 const packageJson = require("../package.json");
 const expectedSdkHeader = `node-v${packageJson.version}`;
+const expectedCliSdkHeader = `cli-v${packageJson.version}`;
 
 describe("smoke", () => {
   const originalFetch = globalThis.fetch;
@@ -68,5 +69,35 @@ describe("smoke", () => {
     for (const call of fetchSpy.mock.calls) {
       expect(call[1]?.headers?.["X-ActivitySmith-SDK"]).toBe(expectedSdkHeader);
     }
+  });
+
+  it("allows official wrappers to override the SDK tracking identity", async () => {
+    const fetchSpy = vi.fn(async () =>
+      new Response(
+        JSON.stringify({
+          success: true,
+          devices_notified: 1,
+        }),
+        {
+          status: 200,
+          headers: { "content-type": "application/json" },
+        },
+      ),
+    );
+
+    globalThis.fetch = fetchSpy;
+
+    const ActivitySmith = require("../dist/src/index.js");
+    const client = new ActivitySmith({
+      apiKey: "test",
+      sdk: { name: "cli", version: packageJson.version },
+    });
+
+    await client.notifications.send({ title: "Build Failed" });
+
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
+    expect(fetchSpy.mock.calls[0][1]?.headers?.["X-ActivitySmith-SDK"]).toBe(
+      expectedCliSdkHeader,
+    );
   });
 });
