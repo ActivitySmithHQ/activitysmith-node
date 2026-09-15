@@ -515,6 +515,7 @@ Metadata adds extra information to Push Notification and Live Activity details i
 ```js
 await activitysmith.notifications.send({
   title: "New subscription 💸",
+  message: "Customer upgraded to Pro plan",
   metadata: { customer_id: "382", plan: "Pro", amount: 29, trial: false },
 });
 
@@ -547,8 +548,6 @@ await activitysmith.liveActivities.update({
   tags: [],
 });
 ```
-
-`endStream` also accepts final Tags and Metadata. Omit them to preserve existing values, or supply empty collections to clear them.
 
 ## Channels
 
