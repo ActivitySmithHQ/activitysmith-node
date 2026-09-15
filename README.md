@@ -583,7 +583,3 @@ try {
 ### [NPM Package](https://www.npmjs.com/package/activitysmith)
 
 Install the ActivitySmith Node.js SDK from npm
-
-### [Source Code](https://github.com/ActivitySmithHQ/activitysmith-node)
-
-View the Node.js SDK source on GitHub
