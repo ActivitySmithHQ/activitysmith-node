@@ -65,7 +65,15 @@ What will work:
 
 ### Push Notifications with Redirection
 
-Open a web page, an iPhone Shortcut, or an installed app when someone taps the notification. Set `redirection` to an HTTP, HTTPS, or Shortcuts URL, or an app deep link such as `spotify:track:123`.
+Open a web page, run an iOS Shortcut, or open an app when someone taps the notification. `redirection` supports:
+
+- **HTTP/HTTPS:** Web pages, e.g. `https://example.com`
+- **Shortcuts:** Run Jarvis with `shortcuts://run-shortcut?name=Jarvis` <!-- full-width -->
+- **App deep links:** Installed apps or specific content within them
+  - **Spotify:** A track, e.g. `spotify:track:6rqhFgbbKwnb9MLmUQDhG6`
+  - **Termius:** `termius://` to open the app
+  - **Claude:** `claude://code` to open the Code tab
+  - **ChatGPT:** `chatgpt://` to open the app <!-- Verify ChatGPT URL scheme on iOS before publishing -->
 
 ```js
 await activitysmith.notifications.send({
@@ -79,7 +87,17 @@ await activitysmith.notifications.send({
 
 ![Actionable Push Notification with redirection and actions](https://cdn.activitysmith.com/features/actionable-push-notifications-2.png)
 
-For expanded notification actions, `open_url` supports HTTP, HTTPS, Shortcuts, and installed app deep links. Webhooks are executed by the ActivitySmith backend and must use HTTPS. Custom app links require iOS 1.13.4 build 2 or later and an installed app that handles the URL.
+`open_url` actions open a web page, run an iOS Shortcut, or open an app when someone taps the button. Supported links:
+
+- **HTTP/HTTPS:** Web pages, e.g. `https://example.com`
+- **Shortcuts:** Run Jarvis with `shortcuts://run-shortcut?name=Jarvis` <!-- full-width -->
+- **App deep links:** Installed apps or specific content within them
+  - **Spotify:** A track, e.g. `spotify:track:6rqhFgbbKwnb9MLmUQDhG6`
+  - **Termius:** `termius://` to open the app
+  - **Claude:** `claude://code` to open the Code tab
+  - **ChatGPT:** `chatgpt://` to open the app <!-- Verify ChatGPT URL scheme on iOS before publishing -->
+
+Webhooks are executed by the ActivitySmith backend and must use HTTPS.
 
 ```js
 await activitysmith.notifications.send({
@@ -317,11 +335,15 @@ Choose from these colors for the Live Activity accent, including progress bars a
 
 Live Activities can include an action button.
 
-- `open_url`: open an HTTP or HTTPS URL.
-- `open_url` with a `shortcuts://run-shortcut?name=...` URL: run a specific iPhone Shortcut, for example to open an app.
-- `webhook`: trigger a backend GET/POST workflow.
+- `open_url`: Open a web page or run an iOS Shortcut
+- `webhook`: Trigger a backend GET/POST workflow
 
 #### Open URL action
+
+Open a web page or run an iOS Shortcut when someone taps the button. Supported links:
+
+- **HTTP/HTTPS:** Web pages, e.g. `https://example.com`
+- **Shortcuts:** Run Jarvis with `shortcuts://run-shortcut?name=Jarvis` <!-- full-width -->
 
 ```ts
 await activitysmith.liveActivities.stream("prod-web-1", {
