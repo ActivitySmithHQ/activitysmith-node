@@ -132,33 +132,42 @@ await activitysmith.notifications.send({
 
 Choose the Live Activity type that matches what you want to show:
 
-![Stats Live Activity with six labeled sales metrics](https://cdn.activitysmith.com/features/stats-live-activity.png)
+- ![Value Live Activity showing revenue with a growth badge](https://cdn.activitysmith.com/features/value-live-activity.png) **Value**: Show a single value on your Lock Screen, such as revenue, a queue count, or a temperature.
 
-**Stats**: Show up to 8 labeled values on your Lock Screen, from revenue and orders to uptime and conversion.
+- ![Stats Live Activity with six labeled sales metrics](https://cdn.activitysmith.com/features/stats-live-activity.png) **Stats**: Show up to 8 labeled values on your Lock Screen, from revenue and orders to uptime and conversion.
 
-![Metrics Live Activity with CPU and memory values](https://cdn.activitysmith.com/features/metrics-live-activity-start.png)
+- ![Alert Live Activity showing a customer reactivation update](https://cdn.activitysmith.com/features/alert-live-activity.png) **Alert**: Show status updates with a clear message, badge, and icon. When you add an action button, `color` controls the button tint.
 
-**Metrics**: Track two related values with segmented bars, such as CPU and memory.
+- ![Metrics Live Activity with CPU and memory values](https://cdn.activitysmith.com/features/metrics-live-activity-start.png) **Metrics**: Track two related values with segmented bars, such as CPU and memory.
 
-![Segmented Progress Live Activity showing a workflow step](https://cdn.activitysmith.com/features/update-live-activity.png)
+- ![Segmented Progress Live Activity showing a workflow step](https://cdn.activitysmith.com/features/update-live-activity.png) **Segmented Progress**: Show progress through a known set of steps, like build, test, deploy, and verify.
 
-**Segmented Progress**: Show progress through a known set of steps, like build, test, deploy, and verify.
+- ![Progress Live Activity showing percentage completion](https://cdn.activitysmith.com/features/progress-live-activity.png) **Progress**: Show percentage progress for jobs that move continuously toward completion.
 
-![Progress Live Activity showing percentage completion](https://cdn.activitysmith.com/features/progress-live-activity.png)
-
-**Progress**: Show percentage progress for jobs that move continuously toward completion.
-
-![Alert Live Activity showing a customer reactivation update](https://cdn.activitysmith.com/features/alert-live-activity.png)
-
-**Alert**: Show status updates with a clear message, badge, and icon. When you add an action button, `color` controls the button tint.
-
-![Timer Live Activity showing a benchmark run countdown](https://cdn.activitysmith.com/features/timer-live-activity.png)
-
-**Timer**: Count down from a duration, or count up from 00:00 while a job runs.
+- ![Timer Live Activity showing a benchmark run countdown](https://cdn.activitysmith.com/features/timer-live-activity.png) **Timer**: Count down from a duration, or count up from 00:00 while a job runs.
 
 ### Start & Update Live Activity
 
 Use a stable `streamKey` to identify the metric, job, deployment, or system you want to keep visible. The first `stream(...)` call starts the Live Activity. Later calls with the same `streamKey` update it.
+
+#### Value
+
+![Value Live Activity stream example](https://cdn.activitysmith.com/features/value-live-activity.png)
+
+```ts
+await activitysmith.liveActivities.stream("revenue-today", {
+  content_state: ActivitySmith.contentState({
+    title: "Revenue",
+    type: "value",
+    value: "$1,240",
+    color: "green",
+    icon: ActivitySmith.alertIcon("dollarsign.circle", { color: "green" }),
+    badge: ActivitySmith.alertBadge("↑ 18%", { color: "purple" }),
+  }),
+});
+```
+
+Send a string or number in `value`. Strings keep their formatting, including currency symbols, units, and decimal places.
 
 #### Stats
 
@@ -179,6 +188,22 @@ await activitysmith.liveActivities.stream("sales-hourly", {
       { label: "New Buyers", value: "18", color: "cyan" },
     ],
   },
+});
+```
+
+#### Alert
+
+![Alert Live Activity stream example](https://cdn.activitysmith.com/features/alert-live-activity.png)
+
+```ts
+await activitysmith.liveActivities.stream("customer-ops", {
+  content_state: ActivitySmith.contentState({
+    title: "Reactivation",
+    message: "Lumen came back after 2 weeks",
+    type: "alert",
+    icon: ActivitySmith.alertIcon("cloud.sun", { color: "yellow" }),
+    badge: ActivitySmith.alertBadge("Customer", { color: "magenta" }),
+  }),
 });
 ```
 
@@ -231,22 +256,6 @@ await activitysmith.liveActivities.stream("search-reindex", {
 });
 ```
 
-#### Alert
-
-![Alert Live Activity stream example](https://cdn.activitysmith.com/features/alert-live-activity.png)
-
-```ts
-await activitysmith.liveActivities.stream("customer-ops", {
-  content_state: ActivitySmith.contentState({
-    title: "Reactivation",
-    message: "Lumen came back after 2 weeks",
-    type: "alert",
-    icon: ActivitySmith.alertIcon("cloud.sun", { color: "yellow" }),
-    badge: ActivitySmith.alertBadge("Customer", { color: "magenta" }),
-  }),
-});
-```
-
 #### Timer
 
 ![Timer Live Activity stream example](https://cdn.activitysmith.com/features/timer-live-activity.png)
@@ -292,7 +301,7 @@ Add more context to Live Activities with icons and badges.
 
 #### Icon
 
-Supported Live Activity types: `stats`, `metrics`, `progress`, `segmented_progress`, `alert`, and `timer`.
+Supported Live Activity types: `value`, `stats`, `alert`, `metrics`, `segmented_progress`, `progress`, and `timer`.
 
 ![Metrics Live Activity with an SF Symbol icon on the iPhone Lock Screen](https://cdn.activitysmith.com/features/metrics-live-activity-with-icon.png)
 
@@ -319,7 +328,7 @@ The `icon.symbol` value is an Apple SF Symbol name. Browse the catalog with one 
 
 #### Badge
 
-Badges are supported by `alert`, `progress`, and `segmented_progress` Live Activities.
+Badges are supported by `value`, `alert`, `segmented_progress`, and `progress` Live Activities.
 
 ![Progress Live Activity with a badge on the iPhone Lock Screen](https://cdn.activitysmith.com/features/progress-live-activity-with-badge.png)
 
@@ -427,7 +436,7 @@ await activitysmith.liveActivities.stream("search-reindex", {
 
 Use `secondary_action` when you want a second button beside the primary `action`.
 
-The secondary action button is supported for `alert`, `progress`, and `segmented_progress` Live Activities. Both buttons use the same `open_url`, `webhook`, and Apple Shortcut payload shapes.
+The secondary action button is supported for `value`, `alert`, `segmented_progress`, and `progress` Live Activities. Both buttons use the same `open_url`, `webhook`, and Apple Shortcut payload shapes.
 
 ```ts
 await activitysmith.liveActivities.stream("agent-approval", {
@@ -604,3 +613,7 @@ try {
 ### [NPM Package](https://www.npmjs.com/package/activitysmith)
 
 Install the ActivitySmith Node.js SDK from npm
+
+### [Source Code](https://github.com/ActivitySmithHQ/activitysmith-node)
+
+View the Node.js SDK source on GitHub
