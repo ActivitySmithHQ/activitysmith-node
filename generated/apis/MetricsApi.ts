@@ -32,7 +32,7 @@ export interface UpdateMetricValueRequest {
 export class MetricsApi extends runtime.BaseAPI {
 
     /**
-     * Updates the latest value for a metric displayed in ActivitySmith widgets. Create the metric in the web app first, then update its value using the key.
+     * Updates the latest value for a metric displayed in ActivitySmith widgets. Create the metric in the web app first, then update its value using the key. Metric updates have an independent 300-requests-per-minute account allowance. They do not consume the Push Notification, badge, or Live Activity allowances.
      * Update a widget metric value
      */
     async updateMetricValueRaw(requestParameters: UpdateMetricValueRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<MetricValueUpdateResponse>> {
@@ -76,7 +76,7 @@ export class MetricsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Updates the latest value for a metric displayed in ActivitySmith widgets. Create the metric in the web app first, then update its value using the key.
+     * Updates the latest value for a metric displayed in ActivitySmith widgets. Create the metric in the web app first, then update its value using the key. Metric updates have an independent 300-requests-per-minute account allowance. They do not consume the Push Notification, badge, or Live Activity allowances.
      * Update a widget metric value
      */
     async updateMetricValue(requestParameters: UpdateMetricValueRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<MetricValueUpdateResponse> {

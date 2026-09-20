@@ -257,7 +257,7 @@ export interface ChannelTarget {
     channels: Array<string>;
 }
 /**
- * End payload requires title. For segmented_progress include current_step and optionally number_of_steps. For progress include percentage or value with upper_limit. For metrics and stats include a non-empty metrics array. For alert include message. For timer, omit duration_seconds to preserve and freeze the latest timer state. Optional icon is supported by all Live Activity types. Optional badge is supported by alert, progress, and segmented_progress. Type is optional when ending an existing activity. You can send an updated number_of_steps here if the workflow changed after start.
+ * End payload requires title. For segmented_progress include current_step and optionally number_of_steps. For progress include percentage or value with upper_limit. For metrics and stats include a non-empty metrics array. For value include a string or number in value; strings preserve currency, units, and other formatting. For alert include message. For timer, omit duration_seconds to preserve and freeze the latest timer state. Optional icon is supported by all Live Activity types. Optional badge is supported by alert, progress, segmented_progress, and value. Type is optional when ending an existing activity. You can send an updated number_of_steps here if the workflow changed after start.
  * @export
  * @interface ContentStateEnd
  */
@@ -293,11 +293,11 @@ export interface ContentStateEnd {
      */
     percentage?: number;
     /**
-     * Current progress value. Use with upper_limit for type=progress.
-     * @type {number}
+     * For type=value, the required prominent readout (string or finite number); strings preserve exact formatting. For type=progress, a numeric progress value used with upper_limit.
+     * @type {LiveActivityValue}
      * @memberof ContentStateEnd
      */
-    value?: number;
+    value?: LiveActivityValue;
     /**
      * Maximum progress value. Use with value for type=progress.
      * @type {number}
@@ -335,13 +335,13 @@ export interface ContentStateEnd {
      */
     message?: string;
     /**
-     * Optional SF Symbol icon. Supported by alert, progress, segmented_progress, metrics, stats, and timer.
+     * Optional SF Symbol icon. Supported by alert, progress, segmented_progress, metrics, stats, timer, and value.
      * @type {LiveActivityAlertIcon}
      * @memberof ContentStateEnd
      */
     icon?: LiveActivityAlertIcon;
     /**
-     * Optional badge. Supported by alert, progress, and segmented_progress.
+     * Optional badge. Supported by alert, progress, segmented_progress, and value.
      * @type {LiveActivityAlertBadge}
      * @memberof ContentStateEnd
      */
@@ -353,7 +353,7 @@ export interface ContentStateEnd {
      */
     type?: ContentStateEndTypeEnum;
     /**
-     * Optional. Accent color for progress, segmented_progress, metrics, and timer Live Activities. For Alert Live Activities, this tints action and secondary_action buttons when included.
+     * Optional. Accent color for progress, segmented_progress, metrics, timer, and value Live Activities. For Alert Live Activities, this tints action and secondary_action buttons when included.
      * @type {string}
      * @memberof ContentStateEnd
      */
@@ -388,7 +388,8 @@ export const ContentStateEndTypeEnum = {
     Metrics: 'metrics',
     Stats: 'stats',
     Alert: 'alert',
-    Timer: 'timer'
+    Timer: 'timer',
+    Value: 'value'
 } as const;
 export type ContentStateEndTypeEnum = typeof ContentStateEndTypeEnum[keyof typeof ContentStateEndTypeEnum];
 
@@ -444,7 +445,7 @@ export const ContentStateEndStepColorsEnum = {
 export type ContentStateEndStepColorsEnum = typeof ContentStateEndStepColorsEnum[keyof typeof ContentStateEndStepColorsEnum];
 
 /**
- * Start payload requires title and type. For segmented_progress include number_of_steps and current_step. For progress include percentage or value with upper_limit. For metrics and stats include a non-empty metrics array. For alert include message. For timer include duration_seconds for countdowns, or set counts_down false without duration_seconds for an open-ended elapsed timer. Optional icon is supported by all Live Activity types. Optional badge is supported by alert, progress, and segmented_progress. For segmented_progress, number_of_steps is not locked and can be changed in later update or end calls.
+ * Start payload requires title and type. For segmented_progress include number_of_steps and current_step. For progress include percentage or value with upper_limit. For metrics and stats include a non-empty metrics array. For value include a string or number in value; strings preserve currency, units, and other formatting. For alert include message. For timer include duration_seconds for countdowns, or set counts_down false without duration_seconds for an open-ended elapsed timer. Optional icon is supported by all Live Activity types. Optional badge is supported by alert, progress, segmented_progress, and value. For segmented_progress, number_of_steps is not locked and can be changed in later update or end calls.
  * @export
  * @interface ContentStateStart
  */
@@ -480,11 +481,11 @@ export interface ContentStateStart {
      */
     percentage?: number;
     /**
-     * Current progress value. Use with upper_limit for type=progress.
-     * @type {number}
+     * For type=value, the required prominent readout (string or finite number); strings preserve exact formatting. For type=progress, a numeric progress value used with upper_limit.
+     * @type {LiveActivityValue}
      * @memberof ContentStateStart
      */
-    value?: number;
+    value?: LiveActivityValue;
     /**
      * Maximum progress value. Use with value for type=progress.
      * @type {number}
@@ -522,13 +523,13 @@ export interface ContentStateStart {
      */
     message?: string;
     /**
-     * Optional SF Symbol icon. Supported by alert, progress, segmented_progress, metrics, stats, and timer.
+     * Optional SF Symbol icon. Supported by alert, progress, segmented_progress, metrics, stats, timer, and value.
      * @type {LiveActivityAlertIcon}
      * @memberof ContentStateStart
      */
     icon?: LiveActivityAlertIcon;
     /**
-     * Optional badge. Supported by alert, progress, and segmented_progress.
+     * Optional badge. Supported by alert, progress, segmented_progress, and value.
      * @type {LiveActivityAlertBadge}
      * @memberof ContentStateStart
      */
@@ -540,7 +541,7 @@ export interface ContentStateStart {
      */
     type: ContentStateStartTypeEnum;
     /**
-     * Optional. Accent color for progress, segmented_progress, metrics, and timer Live Activities. For Alert Live Activities, this tints action and secondary_action buttons when included.
+     * Optional. Accent color for progress, segmented_progress, metrics, timer, and value Live Activities. For Alert Live Activities, this tints action and secondary_action buttons when included.
      * @type {string}
      * @memberof ContentStateStart
      */
@@ -569,7 +570,8 @@ export const ContentStateStartTypeEnum = {
     Metrics: 'metrics',
     Stats: 'stats',
     Alert: 'alert',
-    Timer: 'timer'
+    Timer: 'timer',
+    Value: 'value'
 } as const;
 export type ContentStateStartTypeEnum = typeof ContentStateStartTypeEnum[keyof typeof ContentStateStartTypeEnum];
 
@@ -625,7 +627,7 @@ export const ContentStateStartStepColorsEnum = {
 export type ContentStateStartStepColorsEnum = typeof ContentStateStartStepColorsEnum[keyof typeof ContentStateStartStepColorsEnum];
 
 /**
- * Update payload requires title. For segmented_progress include current_step and optionally number_of_steps. For progress include percentage or value with upper_limit. For metrics and stats include a non-empty metrics array. For alert include message. For timer, omit duration_seconds to preserve the current timer window or send duration_seconds to reset the timer from the update request time. Optional icon is supported by all Live Activity types. Optional badge is supported by alert, progress, and segmented_progress. Type is optional when updating an existing activity. You can increase or decrease number_of_steps during updates.
+ * Update payload requires title. For segmented_progress include current_step and optionally number_of_steps. For progress include percentage or value with upper_limit. For metrics and stats include a non-empty metrics array. For value include a string or number in value; strings preserve currency, units, and other formatting. For alert include message. For timer, omit duration_seconds to preserve the current timer window or send duration_seconds to reset the timer from the update request time. Optional icon is supported by all Live Activity types. Optional badge is supported by alert, progress, segmented_progress, and value. Type is optional when updating an existing activity. You can increase or decrease number_of_steps during updates.
  * @export
  * @interface ContentStateUpdate
  */
@@ -661,11 +663,11 @@ export interface ContentStateUpdate {
      */
     percentage?: number;
     /**
-     * Current progress value. Use with upper_limit for type=progress.
-     * @type {number}
+     * For type=value, the required prominent readout (string or finite number); strings preserve exact formatting. For type=progress, a numeric progress value used with upper_limit.
+     * @type {LiveActivityValue}
      * @memberof ContentStateUpdate
      */
-    value?: number;
+    value?: LiveActivityValue;
     /**
      * Maximum progress value. Use with value for type=progress.
      * @type {number}
@@ -703,13 +705,13 @@ export interface ContentStateUpdate {
      */
     message?: string;
     /**
-     * Optional SF Symbol icon. Supported by alert, progress, segmented_progress, metrics, stats, and timer.
+     * Optional SF Symbol icon. Supported by alert, progress, segmented_progress, metrics, stats, timer, and value.
      * @type {LiveActivityAlertIcon}
      * @memberof ContentStateUpdate
      */
     icon?: LiveActivityAlertIcon;
     /**
-     * Optional badge. Supported by alert, progress, and segmented_progress.
+     * Optional badge. Supported by alert, progress, segmented_progress, and value.
      * @type {LiveActivityAlertBadge}
      * @memberof ContentStateUpdate
      */
@@ -721,7 +723,7 @@ export interface ContentStateUpdate {
      */
     type?: ContentStateUpdateTypeEnum;
     /**
-     * Optional. Accent color for progress, segmented_progress, metrics, and timer Live Activities. For Alert Live Activities, this tints action and secondary_action buttons when included.
+     * Optional. Accent color for progress, segmented_progress, metrics, timer, and value Live Activities. For Alert Live Activities, this tints action and secondary_action buttons when included.
      * @type {string}
      * @memberof ContentStateUpdate
      */
@@ -750,7 +752,8 @@ export const ContentStateUpdateTypeEnum = {
     Metrics: 'metrics',
     Stats: 'stats',
     Alert: 'alert',
-    Timer: 'timer'
+    Timer: 'timer',
+    Value: 'value'
 } as const;
 export type ContentStateUpdateTypeEnum = typeof ContentStateUpdateTypeEnum[keyof typeof ContentStateUpdateTypeEnum];
 
@@ -825,7 +828,7 @@ export interface ForbiddenError {
     message: string;
 }
 /**
- * Optional action button shown in the Live Activity UI. Use action for the primary button, or secondary_action for a secondary button on alert, progress, and segmented_progress Live Activities.
+ * Optional action button shown in the Live Activity UI. Use action for the primary button, or secondary_action for a secondary button on alert, progress, segmented_progress, and value Live Activities.
  * @export
  * @interface LiveActivityAction
  */
@@ -967,7 +970,7 @@ export interface LiveActivityEndRequest {
      */
     action?: LiveActivityAction;
     /**
-     * Optional secondary action button. Supported for alert, progress, and segmented_progress Live Activities. Uses the same open_url, shortcuts://, and webhook shapes as action.
+     * Optional secondary action button. Supported for alert, progress, segmented_progress, and value Live Activities. Uses the same open_url, shortcuts://, and webhook shapes as action.
      * @type {LiveActivityAction}
      * @memberof LiveActivityEndRequest
      */
@@ -1078,7 +1081,7 @@ export interface LiveActivityStartRequest {
      */
     action?: LiveActivityAction;
     /**
-     * Optional secondary action button. Supported for alert, progress, and segmented_progress Live Activities. Uses the same open_url, shortcuts://, and webhook shapes as action.
+     * Optional secondary action button. Supported for alert, progress, segmented_progress, and value Live Activities. Uses the same open_url, shortcuts://, and webhook shapes as action.
      * @type {LiveActivityAction}
      * @memberof LiveActivityStartRequest
      */
@@ -1182,7 +1185,7 @@ export interface LiveActivityStreamDeleteRequest {
      */
     action?: LiveActivityAction;
     /**
-     * Optional secondary action button. Supported for alert, progress, and segmented_progress Live Activities. Uses the same open_url, shortcuts://, and webhook shapes as action.
+     * Optional secondary action button. Supported for alert, progress, segmented_progress, and value Live Activities. Uses the same open_url, shortcuts://, and webhook shapes as action.
      * @type {LiveActivityAction}
      * @memberof LiveActivityStreamDeleteRequest
      */
@@ -1365,7 +1368,7 @@ export interface LiveActivityStreamRequest {
      */
     action?: LiveActivityAction;
     /**
-     * Optional secondary action button. Supported for alert, progress, and segmented_progress Live Activities. Uses the same open_url, shortcuts://, and webhook shapes as action.
+     * Optional secondary action button. Supported for alert, progress, segmented_progress, and value Live Activities. Uses the same open_url, shortcuts://, and webhook shapes as action.
      * @type {LiveActivityAction}
      * @memberof LiveActivityStreamRequest
      */
@@ -1432,7 +1435,7 @@ export interface LiveActivityUpdateRequest {
      */
     action?: LiveActivityAction;
     /**
-     * Optional secondary action button. Supported for alert, progress, and segmented_progress Live Activities. Uses the same open_url, shortcuts://, and webhook shapes as action.
+     * Optional secondary action button. Supported for alert, progress, segmented_progress, and value Live Activities. Uses the same open_url, shortcuts://, and webhook shapes as action.
      * @type {LiveActivityAction}
      * @memberof LiveActivityUpdateRequest
      */
@@ -1475,6 +1478,12 @@ export interface LiveActivityUpdateResponse {
      */
     timestamp: string;
 }
+/**
+ * @type LiveActivityValue
+ * A formatted string or finite numeric Live Activity value. String formatting is preserved.
+ * @export
+ */
+export type LiveActivityValue = number | string;
 
 /**
  * 
@@ -1787,6 +1796,12 @@ export interface RateLimitError {
      * @type {string}
      * @memberof RateLimitError
      */
+    code?: RateLimitErrorCodeEnum;
+    /**
+     * 
+     * @type {string}
+     * @memberof RateLimitError
+     */
     error: string;
     /**
      * 
@@ -1795,6 +1810,16 @@ export interface RateLimitError {
      */
     message: string;
 }
+
+
+/**
+ * @export
+ */
+export const RateLimitErrorCodeEnum = {
+    RateLimited: 'rate_limited'
+} as const;
+export type RateLimitErrorCodeEnum = typeof RateLimitErrorCodeEnum[keyof typeof RateLimitErrorCodeEnum];
+
 /**
  * @type SendPushNotification429Response
  * 
@@ -1802,7 +1827,7 @@ export interface RateLimitError {
  */
 export type SendPushNotification429Response = LiveActivityLimitError | RateLimitError;
 /**
- * Current state for a managed Live Activity stream. Include type on the first PUT, and whenever the stream may need to start a fresh activity. Supports segmented_progress, progress, metrics, stats, alert, and timer types. For timer, send duration_seconds to start or reset a bounded timer; omit duration_seconds on later updates to preserve the existing timer window.
+ * Current state for a managed Live Activity stream. Include type on the first PUT, and whenever the stream may need to start a fresh activity. Supports segmented_progress, progress, metrics, stats, alert, timer, and value types. For timer, send duration_seconds to start or reset a bounded timer; omit duration_seconds on later updates to preserve the existing timer window.
  * @export
  * @interface StreamContentState
  */
@@ -1838,11 +1863,11 @@ export interface StreamContentState {
      */
     percentage?: number;
     /**
-     * Current progress value. Use with upper_limit for progress.
-     * @type {number}
+     * For type=value, the required prominent readout (string or finite number); strings preserve exact formatting. For progress, a numeric progress value used with upper_limit.
+     * @type {LiveActivityValue}
      * @memberof StreamContentState
      */
-    value?: number;
+    value?: LiveActivityValue;
     /**
      * Maximum progress value. Use with value for progress.
      * @type {number}
@@ -1874,7 +1899,7 @@ export interface StreamContentState {
      */
     type?: StreamContentStateTypeEnum;
     /**
-     * Optional. Accent color for progress, segmented_progress, metrics, and timer Live Activities. For Alert Live Activities, this tints action and secondary_action buttons when included.
+     * Optional. Accent color for progress, segmented_progress, metrics, timer, and value Live Activities. For Alert Live Activities, this tints action and secondary_action buttons when included.
      * @type {string}
      * @memberof StreamContentState
      */
@@ -1904,13 +1929,13 @@ export interface StreamContentState {
      */
     message?: string;
     /**
-     * Optional SF Symbol icon. Supported by alert, progress, segmented_progress, metrics, stats, and timer.
+     * Optional SF Symbol icon. Supported by alert, progress, segmented_progress, metrics, stats, timer, and value.
      * @type {LiveActivityAlertIcon}
      * @memberof StreamContentState
      */
     icon?: LiveActivityAlertIcon;
     /**
-     * Optional badge. Supported by alert, progress, and segmented_progress.
+     * Optional badge. Supported by alert, progress, segmented_progress, and value.
      * @type {LiveActivityAlertBadge}
      * @memberof StreamContentState
      */
@@ -1939,7 +1964,8 @@ export const StreamContentStateTypeEnum = {
     Metrics: 'metrics',
     Stats: 'stats',
     Alert: 'alert',
-    Timer: 'timer'
+    Timer: 'timer',
+    Value: 'value'
 } as const;
 export type StreamContentStateTypeEnum = typeof StreamContentStateTypeEnum[keyof typeof StreamContentStateTypeEnum];
 
