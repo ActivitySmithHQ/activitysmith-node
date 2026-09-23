@@ -16,6 +16,7 @@
 import * as runtime from '../runtime';
 import type {
   BadRequestError,
+  BillingBlockedError,
   ForbiddenError,
   LiveActivityEndRequest,
   LiveActivityEndResponse,
