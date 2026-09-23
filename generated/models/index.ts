@@ -246,6 +246,68 @@ export interface BadRequestError {
 /**
  * 
  * @export
+ * @interface BillingBlockedError
+ */
+export interface BillingBlockedError {
+    /**
+     * 
+     * @type {string}
+     * @memberof BillingBlockedError
+     */
+    error: BillingBlockedErrorErrorEnum;
+    /**
+     * 
+     * @type {string}
+     * @memberof BillingBlockedError
+     */
+    message: string;
+    /**
+     * 
+     * @type {BillingBlockedErrorTrialPeriod}
+     * @memberof BillingBlockedError
+     */
+    trial_period?: BillingBlockedErrorTrialPeriod;
+    /**
+     * 
+     * @type {string}
+     * @memberof BillingBlockedError
+     */
+    upgrade_url: string;
+}
+
+
+/**
+ * @export
+ */
+export const BillingBlockedErrorErrorEnum = {
+    TrialExpired: 'trial_expired',
+    TrialExhausted: 'trial_exhausted',
+    BillingOverageCapReached: 'billing_overage_cap_reached'
+} as const;
+export type BillingBlockedErrorErrorEnum = typeof BillingBlockedErrorErrorEnum[keyof typeof BillingBlockedErrorErrorEnum];
+
+/**
+ * 
+ * @export
+ * @interface BillingBlockedErrorTrialPeriod
+ */
+export interface BillingBlockedErrorTrialPeriod {
+    /**
+     * 
+     * @type {string}
+     * @memberof BillingBlockedErrorTrialPeriod
+     */
+    started_at: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof BillingBlockedErrorTrialPeriod
+     */
+    ends_at: string;
+}
+/**
+ * 
+ * @export
  * @interface ChannelTarget
  */
 export interface ChannelTarget {
