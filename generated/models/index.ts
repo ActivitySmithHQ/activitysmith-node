@@ -246,6 +246,68 @@ export interface BadRequestError {
 /**
  * 
  * @export
+ * @interface BillingBlockedError
+ */
+export interface BillingBlockedError {
+    /**
+     * 
+     * @type {string}
+     * @memberof BillingBlockedError
+     */
+    error: BillingBlockedErrorErrorEnum;
+    /**
+     * 
+     * @type {string}
+     * @memberof BillingBlockedError
+     */
+    message: string;
+    /**
+     * 
+     * @type {BillingBlockedErrorTrialPeriod}
+     * @memberof BillingBlockedError
+     */
+    trial_period?: BillingBlockedErrorTrialPeriod;
+    /**
+     * 
+     * @type {string}
+     * @memberof BillingBlockedError
+     */
+    upgrade_url: string;
+}
+
+
+/**
+ * @export
+ */
+export const BillingBlockedErrorErrorEnum = {
+    TrialExpired: 'trial_expired',
+    TrialExhausted: 'trial_exhausted',
+    BillingOverageCapReached: 'billing_overage_cap_reached'
+} as const;
+export type BillingBlockedErrorErrorEnum = typeof BillingBlockedErrorErrorEnum[keyof typeof BillingBlockedErrorErrorEnum];
+
+/**
+ * 
+ * @export
+ * @interface BillingBlockedErrorTrialPeriod
+ */
+export interface BillingBlockedErrorTrialPeriod {
+    /**
+     * 
+     * @type {string}
+     * @memberof BillingBlockedErrorTrialPeriod
+     */
+    started_at: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof BillingBlockedErrorTrialPeriod
+     */
+    ends_at: string;
+}
+/**
+ * 
+ * @export
  * @interface ChannelTarget
  */
 export interface ChannelTarget {
@@ -1602,6 +1664,18 @@ export interface NotFoundError {
      */
     message: string;
 }
+
+/**
+ * Notification interruption level. Omit for default active delivery. Time Sensitive delivery depends on user settings.
+ * @export
+ */
+export const PushInterruptionLevel = {
+    Passive: 'passive',
+    Active: 'active',
+    TimeSensitive: 'time-sensitive'
+} as const;
+export type PushInterruptionLevel = typeof PushInterruptionLevel[keyof typeof PushInterruptionLevel];
+
 /**
  * 
  * @export
@@ -1682,6 +1756,18 @@ export interface PushNotificationRequest {
      * @memberof PushNotificationRequest
      */
     subtitle?: string;
+    /**
+     * Optional HTTPS image URL without credentials for a custom notification icon. If the image cannot be loaded, the app icon is used. iOS may omit subtitle when displaying a custom icon.
+     * @type {string}
+     * @memberof PushNotificationRequest
+     */
+    icon?: string;
+    /**
+     * 
+     * @type {PushInterruptionLevel}
+     * @memberof PushNotificationRequest
+     */
+    interruption_level?: PushInterruptionLevel;
     /**
      * Optional HTTPS URL for an image, audio file, or video that users can preview or play when they expand the notification. If `redirection` is omitted, tapping the notification opens this URL. Cannot be combined with `actions`.
      * @type {string}
