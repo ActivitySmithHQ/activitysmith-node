@@ -19,6 +19,7 @@ import type {
   AppIconBadgeCountUpdateRequest,
   AppIconBadgeCountUpdateResponse,
   BadRequestError,
+  BillingBlockedError,
   ForbiddenError,
   RateLimitError,
   UpdateAppIconBadgeCount422Response,
