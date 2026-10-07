@@ -7,7 +7,7 @@ import {
   PushNotificationsApi,
 } from "../generated/index";
 
-const SDK_VERSION = "1.12.0";
+const SDK_VERSION = "1.13.0";
 const SDK_HEADER_NAME = "X-ActivitySmith-SDK";
 const DEFAULT_SDK_NAME = "node";
 const SDK_HEADER_VALUE = `${DEFAULT_SDK_NAME}-v${SDK_VERSION}`;
