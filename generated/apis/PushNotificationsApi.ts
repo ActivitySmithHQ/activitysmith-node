@@ -16,6 +16,7 @@
 import * as runtime from '../runtime';
 import type {
   BadRequestError,
+  BillingBlockedError,
   ForbiddenError,
   NoRecipientsError,
   PushNotificationRequest,
@@ -33,7 +34,7 @@ export interface SendPushNotificationRequest {
 export class PushNotificationsApi extends runtime.BaseAPI {
 
     /**
-     * Sends a push notification to devices matched by API key scope and optional target channels. Supports optional redirection URL, optional media preview or playback when the notification is expanded, and up to 4 interactive actions. `media` cannot be combined with `actions`. Optional tags to organize and filter notification history.
+     * Sends a push notification to devices matched by API key scope and optional target channels. Supports optional redirection URL, optional media preview or playback when the notification is expanded, and up to 4 interactive actions. `media` cannot be combined with `actions`. Optional `icon` shows a custom image, such as a service logo or avatar, next to a smaller app icon. Optional `interruption_level` sets how urgently iOS presents the notification. Optional tags to organize and filter notification history.
      * Send a push notification
      */
     async sendPushNotificationRaw(requestParameters: SendPushNotificationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PushNotificationResponse>> {
@@ -70,7 +71,7 @@ export class PushNotificationsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Sends a push notification to devices matched by API key scope and optional target channels. Supports optional redirection URL, optional media preview or playback when the notification is expanded, and up to 4 interactive actions. `media` cannot be combined with `actions`. Optional tags to organize and filter notification history.
+     * Sends a push notification to devices matched by API key scope and optional target channels. Supports optional redirection URL, optional media preview or playback when the notification is expanded, and up to 4 interactive actions. `media` cannot be combined with `actions`. Optional `icon` shows a custom image, such as a service logo or avatar, next to a smaller app icon. Optional `interruption_level` sets how urgently iOS presents the notification. Optional tags to organize and filter notification history.
      * Send a push notification
      */
     async sendPushNotification(requestParameters: SendPushNotificationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PushNotificationResponse> {
