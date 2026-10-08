@@ -395,7 +395,7 @@ export class ActivitySmith {
   public static readonly contentState = contentState;
   public static readonly alertIcon = alertIcon;
   public static readonly alertBadge = alertBadge;
-  /** Push Notification interruption levels. Critical Alerts are not supported. */
+  /** Push Notification interruption levels. */
   public static readonly pushInterruptionLevels = {
     passive: PushInterruptionLevel.Passive,
     active: PushInterruptionLevel.Active,
