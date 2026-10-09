@@ -876,3 +876,54 @@ describe("External URLs and final stream fields", () => {
     }
   });
 });
+
+
+describe("Push Notification icons and interruption levels", () => {
+  afterEach(() => vi.unstubAllGlobals());
+
+  async function sentBody(request) {
+    const ActivitySmith = require("../dist/src/index.js");
+    let body;
+    vi.stubGlobal("fetch", async (_url, init) => {
+      body = JSON.parse(init.body);
+      return new Response(JSON.stringify({success: true}), {status: 200, headers: {"Content-Type": "application/json"}});
+    });
+    await new ActivitySmith({apiKey: "test"}).notifications.send(request);
+    return body;
+  }
+
+  it("serializes a custom icon URL", async () => {
+    const body = await sentBody({title: "New Download", icon: "https://cdn.example.com/avatar.png"});
+    expect(body.icon).toBe("https://cdn.example.com/avatar.png");
+  });
+
+  for (const level of ["passive", "active", "time-sensitive"]) {
+    it(`serializes interruption_level ${level}`, async () => {
+      const body = await sentBody({title: "Deploy", interruption_level: level});
+      expect(body.interruption_level).toBe(level);
+    });
+  }
+
+  it("omits interruption_level when not set", async () => {
+    const body = await sentBody({title: "Deploy"});
+    expect(Object.hasOwn(body, "interruption_level")).toBe(false);
+  });
+
+  it("exposes interruption level constants", () => {
+    const ActivitySmith = require("../dist/src/index.js");
+    expect(ActivitySmith.pushInterruptionLevels).toEqual({
+      passive: "passive",
+      active: "active",
+      timeSensitive: "time-sensitive",
+    });
+  });
+
+  for (const level of ["critical", "timeSensitive", "default"]) {
+    it(`rejects unsupported interruption_level ${level}`, () => {
+      const ActivitySmith = require("../dist/src/index.js");
+      const client = new ActivitySmith({apiKey: "test"});
+      expect(() => client.notifications.send({title: "Outage", interruption_level: level}))
+        .toThrow("ActivitySmith: interruption_level must be passive, active, or time-sensitive");
+    });
+  }
+});

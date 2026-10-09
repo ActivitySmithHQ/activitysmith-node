@@ -3,10 +3,11 @@ import {
   Configuration,
   LiveActivitiesApi,
   MetricsApi,
+  PushInterruptionLevel,
   PushNotificationsApi,
 } from "../generated/index";
 
-const SDK_VERSION = "1.12.0";
+const SDK_VERSION = "1.13.0";
 const SDK_HEADER_NAME = "X-ActivitySmith-SDK";
 const DEFAULT_SDK_NAME = "node";
 const SDK_HEADER_VALUE = `${DEFAULT_SDK_NAME}-v${SDK_VERSION}`;
@@ -182,7 +183,12 @@ function hasActionsValue(actions: unknown): boolean {
   return actions !== null && actions !== undefined;
 }
 
-function assertValidPushRequest(request: { media?: unknown; actions?: unknown }) {
+const PUSH_INTERRUPTION_LEVELS: readonly string[] = Object.values(PushInterruptionLevel);
+
+function assertValidPushRequest(request: { media?: unknown; actions?: unknown; interruption_level?: unknown }) {
+  if (request.interruption_level !== undefined && !PUSH_INTERRUPTION_LEVELS.includes(request.interruption_level as string)) {
+    throw new Error("ActivitySmith: interruption_level must be passive, active, or time-sensitive");
+  }
   if (hasMediaValue(request.media) && hasActionsValue(request.actions)) {
     throw new Error("ActivitySmith: media cannot be combined with actions");
   }
@@ -389,6 +395,12 @@ export class ActivitySmith {
   public static readonly contentState = contentState;
   public static readonly alertIcon = alertIcon;
   public static readonly alertBadge = alertBadge;
+  /** Push Notification interruption levels. */
+  public static readonly pushInterruptionLevels = {
+    passive: PushInterruptionLevel.Passive,
+    active: PushInterruptionLevel.Active,
+    timeSensitive: PushInterruptionLevel.TimeSensitive,
+  } as const;
 
   public readonly notifications: NotificationsResource;
   public readonly liveActivities: LiveActivitiesResource;
