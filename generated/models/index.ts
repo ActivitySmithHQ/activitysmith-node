@@ -1385,6 +1385,12 @@ export interface LiveActivityStreamPutResponse {
      */
     tags?: Array<string>;
     /**
+     * Present on `updated` responses when the previous update to this stream was less than 2 minutes ago. The update is still sent, but iOS may throttle frequent Live Activity updates.
+     * @type {string}
+     * @memberof LiveActivityStreamPutResponse
+     */
+    warning?: string;
+    /**
      * 
      * @type {string}
      * @memberof LiveActivityStreamPutResponse
