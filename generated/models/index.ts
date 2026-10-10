@@ -1385,6 +1385,12 @@ export interface LiveActivityStreamPutResponse {
      */
     tags?: Array<string>;
     /**
+     * Present on `updated` responses when the current Live Activity has received more than 12 updates and has averaged more than one update every 2 minutes since it started. The update is still sent, but iOS may throttle Live Activities that update this often.
+     * @type {string}
+     * @memberof LiveActivityStreamPutResponse
+     */
+    warning?: string;
+    /**
      * 
      * @type {string}
      * @memberof LiveActivityStreamPutResponse
