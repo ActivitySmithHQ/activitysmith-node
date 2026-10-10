@@ -42,7 +42,7 @@ await activitysmith.notifications.send({
 
 ![Push Notifications with custom icons](https://cdn.activitysmith.com/features/push-notifications-with-custom-icons.png)
 
-Set `icon` to a publicly accessible HTTPS image URL to show an avatar or service logo alongside a smaller ActivitySmith app icon. With a custom icon, iOS may omit `subtitle` from the notification.
+Set `icon` to a publicly accessible HTTPS image URL to show a logo or avatar alongside a smaller ActivitySmith app icon. With a custom icon, iOS may omit `subtitle` from the notification.
 
 ```js
 await activitysmith.notifications.send({
@@ -225,6 +225,9 @@ Choose the Live Activity type that matches what you want to show:
 ### Start & Update Live Activity
 
 Use a stable `streamKey` to identify the metric, job, deployment, or system you want to keep visible. The first `stream(...)` call starts the Live Activity. Later calls with the same `streamKey` update it.
+
+> [!WARNING]
+> iOS limits how often a Live Activity can update. If you send too many updates, iOS throttles them until the budget refills, which takes roughly an hour, even though the API still returns `200`. Send one or two updates every five minutes. [Learn more](https://activitysmith.com/docs/live-activity-stream#update-frequency-and-ios-limits)
 
 #### Value
 
