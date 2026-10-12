@@ -7,7 +7,7 @@ import {
   PushNotificationsApi,
 } from "../generated/index";
 
-const SDK_VERSION = "1.13.0";
+const SDK_VERSION = "1.14.0";
 const SDK_HEADER_NAME = "X-ActivitySmith-SDK";
 const DEFAULT_SDK_NAME = "node";
 const SDK_HEADER_VALUE = `${DEFAULT_SDK_NAME}-v${SDK_VERSION}`;
@@ -24,6 +24,9 @@ type PushRequestBody = Parameters<PushNotificationsApi["sendPushNotification"]>[
 type PushSendParameters = Parameters<PushNotificationsApi["sendPushNotification"]>[0];
 type PushRawParameters = Parameters<PushNotificationsApi["sendPushNotificationRaw"]>[0];
 type SendInitOverrides = Parameters<PushNotificationsApi["sendPushNotification"]>[1];
+type PushReplaceRequestBody =
+  Parameters<PushNotificationsApi["replacePushNotification"]>[0]["pushNotificationReplaceRequest"];
+type PushReplaceParameters = Parameters<PushNotificationsApi["replacePushNotification"]>[0];
 type StartRequestBody = Parameters<LiveActivitiesApi["startLiveActivity"]>[0]["liveActivityStartRequest"];
 type UpdateRequestBody = Parameters<LiveActivitiesApi["updateLiveActivity"]>[0]["liveActivityUpdateRequest"];
 type EndRequestBody = Parameters<LiveActivitiesApi["endLiveActivity"]>[0]["liveActivityEndRequest"];
@@ -230,6 +233,25 @@ export class NotificationsResource {
       { pushNotificationRequest: normalized },
       initOverrides,
     );
+  }
+
+  /**
+   * Silently replaces a sent Push Notification, using the notification_id returned by send().
+   * The replacement takes the original's place on the Lock Screen and in history.
+   */
+  replace(notificationId: string, request: PushReplaceRequestBody, initOverrides?: SendInitOverrides) {
+    assertValidPushRequest(request);
+
+    return this.api.replacePushNotification(
+      { notificationId, pushNotificationReplaceRequest: request },
+      initOverrides,
+    );
+  }
+
+  // Generated-style alias.
+  replacePushNotification(requestParameters: PushReplaceParameters, initOverrides?: SendInitOverrides) {
+    assertValidPushRequest(requestParameters.pushNotificationReplaceRequest);
+    return this.api.replacePushNotification(requestParameters, initOverrides);
   }
 
   // Backward-compatible alias.

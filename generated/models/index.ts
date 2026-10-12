@@ -223,6 +223,24 @@ export interface AppIconBadgeCountUpdateResponse {
      * @memberof AppIconBadgeCountUpdateResponse
      */
     timestamp: string;
+    /**
+     * Number of device tokens targeted.
+     * @type {number}
+     * @memberof AppIconBadgeCountUpdateResponse
+     */
+    devices_targeted?: number;
+    /**
+     * Number of device tokens deactivated because APNs reported them unregistered.
+     * @type {number}
+     * @memberof AppIconBadgeCountUpdateResponse
+     */
+    devices_deactivated?: number;
+    /**
+     * Number of targeted device tokens APNs reported as unregistered.
+     * @type {number}
+     * @memberof AppIconBadgeCountUpdateResponse
+     */
+    devices_unregistered?: number;
 }
 /**
  * 
@@ -1074,6 +1092,42 @@ export interface LiveActivityEndResponse {
      * @memberof LiveActivityEndResponse
      */
     timestamp: string;
+    /**
+     * True when the Live Activity had already ended and the request had no effect.
+     * @type {boolean}
+     * @memberof LiveActivityEndResponse
+     */
+    ignored?: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof LiveActivityEndResponse
+     */
+    message?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof LiveActivityEndResponse
+     */
+    end_reason?: string | null;
+    /**
+     * True when the Live Activity was marked complete without a confirmed APNs end delivery.
+     * @type {boolean}
+     * @memberof LiveActivityEndResponse
+     */
+    forced_completion?: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof LiveActivityEndResponse
+     */
+    warning?: string;
+    /**
+     * Per-device delivery errors when some devices could not be reached.
+     * @type {Array<string>}
+     * @memberof LiveActivityEndResponse
+     */
+    errors?: Array<string>;
 }
 /**
  * 
@@ -1215,6 +1269,24 @@ export interface LiveActivityStartResponse {
      * @memberof LiveActivityStartResponse
      */
     timestamp: string;
+    /**
+     * Present when starting this Live Activity ended an older one to stay within the device limit.
+     * @type {string}
+     * @memberof LiveActivityStartResponse
+     */
+    ended_activity_id?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof LiveActivityStartResponse
+     */
+    message?: string;
+    /**
+     * Per-device delivery errors when some devices could not be reached.
+     * @type {Array<string>}
+     * @memberof LiveActivityStartResponse
+     */
+    errors?: Array<string>;
 }
 /**
  * Optional payload for ending a managed stream. When omitted, ActivitySmith ends the stream using the latest known state when possible.
@@ -1307,6 +1379,36 @@ export interface LiveActivityStreamDeleteResponse {
      * @memberof LiveActivityStreamDeleteResponse
      */
     timestamp: string;
+    /**
+     * True when the stream was already ended and the request had no effect.
+     * @type {boolean}
+     * @memberof LiveActivityStreamDeleteResponse
+     */
+    ignored?: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof LiveActivityStreamDeleteResponse
+     */
+    message?: string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof LiveActivityStreamDeleteResponse
+     */
+    forced_completion?: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof LiveActivityStreamDeleteResponse
+     */
+    warning?: string;
+    /**
+     * Per-device delivery errors when some devices could not be reached.
+     * @type {Array<string>}
+     * @memberof LiveActivityStreamDeleteResponse
+     */
+    errors?: Array<string>;
 }
 
 
@@ -1385,11 +1487,41 @@ export interface LiveActivityStreamPutResponse {
      */
     tags?: Array<string>;
     /**
+     * Present on `updated` responses when the current Live Activity has received more than 12 updates and has averaged more than one update every 2 minutes since it started. The update is still sent, but iOS may throttle Live Activities that update this often.
+     * @type {string}
+     * @memberof LiveActivityStreamPutResponse
+     */
+    warning?: string;
+    /**
      * 
      * @type {string}
      * @memberof LiveActivityStreamPutResponse
      */
     timestamp: string;
+    /**
+     * True when the request had no effect.
+     * @type {boolean}
+     * @memberof LiveActivityStreamPutResponse
+     */
+    ignored?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof LiveActivityStreamPutResponse
+     */
+    remote_push_sent?: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof LiveActivityStreamPutResponse
+     */
+    message?: string;
+    /**
+     * Per-device delivery errors when some devices could not be reached.
+     * @type {Array<string>}
+     * @memberof LiveActivityStreamPutResponse
+     */
+    errors?: Array<string>;
 }
 
 
@@ -1539,6 +1671,48 @@ export interface LiveActivityUpdateResponse {
      * @memberof LiveActivityUpdateResponse
      */
     timestamp: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof LiveActivityUpdateResponse
+     */
+    users_notified?: number;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof LiveActivityUpdateResponse
+     */
+    effective_channel_slugs?: Array<string>;
+    /**
+     * Optional tags to organize and filter notification history.
+     * @type {Array<string>}
+     * @memberof LiveActivityUpdateResponse
+     */
+    tags?: Array<string>;
+    /**
+     * Present when the update started a new Live Activity for a managed stream.
+     * @type {string}
+     * @memberof LiveActivityUpdateResponse
+     */
+    operation?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof LiveActivityUpdateResponse
+     */
+    stream_key?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof LiveActivityUpdateResponse
+     */
+    previous_activity_id?: string;
+    /**
+     * Per-device delivery errors when some devices could not be reached.
+     * @type {Array<string>}
+     * @memberof LiveActivityUpdateResponse
+     */
+    errors?: Array<string>;
 }
 /**
  * @type LiveActivityValue
@@ -1726,6 +1900,129 @@ export const PushNotificationActionType = {
 export type PushNotificationActionType = typeof PushNotificationActionType[keyof typeof PushNotificationActionType];
 
 /**
+ * Replacement content. title, subtitle, message, redirection, media, icon, actions, and payload fully replace the original values. Omit metadata or tags to keep the stored values; send {} or [] to clear them.
+ * @export
+ * @interface PushNotificationReplaceRequest
+ */
+export interface PushNotificationReplaceRequest {
+    [key: string]: any | any;
+    /**
+     * Additional information shown in notification and Live Activity details in ActivitySmith. Not displayed in the Push Notification or Live Activity on the device. Values must be strings, finite numbers, or booleans. At most 50 entries and 16 KB of serialized UTF-8 JSON. Omit on updates to preserve existing Metadata; send {} to clear it.
+     * @type {{ [key: string]: MetadataValue; }}
+     * @memberof PushNotificationReplaceRequest
+     */
+    metadata?: { [key: string]: MetadataValue; };
+    /**
+     * 
+     * @type {string}
+     * @memberof PushNotificationReplaceRequest
+     */
+    title: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PushNotificationReplaceRequest
+     */
+    message?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PushNotificationReplaceRequest
+     */
+    subtitle?: string;
+    /**
+     * Optional HTTPS image URL without credentials for a custom notification icon. If the image cannot be loaded, the app icon is used. iOS may omit subtitle when displaying a custom icon.
+     * @type {string}
+     * @memberof PushNotificationReplaceRequest
+     */
+    icon?: string;
+    /**
+     * Optional HTTPS URL for an image, audio file, or video that users can preview or play when they expand the notification. If `redirection` is omitted, tapping the notification opens this URL. Cannot be combined with `actions`.
+     * @type {string}
+     * @memberof PushNotificationReplaceRequest
+     */
+    media?: string;
+    /**
+     * Optional HTTP, HTTPS, Shortcuts, or installed app URL opened when the user taps the notification body. Custom schemes such as spotify:// and spotify:track:123 require iOS 1.13.4 build 2 or later and an installed handler; no web fallback is provided. Internal and executable schemes are blocked. Overrides the default tap target from media.
+     * @type {string}
+     * @memberof PushNotificationReplaceRequest
+     */
+    redirection?: string;
+    /**
+     * Optional interactive actions shown when users expand the notification. Cannot be combined with `media`.
+     * @type {Array<PushNotificationAction>}
+     * @memberof PushNotificationReplaceRequest
+     */
+    actions?: Array<PushNotificationAction>;
+    /**
+     * 
+     * @type {object}
+     * @memberof PushNotificationReplaceRequest
+     */
+    payload?: object;
+    /**
+     * 
+     * @type {number}
+     * @memberof PushNotificationReplaceRequest
+     */
+    badge?: number;
+    /**
+     * Optional tags to organize and filter notification history.
+     * @type {Array<string>}
+     * @memberof PushNotificationReplaceRequest
+     */
+    tags?: Array<string>;
+}
+/**
+ * Apple APNs acceptance result for the replacement. Acceptance does not confirm device delivery or presentation.
+ * @export
+ * @interface PushNotificationReplaceResponse
+ */
+export interface PushNotificationReplaceResponse {
+    /**
+     * True when APNs accepts the replacement for at least one device.
+     * @type {boolean}
+     * @memberof PushNotificationReplaceResponse
+     */
+    success: boolean;
+    /**
+     * ID of the replaced Push Notification. It stays the same, so you can replace it again.
+     * @type {string}
+     * @memberof PushNotificationReplaceResponse
+     */
+    notification_id: string;
+    /**
+     * Number of device tokens for which APNs accepted the notification, without confirming on-device delivery.
+     * @type {number}
+     * @memberof PushNotificationReplaceResponse
+     */
+    devices_notified?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof PushNotificationReplaceResponse
+     */
+    users_notified?: number;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof PushNotificationReplaceResponse
+     */
+    effective_channel_slugs?: Array<string>;
+    /**
+     * Optional tags to organize and filter notification history.
+     * @type {Array<string>}
+     * @memberof PushNotificationReplaceResponse
+     */
+    tags?: Array<string>;
+    /**
+     * 
+     * @type {string}
+     * @memberof PushNotificationReplaceResponse
+     */
+    timestamp: string;
+}
+/**
  * 
  * @export
  * @interface PushNotificationRequest
@@ -1830,6 +2127,12 @@ export interface PushNotificationResponse {
      */
     success: boolean;
     /**
+     * ID of this Push Notification. Pass it to `PUT /push-notification/{notification_id}` to replace the notification later.
+     * @type {string}
+     * @memberof PushNotificationResponse
+     */
+    notification_id?: string;
+    /**
      * Number of device tokens for which APNs accepted the notification, without confirming on-device delivery.
      * @type {number}
      * @memberof PushNotificationResponse
@@ -1859,6 +2162,36 @@ export interface PushNotificationResponse {
      * @memberof PushNotificationResponse
      */
     timestamp: string;
+    /**
+     * Number of device tokens targeted.
+     * @type {number}
+     * @memberof PushNotificationResponse
+     */
+    devices_targeted?: number;
+    /**
+     * Number of device tokens deactivated because APNs reported them unregistered.
+     * @type {number}
+     * @memberof PushNotificationResponse
+     */
+    devices_deactivated?: number;
+    /**
+     * Number of targeted device tokens APNs reported as unregistered.
+     * @type {number}
+     * @memberof PushNotificationResponse
+     */
+    devices_unregistered?: number;
+    /**
+     * True when the request was an integration connection test and no paired devices were available.
+     * @type {boolean}
+     * @memberof PushNotificationResponse
+     */
+    credential_test?: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof PushNotificationResponse
+     */
+    message?: string;
 }
 
 /**

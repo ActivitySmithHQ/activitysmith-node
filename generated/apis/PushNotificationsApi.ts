@@ -19,10 +19,18 @@ import type {
   BillingBlockedError,
   ForbiddenError,
   NoRecipientsError,
+  NotFoundError,
+  PushNotificationReplaceRequest,
+  PushNotificationReplaceResponse,
   PushNotificationRequest,
   PushNotificationResponse,
   SendPushNotification429Response,
 } from '../models/index';
+
+export interface ReplacePushNotificationRequest {
+    notificationId: string;
+    pushNotificationReplaceRequest: PushNotificationReplaceRequest;
+}
 
 export interface SendPushNotificationRequest {
     pushNotificationRequest: PushNotificationRequest;
@@ -34,7 +42,60 @@ export interface SendPushNotificationRequest {
 export class PushNotificationsApi extends runtime.BaseAPI {
 
     /**
-     * Sends a push notification to devices matched by API key scope and optional target channels. Supports optional redirection URL, optional media preview or playback when the notification is expanded, and up to 4 interactive actions. `media` cannot be combined with `actions`. Optional `icon` shows a custom image, such as a service logo or avatar, next to a smaller app icon. Optional `interruption_level` sets how urgently iOS presents the notification. Optional tags to organize and filter notification history.
+     * Replaces a Push Notification you already sent, using the `notification_id` from the send response. The replacement takes the original\'s place on the Lock Screen and in Notification Center instead of appearing as a second notification. It is delivered silently, with no sound or screen wake, to the same recipients as the original. Notification history is updated in place.
+     * Replace a push notification
+     */
+    async replacePushNotificationRaw(requestParameters: ReplacePushNotificationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PushNotificationReplaceResponse>> {
+        if (requestParameters['notificationId'] == null) {
+            throw new runtime.RequiredError(
+                'notificationId',
+                'Required parameter "notificationId" was null or undefined when calling replacePushNotification().'
+            );
+        }
+
+        if (requestParameters['pushNotificationReplaceRequest'] == null) {
+            throw new runtime.RequiredError(
+                'pushNotificationReplaceRequest',
+                'Required parameter "pushNotificationReplaceRequest" was null or undefined when calling replacePushNotification().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("apiKeyAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/push-notification/{notification_id}`.replace(`{${"notification_id"}}`, encodeURIComponent(String(requestParameters['notificationId']))),
+            method: 'PUT',
+            headers: headerParameters,
+            query: queryParameters,
+            body: requestParameters['pushNotificationReplaceRequest'],
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response);
+    }
+
+    /**
+     * Replaces a Push Notification you already sent, using the `notification_id` from the send response. The replacement takes the original\'s place on the Lock Screen and in Notification Center instead of appearing as a second notification. It is delivered silently, with no sound or screen wake, to the same recipients as the original. Notification history is updated in place.
+     * Replace a push notification
+     */
+    async replacePushNotification(requestParameters: ReplacePushNotificationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PushNotificationReplaceResponse> {
+        const response = await this.replacePushNotificationRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Sends a push notification to devices matched by API key scope and optional target channels. Supports optional redirection URL, optional media preview or playback when the notification is expanded, and up to 4 interactive actions. `media` cannot be combined with `actions`. Optional `icon` shows a custom image, such as a logo or avatar, next to a smaller app icon. Optional `interruption_level` sets how urgently iOS presents the notification. Optional tags to organize and filter notification history.
      * Send a push notification
      */
     async sendPushNotificationRaw(requestParameters: SendPushNotificationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PushNotificationResponse>> {
@@ -71,7 +132,7 @@ export class PushNotificationsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Sends a push notification to devices matched by API key scope and optional target channels. Supports optional redirection URL, optional media preview or playback when the notification is expanded, and up to 4 interactive actions. `media` cannot be combined with `actions`. Optional `icon` shows a custom image, such as a service logo or avatar, next to a smaller app icon. Optional `interruption_level` sets how urgently iOS presents the notification. Optional tags to organize and filter notification history.
+     * Sends a push notification to devices matched by API key scope and optional target channels. Supports optional redirection URL, optional media preview or playback when the notification is expanded, and up to 4 interactive actions. `media` cannot be combined with `actions`. Optional `icon` shows a custom image, such as a logo or avatar, next to a smaller app icon. Optional `interruption_level` sets how urgently iOS presents the notification. Optional tags to organize and filter notification history.
      * Send a push notification
      */
     async sendPushNotification(requestParameters: SendPushNotificationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PushNotificationResponse> {

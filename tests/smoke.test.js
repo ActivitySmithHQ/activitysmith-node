@@ -71,6 +71,38 @@ describe("smoke", () => {
     }
   });
 
+  it("replaces a sent push notification through the real transport", async () => {
+    const fetchSpy = vi.fn(async () =>
+      new Response(
+        JSON.stringify({
+          success: true,
+          notification_id: "Xk3pQ8mV2nR7tL9wB4yZ",
+          devices_notified: 1,
+          timestamp: "2026-10-12T00:00:00.000Z",
+        }),
+        { status: 200, headers: { "content-type": "application/json" } },
+      ),
+    );
+    globalThis.fetch = fetchSpy;
+
+    const ActivitySmith = require("../dist/src/index.js");
+    const client = new ActivitySmith({ apiKey: "test" });
+
+    const result = await client.notifications.replace("Xk3pQ8mV2nR7tL9wB4yZ", {
+      title: "Answered from desk",
+      metadata: { attempts: 0, resolved: false },
+    });
+
+    expect(result.notification_id).toBe("Xk3pQ8mV2nR7tL9wB4yZ");
+    const [url, init] = fetchSpy.mock.calls[0];
+    expect(String(url)).toMatch(/\/push-notification\/Xk3pQ8mV2nR7tL9wB4yZ$/);
+    expect(init.method).toBe("PUT");
+    expect(JSON.parse(init.body)).toEqual({
+      title: "Answered from desk",
+      metadata: { attempts: 0, resolved: false },
+    });
+  });
+
   it("allows official wrappers to override the SDK tracking identity", async () => {
     const fetchSpy = vi.fn(async () =>
       new Response(
