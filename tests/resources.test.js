@@ -152,6 +152,39 @@ describe("resource wrappers", () => {
     ).toThrow("ActivitySmith: media cannot be combined with actions");
   });
 
+  it("wraps notification id and payload for notifications.replace", async () => {
+    const ActivitySmith = require("../dist/src/index.js");
+    const generated = require("../dist/generated/index.js");
+
+    const replaceSpy = vi
+      .spyOn(generated.PushNotificationsApi.prototype, "replacePushNotification")
+      .mockResolvedValue({ success: true, notification_id: "pn1" });
+
+    const client = new ActivitySmith({ apiKey: "test" });
+    const payload = { title: "Answered from desk" };
+    const result = await client.notifications.replace("pn1", payload);
+
+    expect(result).toEqual({ success: true, notification_id: "pn1" });
+    expect(replaceSpy).toHaveBeenCalledWith(
+      { notificationId: "pn1", pushNotificationReplaceRequest: payload },
+      undefined,
+    );
+  });
+
+  it("rejects media with actions for notifications.replace", async () => {
+    const ActivitySmith = require("../dist/src/index.js");
+
+    const client = new ActivitySmith({ apiKey: "test" });
+
+    expect(() =>
+      client.notifications.replace("pn1", {
+        title: "Done",
+        media: "https://cdn.activitysmith.com/voice_over.mp3",
+        actions: [{ title: "Open", type: "open_url", url: "https://example.com" }],
+      }),
+    ).toThrow("ActivitySmith: media cannot be combined with actions");
+  });
+
   it("keeps long notification alias working", async () => {
     const ActivitySmith = require("../dist/src/index.js");
     const generated = require("../dist/generated/index.js");
