@@ -1398,7 +1398,13 @@ export interface LiveActivityStreamDeleteResponse {
      */
     forced_completion?: boolean;
     /**
-     * 
+     * Present when the stream had a current Live Activity. True when the end was sent to at least one device, or queued for a device that has not registered yet. False when no device received it, so the Live Activity may stay on the Lock Screen until iOS removes it or someone dismisses it.
+     * @type {boolean}
+     * @memberof LiveActivityStreamDeleteResponse
+     */
+    delivered?: boolean;
+    /**
+     * Explains why the end may not have removed the Live Activity, for example because iOS had already ended a Live Activity that started more than 8 hours ago.
      * @type {string}
      * @memberof LiveActivityStreamDeleteResponse
      */
@@ -1807,11 +1813,23 @@ export interface NoRecipientsError {
      */
     error: string;
     /**
+     * no_paired_devices: the account has no active paired iOS devices; pair an iPhone with the ActivitySmith app. no_recipients_found: devices are paired, but none matched the targeted channels.
+     * @type {string}
+     * @memberof NoRecipientsError
+     */
+    code?: NoRecipientsErrorCodeEnum;
+    /**
      * 
      * @type {string}
      * @memberof NoRecipientsError
      */
     message: string;
+    /**
+     * ActivitySmith App Store link. Present when code is no_paired_devices.
+     * @type {string}
+     * @memberof NoRecipientsError
+     */
+    app_store_url?: string;
     /**
      * 
      * @type {Array<string>}
@@ -1819,6 +1837,17 @@ export interface NoRecipientsError {
      */
     effective_channel_slugs?: Array<string>;
 }
+
+
+/**
+ * @export
+ */
+export const NoRecipientsErrorCodeEnum = {
+    PairedDevices: 'no_paired_devices',
+    RecipientsFound: 'no_recipients_found'
+} as const;
+export type NoRecipientsErrorCodeEnum = typeof NoRecipientsErrorCodeEnum[keyof typeof NoRecipientsErrorCodeEnum];
+
 /**
  * 
  * @export
