@@ -594,11 +594,13 @@ String metric values work too.
 await activitysmith.metrics.update("prod.status", "healthy");
 ```
 
-## App Icon Badge Count
+## App Icon Badge
 
-![ActivitySmith app icon with an App Icon Badge Count](https://cdn.activitysmith.com/features/badge-count.png)
+![ActivitySmith app icon with an App Icon Badge](https://cdn.activitysmith.com/features/badge-count.png)
 
 Show the number you care about on your ActivitySmith app icon. Track MRR, a customer count, a stock price, or any other value you want to keep in view.
+
+App Icon Badge requires Push Notifications enabled. On your iPhone, open Settings > ActivitySmith > Notifications and turn on Allow Notifications.
 
 ### Set or update the badge value
 
@@ -669,7 +671,7 @@ await activitysmith.liveActivities.update({
 
 ## Channels
 
-Use `channels` to target specific team members or devices when sending Push Notifications, Live Activities, or App Icon Badge Count updates. Omit it for account-wide delivery.
+Use `channels` to target specific team members or devices when sending Push Notifications, Live Activities, or App Icon Badge updates. Omit it for account-wide delivery.
 
 ```js
 await activitysmith.notifications.send({
