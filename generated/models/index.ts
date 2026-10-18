@@ -186,7 +186,7 @@ export interface AppIconBadgeCountUpdateResponse {
      */
     badge: number;
     /**
-     * Number of devices whose App Icon Badge Count was updated.
+     * Number of devices whose App Icon Badge was updated.
      * @type {number}
      * @memberof AppIconBadgeCountUpdateResponse
      */
