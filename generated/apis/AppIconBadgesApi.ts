@@ -35,8 +35,8 @@ export interface UpdateAppIconBadgeCountRequest {
 export class AppIconBadgesApi extends runtime.BaseAPI {
 
     /**
-     * Shows a number on the ActivitySmith app icon.
-     * Set App Icon Badge Count
+     * Shows a number on the ActivitySmith app icon. Requires Push Notifications enabled for ActivitySmith on the device.
+     * Set App Icon Badge
      */
     async updateAppIconBadgeCountRaw(requestParameters: UpdateAppIconBadgeCountRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AppIconBadgeCountUpdateResponse>> {
         if (requestParameters['appIconBadgeCountUpdateRequest'] == null) {
@@ -72,8 +72,8 @@ export class AppIconBadgesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Shows a number on the ActivitySmith app icon.
-     * Set App Icon Badge Count
+     * Shows a number on the ActivitySmith app icon. Requires Push Notifications enabled for ActivitySmith on the device.
+     * Set App Icon Badge
      */
     async updateAppIconBadgeCount(requestParameters: UpdateAppIconBadgeCountRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AppIconBadgeCountUpdateResponse> {
         const response = await this.updateAppIconBadgeCountRaw(requestParameters, initOverrides);
