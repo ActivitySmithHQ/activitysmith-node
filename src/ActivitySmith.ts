@@ -41,6 +41,9 @@ type MetricUpdateRequestBody = MetricUpdateParameters["metricValueUpdateRequest"
 type MetricValue = MetricUpdateRequestBody["value"];
 type MetricUpdateOptions = Omit<MetricUpdateRequestBody, "value">;
 type MetricInitOverrides = Parameters<MetricsApi["updateMetricValue"]>[1];
+type MetricUpsertParameters = Parameters<MetricsApi["upsertMetric"]>[0];
+type MetricUpsertRawParameters = Parameters<MetricsApi["upsertMetricRaw"]>[0];
+type MetricDefinition = NonNullable<MetricUpsertParameters["metricUpsertRequest"]>;
 type AppIconBadgeRequestBody =
   Parameters<AppIconBadgesApi["updateAppIconBadgeCount"]>[0]["appIconBadgeCountUpdateRequest"];
 type AppIconBadgeInitOverrides = Parameters<AppIconBadgesApi["updateAppIconBadgeCount"]>[1];
@@ -399,7 +402,29 @@ export class MetricsResource {
     );
   }
 
+  /**
+   * Creates the metric, or updates the fields sent for an existing one.
+   * Omitted fields keep their current values, so it is safe to call on every start.
+   */
+  create(key: string, definition?: MetricDefinition, initOverrides?: MetricInitOverrides) {
+    return this.api.upsertMetric(
+      {
+        key,
+        ...(definition ? { metricUpsertRequest: definition } : {}),
+      },
+      initOverrides,
+    );
+  }
+
   // Backward-compatible generated-style aliases.
+  upsertMetric(requestParameters: MetricUpsertParameters, initOverrides?: MetricInitOverrides) {
+    return this.api.upsertMetric(requestParameters, initOverrides);
+  }
+
+  upsertMetricRaw(requestParameters: MetricUpsertRawParameters, initOverrides?: MetricInitOverrides) {
+    return this.api.upsertMetricRaw(requestParameters, initOverrides);
+  }
+
   updateMetricValue(requestParameters: MetricUpdateParameters, initOverrides?: MetricInitOverrides) {
     return this.api.updateMetricValue(requestParameters, initOverrides);
   }
