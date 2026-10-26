@@ -186,7 +186,7 @@ export interface AppIconBadgeCountUpdateResponse {
      */
     badge: number;
     /**
-     * Number of devices whose App Icon Badge Count was updated.
+     * Number of devices whose App Icon Badge was updated.
      * @type {number}
      * @memberof AppIconBadgeCountUpdateResponse
      */
@@ -1746,6 +1746,102 @@ export type MetadataValue = boolean | number | string;
 /**
  * 
  * @export
+ * @interface Metric
+ */
+export interface Metric {
+    /**
+     * 
+     * @type {string}
+     * @memberof Metric
+     */
+    public_id: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Metric
+     */
+    key: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Metric
+     */
+    label: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Metric
+     */
+    format: MetricFormatEnum;
+    /**
+     * 
+     * @type {string}
+     * @memberof Metric
+     */
+    currency_code: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof Metric
+     */
+    unit: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof Metric
+     */
+    unit_spacing: MetricUnitSpacingEnum;
+    /**
+     * 
+     * @type {any}
+     * @memberof Metric
+     */
+    latest_value: any | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof Metric
+     */
+    latest_value_at: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof Metric
+     */
+    created_at: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Metric
+     */
+    updated_at: string;
+}
+
+
+/**
+ * @export
+ */
+export const MetricFormatEnum = {
+    Number: 'number',
+    Currency: 'currency',
+    Percent: 'percent',
+    Unit: 'unit',
+    String: 'string'
+} as const;
+export type MetricFormatEnum = typeof MetricFormatEnum[keyof typeof MetricFormatEnum];
+
+/**
+ * @export
+ */
+export const MetricUnitSpacingEnum = {
+    None: 'none',
+    Space: 'space'
+} as const;
+export type MetricUnitSpacingEnum = typeof MetricUnitSpacingEnum[keyof typeof MetricUnitSpacingEnum];
+
+/**
+ * 
+ * @export
  * @interface MetricError
  */
 export interface MetricError {
@@ -1762,6 +1858,79 @@ export interface MetricError {
      */
     message?: string;
 }
+/**
+ * 
+ * @export
+ * @interface MetricResponse
+ */
+export interface MetricResponse {
+    /**
+     * 
+     * @type {Metric}
+     * @memberof MetricResponse
+     */
+    metric: Metric;
+}
+/**
+ * Metric definition. Omitted fields keep their current values, or use defaults for a new metric: a label made from the key and the number format.
+ * @export
+ * @interface MetricUpsertRequest
+ */
+export interface MetricUpsertRequest {
+    /**
+     * Name shown on the widget.
+     * @type {string}
+     * @memberof MetricUpsertRequest
+     */
+    label?: string;
+    /**
+     * How widgets display the value: number (1,234), currency (requires currency_code), percent (send 99.9 to show 99.9%), unit (a number with a unit suffix, such as 120 ms), or string (text up to 64 characters). Defaults to number for a new metric.
+     * @type {string}
+     * @memberof MetricUpsertRequest
+     */
+    format?: MetricUpsertRequestFormatEnum;
+    /**
+     * 3-letter ISO 4217 currency code, such as USD. Required for the currency format.
+     * @type {string}
+     * @memberof MetricUpsertRequest
+     */
+    currency_code?: string;
+    /**
+     * Unit suffix for the unit format, such as ms or GB.
+     * @type {string}
+     * @memberof MetricUpsertRequest
+     */
+    unit?: string;
+    /**
+     * For the unit format: none shows 120ms, space shows 120 ms.
+     * @type {string}
+     * @memberof MetricUpsertRequest
+     */
+    unit_spacing?: MetricUpsertRequestUnitSpacingEnum;
+}
+
+
+/**
+ * @export
+ */
+export const MetricUpsertRequestFormatEnum = {
+    Number: 'number',
+    Currency: 'currency',
+    Percent: 'percent',
+    Unit: 'unit',
+    String: 'string'
+} as const;
+export type MetricUpsertRequestFormatEnum = typeof MetricUpsertRequestFormatEnum[keyof typeof MetricUpsertRequestFormatEnum];
+
+/**
+ * @export
+ */
+export const MetricUpsertRequestUnitSpacingEnum = {
+    None: 'none',
+    Space: 'space'
+} as const;
+export type MetricUpsertRequestUnitSpacingEnum = typeof MetricUpsertRequestUnitSpacingEnum[keyof typeof MetricUpsertRequestUnitSpacingEnum];
+
 /**
  * Latest metric value to display in widgets.
  * @export
@@ -1799,6 +1968,12 @@ export interface MetricValueUpdateResponse {
      * @memberof MetricValueUpdateResponse
      */
     success: boolean;
+    /**
+     * true when this request created the metric because no metric used the key yet.
+     * @type {boolean}
+     * @memberof MetricValueUpdateResponse
+     */
+    created?: boolean;
 }
 /**
  * 
