@@ -821,6 +821,70 @@ describe("resource wrappers", () => {
     );
   });
 
+  it("wraps metric definitions for metrics.create", async () => {
+    const ActivitySmith = require("../dist/src/index.js");
+    const generated = require("../dist/generated/index.js");
+
+    const upsertSpy = vi
+      .spyOn(generated.MetricsApi.prototype, "upsertMetric")
+      .mockResolvedValue({ metric: { key: "mrr", format: "currency" } });
+
+    const client = new ActivitySmith({ apiKey: "test" });
+
+    await client.metrics.create("mrr", { label: "MRR", format: "currency", currency_code: "USD" });
+    await client.metrics.create("deploy.success_rate");
+
+    expect(upsertSpy).toHaveBeenNthCalledWith(
+      1,
+      {
+        key: "mrr",
+        metricUpsertRequest: { label: "MRR", format: "currency", currency_code: "USD" },
+      },
+      undefined,
+    );
+    expect(upsertSpy).toHaveBeenNthCalledWith(2, { key: "deploy.success_rate" }, undefined);
+  });
+
+  it("sends metrics.create as PUT /metrics/{key}", async () => {
+    const ActivitySmith = require("../dist/src/index.js");
+    let request;
+    vi.stubGlobal("fetch", async (url, init) => {
+      request = { url: String(url), method: init.method, body: init.body ? JSON.parse(init.body) : undefined };
+      return new Response(
+        JSON.stringify({
+          metric: {
+            public_id: "abc",
+            key: "latency",
+            label: "Latency",
+            format: "unit",
+            currency_code: null,
+            unit: "ms",
+            unit_spacing: "space",
+            latest_value: null,
+            latest_value_at: null,
+            created_at: "2026-10-26T09:00:00.000Z",
+            updated_at: "2026-10-26T09:00:00.000Z",
+          },
+        }),
+        { status: 201, headers: { "Content-Type": "application/json" } },
+      );
+    });
+
+    try {
+      const client = new ActivitySmith({ apiKey: "test" });
+      const response = await client.metrics.create("latency", { format: "unit", unit: "ms", unit_spacing: "space" });
+
+      expect(request).toEqual({
+        url: "https://activitysmith.com/api/metrics/latency",
+        method: "PUT",
+        body: { format: "unit", unit: "ms", unit_spacing: "space" },
+      });
+      expect(response.metric.unit).toBe("ms");
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+
   it("keeps long metric aliases working", async () => {
     const ActivitySmith = require("../dist/src/index.js");
     const generated = require("../dist/generated/index.js");

@@ -16,6 +16,8 @@
 import * as runtime from '../runtime';
 import type {
   MetricError,
+  MetricResponse,
+  MetricUpsertRequest,
   MetricValueUpdateRequest,
   MetricValueUpdateResponse,
   RateLimitError,
@@ -26,13 +28,18 @@ export interface UpdateMetricValueRequest {
     metricValueUpdateRequest: MetricValueUpdateRequest;
 }
 
+export interface UpsertMetricRequest {
+    key: string;
+    metricUpsertRequest?: MetricUpsertRequest;
+}
+
 /**
  * 
  */
 export class MetricsApi extends runtime.BaseAPI {
 
     /**
-     * Updates the latest value for a metric displayed in ActivitySmith widgets. Create the metric in the web app first, then update its value using the key. Metric updates have an independent 300-requests-per-minute account allowance. They do not consume the Push Notification, badge, or Live Activity allowances.
+     * Updates the latest value for a metric displayed in ActivitySmith widgets. If no metric uses the key yet, the first value creates one: the label comes from the key, numeric values get the number format, and text values get the string format. To choose a currency, percent, or unit format, create the metric first with PUT /metrics/{key} or in the web app. A deleted metric is not recreated by new values; the request returns 404 with code metric_deleted. Each account can have up to 100 metrics created through the API. Metric updates have an independent 300-requests-per-minute account allowance. They do not consume the Push Notification, badge, or Live Activity allowances.
      * Update a widget metric value
      */
     async updateMetricValueRaw(requestParameters: UpdateMetricValueRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<MetricValueUpdateResponse>> {
@@ -76,11 +83,57 @@ export class MetricsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Updates the latest value for a metric displayed in ActivitySmith widgets. Create the metric in the web app first, then update its value using the key. Metric updates have an independent 300-requests-per-minute account allowance. They do not consume the Push Notification, badge, or Live Activity allowances.
+     * Updates the latest value for a metric displayed in ActivitySmith widgets. If no metric uses the key yet, the first value creates one: the label comes from the key, numeric values get the number format, and text values get the string format. To choose a currency, percent, or unit format, create the metric first with PUT /metrics/{key} or in the web app. A deleted metric is not recreated by new values; the request returns 404 with code metric_deleted. Each account can have up to 100 metrics created through the API. Metric updates have an independent 300-requests-per-minute account allowance. They do not consume the Push Notification, badge, or Live Activity allowances.
      * Update a widget metric value
      */
     async updateMetricValue(requestParameters: UpdateMetricValueRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<MetricValueUpdateResponse> {
         const response = await this.updateMetricValueRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates a metric for widgets, or updates the fields sent for an existing metric. Omitted fields keep their current values, so repeating the same request does not change the metric. Changing between the string format and a numeric format clears the latest value. Shares the metric account allowance of 300 requests per minute and is not a billable metric update.
+     * Create or update a widget metric
+     */
+    async upsertMetricRaw(requestParameters: UpsertMetricRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<MetricResponse>> {
+        if (requestParameters['key'] == null) {
+            throw new runtime.RequiredError(
+                'key',
+                'Required parameter "key" was null or undefined when calling upsertMetric().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("apiKeyAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/metrics/{key}`.replace(`{${"key"}}`, encodeURIComponent(String(requestParameters['key']))),
+            method: 'PUT',
+            headers: headerParameters,
+            query: queryParameters,
+            body: requestParameters['metricUpsertRequest'],
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response);
+    }
+
+    /**
+     * Creates a metric for widgets, or updates the fields sent for an existing metric. Omitted fields keep their current values, so repeating the same request does not change the metric. Changing between the string format and a numeric format clears the latest value. Shares the metric account allowance of 300 requests per minute and is not a billable metric update.
+     * Create or update a widget metric
+     */
+    async upsertMetric(requestParameters: UpsertMetricRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<MetricResponse> {
+        const response = await this.upsertMetricRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
