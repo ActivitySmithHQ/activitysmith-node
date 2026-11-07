@@ -23,26 +23,6 @@ const activitysmith = new ActivitySmith({
 });
 ```
 
-## Paired Devices
-
-List the iPhones and iPads paired to your account, for example to check that a device is paired before you send. Active devices come first:
-
-```js
-const { devices } = await activitysmith.devices.list();
-
-for (const device of devices) {
-  console.log(device.device_name, device.system_name, device.is_active);
-}
-```
-
-An empty list means no device is paired. Install ActivitySmith on your iPhone, sign in with the same account, and allow notifications. Channel-scoped API keys cannot list devices.
-
-Pass `includeInactive` to also list devices that can no longer receive deliveries:
-
-```js
-await activitysmith.devices.list({ includeInactive: true });
-```
-
 ## Push Notifications
 
 ### Send a Push Notification
@@ -230,7 +210,9 @@ await activitysmith.notifications.replace(sent.notification_id, {
 
 ### Dismiss a Push Notification
 
-Pass the `notification_id` to `dismiss` when a Push Notification no longer needs attention, for example after you answered an agent's question somewhere else. Dismissing clears it from the Lock Screen and Notification Center on every device it was sent to. History keeps it.
+Pass the `notification_id` to `dismiss` when a Push Notification no longer needs attention, for example after you answered an agent's question somewhere else.
+
+Dismissing clears it from the Lock Screen and Notification Center on every device it was sent to. History keeps it.
 
 Devices clear the notification in the background, so it can take a moment.
 
@@ -744,6 +726,26 @@ await activitysmith.liveActivities.stream("nightly-backup", {
 await activitysmith.badgeCount(3, {
   channels: ["sales", "customer-success"],
 });
+```
+
+## Paired Devices
+
+List the iPhones and iPads paired to your account, for example to check that a device is paired before you send. Active devices come first:
+
+```js
+const { devices } = await activitysmith.devices.list();
+
+for (const device of devices) {
+  console.log(device.device_name, device.system_name, device.is_active);
+}
+```
+
+An empty list means no device is paired. Install ActivitySmith on your iPhone, sign in with the same account, and allow notifications. Channel-scoped API keys cannot list devices.
+
+Pass `includeInactive` to also list devices that can no longer receive deliveries:
+
+```js
+await activitysmith.devices.list({ includeInactive: true });
 ```
 
 ## Error Handling
