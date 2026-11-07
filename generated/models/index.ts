@@ -1,6 +1,141 @@
 /* tslint:disable */
 /* eslint-disable */
 /**
+ * An iPhone or iPad paired to the account, one entry per device and owner.
+ * @export
+ * @interface AccountDevice
+ */
+export interface AccountDevice {
+    /**
+     * Email of the account member who paired the device.
+     * @type {string}
+     * @memberof AccountDevice
+     */
+    user_email: string;
+    /**
+     * Device ID. Use it to assign the device to Channels.
+     * @type {string}
+     * @memberof AccountDevice
+     */
+    device_id: string;
+    /**
+     * Device platform, such as ios. iPhones and iPads both report ios; use system_name to tell them apart.
+     * @type {string}
+     * @memberof AccountDevice
+     */
+    device_type: string | null;
+    /**
+     * True when the device can receive Push Notifications or Live Activities.
+     * @type {boolean}
+     * @memberof AccountDevice
+     */
+    is_active: boolean;
+    /**
+     * Whether each delivery token is active, keyed by token type (push, start_live_activity).
+     * @type {{ [key: string]: boolean; }}
+     * @memberof AccountDevice
+     */
+    token_status: { [key: string]: boolean; };
+    /**
+     * ActivitySmith app version on the device.
+     * @type {string}
+     * @memberof AccountDevice
+     */
+    app_version: string | null;
+    /**
+     * Device name set on the device.
+     * @type {string}
+     * @memberof AccountDevice
+     */
+    device_name: string | null;
+    /**
+     * Operating system name, such as iOS or iPadOS.
+     * @type {string}
+     * @memberof AccountDevice
+     */
+    system_name: string | null;
+    /**
+     * Operating system version.
+     * @type {string}
+     * @memberof AccountDevice
+     */
+    system_version: string | null;
+    /**
+     * When the device was first paired.
+     * @type {string}
+     * @memberof AccountDevice
+     */
+    created_at: string | null;
+    /**
+     * When the device last updated its pairing.
+     * @type {string}
+     * @memberof AccountDevice
+     */
+    updated_at: string | null;
+}
+/**
+ * 
+ * @export
+ * @interface AccountDeviceListResponse
+ */
+export interface AccountDeviceListResponse {
+    /**
+     * 
+     * @type {Array<AccountDevice>}
+     * @memberof AccountDeviceListResponse
+     */
+    devices: Array<AccountDevice>;
+    /**
+     * 
+     * @type {AccountDeviceListResponseMeta}
+     * @memberof AccountDeviceListResponse
+     */
+    meta: AccountDeviceListResponseMeta;
+}
+/**
+ * 
+ * @export
+ * @interface AccountDeviceListResponseMeta
+ */
+export interface AccountDeviceListResponseMeta {
+    /**
+     * Devices matching the filter.
+     * @type {number}
+     * @memberof AccountDeviceListResponseMeta
+     */
+    total: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof AccountDeviceListResponseMeta
+     */
+    limit: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof AccountDeviceListResponseMeta
+     */
+    offset: number;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof AccountDeviceListResponseMeta
+     */
+    has_more: boolean;
+    /**
+     * Offset for the next page, or null on the last page.
+     * @type {number}
+     * @memberof AccountDeviceListResponseMeta
+     */
+    next_offset: number | null;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof AccountDeviceListResponseMeta
+     */
+    include_inactive: boolean;
+}
+/**
  * 
  * @export
  * @interface ActivityMetric
