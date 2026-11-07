@@ -185,6 +185,53 @@ describe("resource wrappers", () => {
     ).toThrow("ActivitySmith: media cannot be combined with actions");
   });
 
+  it("wraps notification id for notifications.dismiss", async () => {
+    const ActivitySmith = require("../dist/src/index.js");
+    const generated = require("../dist/generated/index.js");
+
+    const response = { success: true, notification_id: "pn1", dismissed_at: "2026-11-07T09:00:00.000Z" };
+    const dismissSpy = vi
+      .spyOn(generated.PushNotificationsApi.prototype, "dismissPushNotification")
+      .mockResolvedValue(response);
+
+    const client = new ActivitySmith({ apiKey: "test" });
+
+    expect(await client.notifications.dismiss("pn1")).toEqual(response);
+    expect(await client.notifications.dismissPushNotification({ notificationId: "pn2" })).toEqual(response);
+    expect(dismissSpy).toHaveBeenNthCalledWith(1, { notificationId: "pn1" }, undefined);
+    expect(dismissSpy).toHaveBeenNthCalledWith(2, { notificationId: "pn2" }, undefined);
+  });
+
+  it("sends notifications.dismiss as POST /push-notification/{id}/dismiss", async () => {
+    const ActivitySmith = require("../dist/src/index.js");
+    let request;
+    vi.stubGlobal("fetch", async (url, init) => {
+      request = { url: String(url), method: init.method, body: init.body };
+      return new Response(
+        JSON.stringify({ success: true, notification_id: "pn_123", dismissed_at: "2026-11-07T09:00:00.000Z" }),
+        { status: 200, headers: { "Content-Type": "application/json" } },
+      );
+    });
+
+    try {
+      const client = new ActivitySmith({ apiKey: "test" });
+      const response = await client.notifications.dismiss("pn_123");
+
+      expect(request).toEqual({
+        url: "https://activitysmith.com/api/push-notification/pn_123/dismiss",
+        method: "POST",
+        body: undefined,
+      });
+      expect(response).toEqual({
+        success: true,
+        notification_id: "pn_123",
+        dismissed_at: "2026-11-07T09:00:00.000Z",
+      });
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+
   it("keeps long notification alias working", async () => {
     const ActivitySmith = require("../dist/src/index.js");
     const generated = require("../dist/generated/index.js");
@@ -880,6 +927,131 @@ describe("resource wrappers", () => {
         body: { format: "unit", unit: "ms", unit_spacing: "space" },
       });
       expect(response.metric.unit).toBe("ms");
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+
+  it("sends devices.list as GET /account/devices", async () => {
+    const ActivitySmith = require("../dist/src/index.js");
+    const requests = [];
+    vi.stubGlobal("fetch", async (url, init) => {
+      const parsed = new URL(String(url));
+      requests.push({
+        path: parsed.pathname,
+        query: Object.fromEntries(parsed.searchParams),
+        method: init.method,
+        body: init.body,
+      });
+      return new Response(
+        JSON.stringify({
+          devices: [
+            {
+              user_email: "owner@example.com",
+              device_id: "dev_1",
+              device_type: "ios",
+              is_active: true,
+              token_status: { push: true, start_live_activity: true },
+              app_version: "1.17.0",
+              device_name: "iPhone",
+              system_name: "iOS",
+              system_version: "27.0",
+              created_at: "2026-11-01T09:00:00.000Z",
+              updated_at: "2026-11-07T09:00:00.000Z",
+            },
+          ],
+          meta: { total: 1, limit: 50, offset: 0, has_more: false, next_offset: null, include_inactive: false },
+        }),
+        { status: 200, headers: { "Content-Type": "application/json" } },
+      );
+    });
+
+    try {
+      const client = new ActivitySmith({ apiKey: "test" });
+      const response = await client.devices.list();
+      await client.devices.list({ includeInactive: true, limit: 10 });
+      await client.devices.list({ offset: 20 });
+      await client.devices.listAccountDevices({ includeInactive: false });
+
+      expect(requests).toEqual([
+        { path: "/api/account/devices", query: {}, method: "GET", body: undefined },
+        { path: "/api/account/devices", query: { include_inactive: "true", limit: "10" }, method: "GET", body: undefined },
+        { path: "/api/account/devices", query: { offset: "20" }, method: "GET", body: undefined },
+        { path: "/api/account/devices", query: { include_inactive: "false" }, method: "GET", body: undefined },
+      ]);
+      expect(response.devices[0].device_name).toBe("iPhone");
+      expect(response.meta.next_offset).toBeNull();
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+
+  it("runs the dismissal, devices, and metrics doc examples", async () => {
+    const ActivitySmith = require("../dist/src/index.js");
+    const requests = [];
+    vi.stubGlobal("fetch", async (url, init) => {
+      const parsed = new URL(String(url));
+      const path = parsed.pathname.replace(/^\/api/, "");
+      requests.push(`${init.method} ${path}${parsed.search}`);
+      const json = (body, status = 200) =>
+        new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json" } });
+
+      if (init.method === "POST" && path === "/push-notification") {
+        return json({ success: true, notification_id: "pn_123", devices_notified: 1, users_notified: 1 });
+      }
+      if (init.method === "POST" && path === "/push-notification/pn_123/dismiss") {
+        return json({ success: true, notification_id: "pn_123", dismissed_at: "2026-11-07T09:00:00.000Z" });
+      }
+      if (init.method === "GET" && path === "/account/devices") {
+        return json({
+          devices: [
+            {
+              user_email: "owner@example.com",
+              device_id: "dev_1",
+              device_type: "ios",
+              is_active: true,
+              token_status: { push: true },
+              app_version: "1.17.0",
+              device_name: "Adam's iPhone",
+              system_name: "iOS",
+              system_version: "27.0",
+              created_at: null,
+              updated_at: null,
+            },
+          ],
+          meta: { total: 1, limit: 50, offset: 0, has_more: false, next_offset: null, include_inactive: false },
+        });
+      }
+      if (init.method === "PUT" && path === "/metrics/mrr") {
+        return json({ metric: { key: "mrr", label: "MRR", format: "currency", currency_code: "USD" } }, 201);
+      }
+      if (init.method === "POST" && path === "/metrics/mrr/value") {
+        return json({ metric: { key: "mrr", latest_value: 12450 } });
+      }
+      throw new Error(`unexpected request ${init.method} ${url}`);
+    });
+    const log = vi.spyOn(console, "log").mockImplementation(() => {});
+
+    try {
+      const activitysmith = new ActivitySmith({ apiKey: "test" });
+
+      const sent = await activitysmith.notifications.send({ title: "🙋 Agent needs your input", message: "Approve the database migration?" });
+      await activitysmith.notifications.dismiss(sent.notification_id);
+      const { devices } = await activitysmith.devices.list();
+      for (const device of devices) { console.log(device.device_name, device.system_name, device.is_active); }
+      await activitysmith.devices.list({ includeInactive: true });
+      await activitysmith.metrics.create("mrr", { label: "MRR", format: "currency", currency_code: "USD" });
+      await activitysmith.metrics.update("mrr", 12450);
+
+      expect(log).toHaveBeenCalledWith("Adam's iPhone", "iOS", true);
+      expect(requests).toEqual([
+        "POST /push-notification",
+        "POST /push-notification/pn_123/dismiss",
+        "GET /account/devices",
+        "GET /account/devices?include_inactive=true",
+        "PUT /metrics/mrr",
+        "POST /metrics/mrr/value",
+      ]);
     } finally {
       vi.unstubAllGlobals();
     }

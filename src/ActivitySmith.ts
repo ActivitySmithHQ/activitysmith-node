@@ -1,13 +1,14 @@
 import {
   AppIconBadgesApi,
   Configuration,
+  DevicesApi,
   LiveActivitiesApi,
   MetricsApi,
   PushInterruptionLevel,
   PushNotificationsApi,
 } from "../generated/index";
 
-const SDK_VERSION = "1.14.0";
+const SDK_VERSION = "1.15.0";
 const SDK_HEADER_NAME = "X-ActivitySmith-SDK";
 const DEFAULT_SDK_NAME = "node";
 const SDK_HEADER_VALUE = `${DEFAULT_SDK_NAME}-v${SDK_VERSION}`;
@@ -27,6 +28,7 @@ type SendInitOverrides = Parameters<PushNotificationsApi["sendPushNotification"]
 type PushReplaceRequestBody =
   Parameters<PushNotificationsApi["replacePushNotification"]>[0]["pushNotificationReplaceRequest"];
 type PushReplaceParameters = Parameters<PushNotificationsApi["replacePushNotification"]>[0];
+type PushDismissParameters = Parameters<PushNotificationsApi["dismissPushNotification"]>[0];
 type StartRequestBody = Parameters<LiveActivitiesApi["startLiveActivity"]>[0]["liveActivityStartRequest"];
 type UpdateRequestBody = Parameters<LiveActivitiesApi["updateLiveActivity"]>[0]["liveActivityUpdateRequest"];
 type EndRequestBody = Parameters<LiveActivitiesApi["endLiveActivity"]>[0]["liveActivityEndRequest"];
@@ -46,12 +48,23 @@ type MetricUpsertRawParameters = Parameters<MetricsApi["upsertMetricRaw"]>[0];
 type MetricDefinition = NonNullable<MetricUpsertParameters["metricUpsertRequest"]>;
 type AppIconBadgeRequestBody =
   Parameters<AppIconBadgesApi["updateAppIconBadgeCount"]>[0]["appIconBadgeCountUpdateRequest"];
+type DeviceListParameters = NonNullable<Parameters<DevicesApi["listAccountDevices"]>[0]>;
+type DeviceListInitOverrides = Parameters<DevicesApi["listAccountDevices"]>[1];
 type AppIconBadgeInitOverrides = Parameters<AppIconBadgesApi["updateAppIconBadgeCount"]>[1];
 type ChannelTargetInput = { channels?: string[] };
 type PushSendRequest = PushRequestBody & { channels?: string[] };
 
 export type BadgeCountOptions = {
   channels?: string[];
+};
+
+export type DeviceListOptions = {
+  /** Maximum number of devices to return. */
+  limit?: number;
+  /** Number of devices to skip, for paging. */
+  offset?: number;
+  /** Include devices that can no longer receive Push Notifications or Live Activities. */
+  includeInactive?: boolean;
 };
 
 const LiveActivityTypes = {
@@ -251,6 +264,19 @@ export class NotificationsResource {
     );
   }
 
+  /**
+   * Clears a sent Push Notification from the Lock Screen and Notification Center,
+   * using the notification_id returned by send(). Notification history keeps it.
+   */
+  dismiss(notificationId: string, initOverrides?: SendInitOverrides) {
+    return this.api.dismissPushNotification({ notificationId }, initOverrides);
+  }
+
+  // Generated-style alias.
+  dismissPushNotification(requestParameters: PushDismissParameters, initOverrides?: SendInitOverrides) {
+    return this.api.dismissPushNotification(requestParameters, initOverrides);
+  }
+
   // Generated-style alias.
   replacePushNotification(requestParameters: PushReplaceParameters, initOverrides?: SendInitOverrides) {
     assertValidPushRequest(requestParameters.pushNotificationReplaceRequest);
@@ -437,6 +463,34 @@ export class MetricsResource {
   }
 }
 
+export class DevicesResource {
+  private readonly api: DevicesApi;
+
+  constructor(api: DevicesApi) {
+    this.api = api;
+  }
+
+  /**
+   * Lists the iPhones and iPads paired to the account, active devices first.
+   * Pass includeInactive to also list devices that can no longer receive deliveries.
+   */
+  list(options: DeviceListOptions = {}, initOverrides?: DeviceListInitOverrides) {
+    return this.api.listAccountDevices(
+      compactObject({
+        limit: options.limit,
+        offset: options.offset,
+        includeInactive: options.includeInactive,
+      }),
+      initOverrides,
+    );
+  }
+
+  // Generated-style alias.
+  listAccountDevices(requestParameters: DeviceListParameters = {}, initOverrides?: DeviceListInitOverrides) {
+    return this.api.listAccountDevices(requestParameters, initOverrides);
+  }
+}
+
 export class ActivitySmith {
   public static readonly liveActivityTypes = LiveActivityTypes;
   public static readonly contentState = contentState;
@@ -452,6 +506,7 @@ export class ActivitySmith {
   public readonly notifications: NotificationsResource;
   public readonly liveActivities: LiveActivitiesResource;
   public readonly metrics: MetricsResource;
+  public readonly devices: DevicesResource;
   private readonly appIconBadgesApi: AppIconBadgesApi;
 
   constructor(opts: ActivitySmithOptions) {
@@ -470,6 +525,7 @@ export class ActivitySmith {
     this.notifications = new NotificationsResource(new PushNotificationsApi(config));
     this.liveActivities = new LiveActivitiesResource(new LiveActivitiesApi(config));
     this.metrics = new MetricsResource(new MetricsApi(config));
+    this.devices = new DevicesResource(new DevicesApi(config));
     this.appIconBadgesApi = new AppIconBadgesApi(config);
   }
 
