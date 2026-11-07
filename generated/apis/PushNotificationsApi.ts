@@ -20,12 +20,17 @@ import type {
   ForbiddenError,
   NoRecipientsError,
   NotFoundError,
+  PushNotificationDismissResponse,
   PushNotificationReplaceRequest,
   PushNotificationReplaceResponse,
   PushNotificationRequest,
   PushNotificationResponse,
   SendPushNotification429Response,
 } from '../models/index';
+
+export interface DismissPushNotificationRequest {
+    notificationId: string;
+}
 
 export interface ReplacePushNotificationRequest {
     notificationId: string;
@@ -40,6 +45,49 @@ export interface SendPushNotificationRequest {
  * 
  */
 export class PushNotificationsApi extends runtime.BaseAPI {
+
+    /**
+     * Clears a Push Notification you already sent from the Lock Screen and Notification Center on every device it was sent to, using the `notification_id` from the send response. Notification history keeps it.  Devices clear the notification in the background, which can take a moment or wait until the ActivitySmith app next opens. A successful response means the dismissal was recorded, not that every device has cleared it yet. Devices running an ActivitySmith app version before 1.17.0 show a silent notification titled \"Push Notification dismissed\" in its place until the user clears it.  Calling this again for the same notification returns the same response and sends nothing. A dismissed notification cannot be replaced.
+     * Dismiss a push notification
+     */
+    async dismissPushNotificationRaw(requestParameters: DismissPushNotificationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PushNotificationDismissResponse>> {
+        if (requestParameters['notificationId'] == null) {
+            throw new runtime.RequiredError(
+                'notificationId',
+                'Required parameter "notificationId" was null or undefined when calling dismissPushNotification().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("apiKeyAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/push-notification/{notification_id}/dismiss`.replace(`{${"notification_id"}}`, encodeURIComponent(String(requestParameters['notificationId']))),
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response);
+    }
+
+    /**
+     * Clears a Push Notification you already sent from the Lock Screen and Notification Center on every device it was sent to, using the `notification_id` from the send response. Notification history keeps it.  Devices clear the notification in the background, which can take a moment or wait until the ActivitySmith app next opens. A successful response means the dismissal was recorded, not that every device has cleared it yet. Devices running an ActivitySmith app version before 1.17.0 show a silent notification titled \"Push Notification dismissed\" in its place until the user clears it.  Calling this again for the same notification returns the same response and sends nothing. A dismissed notification cannot be replaced.
+     * Dismiss a push notification
+     */
+    async dismissPushNotification(requestParameters: DismissPushNotificationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PushNotificationDismissResponse> {
+        const response = await this.dismissPushNotificationRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
 
     /**
      * Replaces a Push Notification you already sent, using the `notification_id` from the send response. The replacement takes the original\'s place on the Lock Screen and in Notification Center instead of appearing as a second notification. It is delivered silently, with no sound or screen wake, to the same recipients as the original. Notification history is updated in place.
