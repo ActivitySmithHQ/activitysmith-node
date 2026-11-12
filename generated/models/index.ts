@@ -666,7 +666,7 @@ export type ContentStateEndStepColorsEnum = typeof ContentStateEndStepColorsEnum
  */
 export interface ContentStateStart {
     /**
-     * 
+     * Title shown on the Live Activity. Send an empty string to show no title.
      * @type {string}
      * @memberof ContentStateStart
      */
@@ -848,7 +848,7 @@ export type ContentStateStartStepColorsEnum = typeof ContentStateStartStepColors
  */
 export interface ContentStateUpdate {
     /**
-     * 
+     * Title shown on the Live Activity. Send an empty string to show no title.
      * @type {string}
      * @memberof ContentStateUpdate
      */
@@ -2605,7 +2605,7 @@ export type SendPushNotification429Response = LiveActivityLimitError | RateLimit
  */
 export interface StreamContentState {
     /**
-     * 
+     * Title shown on the Live Activity. Send an empty string to show no title.
      * @type {string}
      * @memberof StreamContentState
      */
