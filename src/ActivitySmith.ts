@@ -34,8 +34,9 @@ type UpdateRequestBody = Parameters<LiveActivitiesApi["updateLiveActivity"]>[0][
 type EndRequestBody = Parameters<LiveActivitiesApi["endLiveActivity"]>[0]["liveActivityEndRequest"];
 type StreamRequestBody =
   Parameters<LiveActivitiesApi["reconcileLiveActivityStream"]>[0]["liveActivityStreamRequest"];
-type StreamDeleteRequestBody =
-  Parameters<LiveActivitiesApi["endLiveActivityStream"]>[0]["liveActivityStreamDeleteRequest"];
+type StreamDeleteRequestBody = NonNullable<
+  Parameters<LiveActivitiesApi["endLiveActivityStream"]>[0]["liveActivityStreamDeleteRequest"]
+>;
 type LiveInitOverrides = Parameters<LiveActivitiesApi["startLiveActivity"]>[1];
 type MetricUpdateParameters = Parameters<MetricsApi["updateMetricValue"]>[0];
 type MetricRawParameters = Parameters<MetricsApi["updateMetricValueRaw"]>[0];
