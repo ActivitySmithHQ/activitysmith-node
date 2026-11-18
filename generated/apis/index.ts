@@ -1,5 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
+export * from './AccountApi';
 export * from './AppIconBadgesApi';
 export * from './DevicesApi';
 export * from './LiveActivitiesApi';

@@ -136,6 +136,160 @@ export interface AccountDeviceListResponseMeta {
     include_inactive: boolean;
 }
 /**
+ * The account's plan and trial, and whether sends go through.
+ * @export
+ * @interface AccountResponse
+ */
+export interface AccountResponse {
+    /**
+     * Email of the signed-in person. Null for API keys.
+     * @type {string}
+     * @memberof AccountResponse
+     */
+    email: string | null;
+    /**
+     * True when the signed-in person owns the account. Null for API keys.
+     * @type {boolean}
+     * @memberof AccountResponse
+     */
+    is_account_owner: boolean | null;
+    /**
+     * 
+     * @type {AccountResponsePlan}
+     * @memberof AccountResponse
+     */
+    plan: AccountResponsePlan;
+    /**
+     * 
+     * @type {AccountResponseTrial}
+     * @memberof AccountResponse
+     */
+    trial: AccountResponseTrial;
+    /**
+     * False when Push Notifications, Live Activities, App Icon Badge updates, and Lock Screen Widget values are paused until the account upgrades.
+     * @type {boolean}
+     * @memberof AccountResponse
+     */
+    can_send: boolean;
+    /**
+     * What stops when the trial ends. Present only while a trial is running.
+     * @type {string}
+     * @memberof AccountResponse
+     */
+    when_trial_ends?: string;
+    /**
+     * Where to upgrade. Set during a trial or without an active plan, otherwise null.
+     * @type {string}
+     * @memberof AccountResponse
+     */
+    upgrade_url: string | null;
+}
+/**
+ * 
+ * @export
+ * @interface AccountResponsePlan
+ */
+export interface AccountResponsePlan {
+    /**
+     * trial: the free trial. subscription: a monthly or yearly plan. lifetime: a Lifetime Membership. grandfathered: an early account with free access. inactive: no trial and no active plan.
+     * @type {string}
+     * @memberof AccountResponsePlan
+     */
+    status: AccountResponsePlanStatusEnum;
+    /**
+     * Plan ID, such as pro. Null during a trial or without a plan.
+     * @type {string}
+     * @memberof AccountResponsePlan
+     */
+    plan_id: string | null;
+    /**
+     * month or year for subscriptions, otherwise null.
+     * @type {string}
+     * @memberof AccountResponsePlan
+     */
+    billing_interval: string | null;
+    /**
+     * Next payment date of a subscription, otherwise null.
+     * @type {string}
+     * @memberof AccountResponsePlan
+     */
+    renews_at: string | null;
+    /**
+     * True when the subscription ends at the end of the current period.
+     * @type {boolean}
+     * @memberof AccountResponsePlan
+     */
+    cancel_at_period_end: boolean;
+}
+
+
+/**
+ * @export
+ */
+export const AccountResponsePlanStatusEnum = {
+    Trial: 'trial',
+    Subscription: 'subscription',
+    Lifetime: 'lifetime',
+    Grandfathered: 'grandfathered',
+    Inactive: 'inactive'
+} as const;
+export type AccountResponsePlanStatusEnum = typeof AccountResponsePlanStatusEnum[keyof typeof AccountResponsePlanStatusEnum];
+
+/**
+ * The trial while plan.status is trial, otherwise null. Time trials have ends_at and days_left. Older event trials have events_used and event_limit.
+ * @export
+ * @interface AccountResponseTrial
+ */
+export interface AccountResponseTrial {
+    /**
+     * 
+     * @type {string}
+     * @memberof AccountResponseTrial
+     */
+    type: AccountResponseTrialTypeEnum;
+    /**
+     * When a time trial ends.
+     * @type {string}
+     * @memberof AccountResponseTrial
+     */
+    ends_at?: string;
+    /**
+     * Days left in a time trial. 0 after it ends.
+     * @type {number}
+     * @memberof AccountResponseTrial
+     */
+    days_left?: number;
+    /**
+     * Events used in an event trial.
+     * @type {number}
+     * @memberof AccountResponseTrial
+     */
+    events_used?: number;
+    /**
+     * Events included in an event trial.
+     * @type {number}
+     * @memberof AccountResponseTrial
+     */
+    event_limit?: number;
+    /**
+     * True when the trial has ended or its events are used up.
+     * @type {boolean}
+     * @memberof AccountResponseTrial
+     */
+    ended: boolean;
+}
+
+
+/**
+ * @export
+ */
+export const AccountResponseTrialTypeEnum = {
+    Time: 'time',
+    Events: 'events'
+} as const;
+export type AccountResponseTrialTypeEnum = typeof AccountResponseTrialTypeEnum[keyof typeof AccountResponseTrialTypeEnum];
+
+/**
  * 
  * @export
  * @interface ActivityMetric
@@ -660,13 +814,13 @@ export const ContentStateEndStepColorsEnum = {
 export type ContentStateEndStepColorsEnum = typeof ContentStateEndStepColorsEnum[keyof typeof ContentStateEndStepColorsEnum];
 
 /**
- * Start payload requires title and type. For segmented_progress include number_of_steps and current_step. For progress include percentage or value with upper_limit. For metrics and stats include a non-empty metrics array. For value include a string or number in value; strings preserve currency, units, and other formatting. For alert include message. For timer include duration_seconds for countdowns, or set counts_down false without duration_seconds for an open-ended elapsed timer. Optional icon is supported by all Live Activity types. Optional badge is supported by alert, progress, segmented_progress, and value. For segmented_progress, number_of_steps is not locked and can be changed in later update or end calls.
+ * Start payload requires title and type. For segmented_progress include number_of_steps and current_step. For progress include percentage or value with upper_limit. For metrics and stats include a non-empty metrics array. For value include a string or number in value; strings preserve currency, units, and other formatting. For alert include message. For timer include duration_seconds or timer_end_at for countdowns, or set counts_down false without them for an open-ended elapsed timer. Add timer_start_at for a timer that started earlier. Optional icon is supported by all Live Activity types. Optional badge is supported by alert, progress, segmented_progress, and value. For segmented_progress, number_of_steps is not locked and can be changed in later update or end calls.
  * @export
  * @interface ContentStateStart
  */
 export interface ContentStateStart {
     /**
-     * 
+     * Title shown on the Live Activity. Send an empty string to show no title.
      * @type {string}
      * @memberof ContentStateStart
      */
@@ -708,11 +862,23 @@ export interface ContentStateStart {
      */
     upper_limit?: number;
     /**
-     * Timer duration in seconds. For type=timer countdowns, required on start when counts_down is true or omitted.
+     * Timer duration in seconds. For type=timer countdowns, required on start when counts_down is true or omitted, unless you send timer_end_at. Counts from timer_start_at when you send it.
      * @type {number}
      * @memberof ContentStateStart
      */
     duration_seconds?: number;
+    /**
+     * Use with type=timer. ISO 8601 date and time when the timer started. It can be in the past, so a countdown that started earlier shows the time already gone in its progress bar. Defaults to the request time. Must not be in the future.
+     * @type {string}
+     * @memberof ContentStateStart
+     */
+    timer_start_at?: string;
+    /**
+     * Use with type=timer. ISO 8601 date and time when the countdown ends. Must be after timer_start_at, or in the future when timer_start_at is omitted. Send duration_seconds or timer_end_at, not both.
+     * @type {string}
+     * @memberof ContentStateStart
+     */
+    timer_end_at?: string;
     /**
      * Use with type=timer. When true or omitted, the timer counts down from duration_seconds. Set false for an elapsed timer; omit duration_seconds for an open-ended elapsed timer.
      * @type {boolean}
@@ -848,7 +1014,7 @@ export type ContentStateStartStepColorsEnum = typeof ContentStateStartStepColors
  */
 export interface ContentStateUpdate {
     /**
-     * 
+     * Title shown on the Live Activity. Send an empty string to show no title.
      * @type {string}
      * @memberof ContentStateUpdate
      */
@@ -890,11 +1056,23 @@ export interface ContentStateUpdate {
      */
     upper_limit?: number;
     /**
-     * Timer duration in seconds. For type=timer, sending duration_seconds resets the timer window from the update request time; omit it to preserve the existing timer window.
+     * Timer duration in seconds. For type=timer, sending duration_seconds resets the timer window from the update request time, or from timer_start_at when you send it. Omit it to preserve the existing timer window.
      * @type {number}
      * @memberof ContentStateUpdate
      */
     duration_seconds?: number;
+    /**
+     * Use with type=timer. ISO 8601 date and time when the timer started. It can be in the past, so a countdown that started earlier shows the time already gone in its progress bar. Defaults to the request time. Must not be in the future.
+     * @type {string}
+     * @memberof ContentStateUpdate
+     */
+    timer_start_at?: string;
+    /**
+     * Use with type=timer. ISO 8601 date and time when the countdown ends. Must be after timer_start_at, or in the future when timer_start_at is omitted. Send duration_seconds or timer_end_at, not both. Send timer_end_at alone to move the end and keep the current start.
+     * @type {string}
+     * @memberof ContentStateUpdate
+     */
+    timer_end_at?: string;
     /**
      * Use with type=timer. When true or omitted, the timer counts down from duration_seconds. Set false for an elapsed timer; omit duration_seconds for an open-ended elapsed timer.
      * @type {boolean}
@@ -2599,13 +2777,13 @@ export type RateLimitErrorCodeEnum = typeof RateLimitErrorCodeEnum[keyof typeof 
  */
 export type SendPushNotification429Response = LiveActivityLimitError | RateLimitError;
 /**
- * Current state for a managed Live Activity stream. Include type on the first PUT, and whenever the stream may need to start a fresh activity. Supports segmented_progress, progress, metrics, stats, alert, timer, and value types. For timer, send duration_seconds to start or reset a bounded timer; omit duration_seconds on later updates to preserve the existing timer window.
+ * Current state for a managed Live Activity stream. Include type on the first PUT, and whenever the stream may need to start a fresh activity. Supports segmented_progress, progress, metrics, stats, alert, timer, and value types. For timer, send duration_seconds or timer_end_at to start or reset a bounded timer, and timer_start_at for a timer that started earlier. Omit them on later updates to preserve the existing timer window.
  * @export
  * @interface StreamContentState
  */
 export interface StreamContentState {
     /**
-     * 
+     * Title shown on the Live Activity. Send an empty string to show no title.
      * @type {string}
      * @memberof StreamContentState
      */
@@ -2647,11 +2825,23 @@ export interface StreamContentState {
      */
     upper_limit?: number;
     /**
-     * Timer duration in seconds. For type=timer, send duration_seconds to start or reset the timer window; omit it on later stream updates to preserve the existing timer window.
+     * Timer duration in seconds. For type=timer, send duration_seconds to start or reset the timer window, counted from timer_start_at when you send it. Omit it on later stream updates to preserve the existing timer window.
      * @type {number}
      * @memberof StreamContentState
      */
     duration_seconds?: number;
+    /**
+     * Use with type=timer. ISO 8601 date and time when the timer started. It can be in the past, so a countdown that started earlier shows the time already gone in its progress bar. Defaults to the request time. Must not be in the future.
+     * @type {string}
+     * @memberof StreamContentState
+     */
+    timer_start_at?: string;
+    /**
+     * Use with type=timer. ISO 8601 date and time when the countdown ends. Must be after timer_start_at, or in the future when timer_start_at is omitted. Send duration_seconds or timer_end_at, not both. On later stream updates, send timer_end_at alone to move the end and keep the current start.
+     * @type {string}
+     * @memberof StreamContentState
+     */
+    timer_end_at?: string;
     /**
      * Use with type=timer. When true or omitted, the timer counts down from duration_seconds. Set false for an elapsed timer; omit duration_seconds for an open-ended elapsed timer.
      * @type {boolean}
