@@ -8,7 +8,7 @@ import {
   PushNotificationsApi,
 } from "../generated/index";
 
-const SDK_VERSION = "1.15.0";
+const SDK_VERSION = "1.16.0";
 const SDK_HEADER_NAME = "X-ActivitySmith-SDK";
 const DEFAULT_SDK_NAME = "node";
 const SDK_HEADER_VALUE = `${DEFAULT_SDK_NAME}-v${SDK_VERSION}`;
@@ -34,8 +34,9 @@ type UpdateRequestBody = Parameters<LiveActivitiesApi["updateLiveActivity"]>[0][
 type EndRequestBody = Parameters<LiveActivitiesApi["endLiveActivity"]>[0]["liveActivityEndRequest"];
 type StreamRequestBody =
   Parameters<LiveActivitiesApi["reconcileLiveActivityStream"]>[0]["liveActivityStreamRequest"];
-type StreamDeleteRequestBody =
-  Parameters<LiveActivitiesApi["endLiveActivityStream"]>[0]["liveActivityStreamDeleteRequest"];
+type StreamDeleteRequestBody = NonNullable<
+  Parameters<LiveActivitiesApi["endLiveActivityStream"]>[0]["liveActivityStreamDeleteRequest"]
+>;
 type LiveInitOverrides = Parameters<LiveActivitiesApi["startLiveActivity"]>[1];
 type MetricUpdateParameters = Parameters<MetricsApi["updateMetricValue"]>[0];
 type MetricRawParameters = Parameters<MetricsApi["updateMetricValueRaw"]>[0];
@@ -100,6 +101,8 @@ export type LiveActivityContentState = Record<string, unknown> & {
   color?: string;
   duration_seconds?: number;
   counts_down?: boolean;
+  timer_start_at?: string;
+  timer_end_at?: string;
 };
 
 type LiveActivityAlertIconOptions = {

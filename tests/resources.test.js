@@ -1196,3 +1196,74 @@ describe("Push Notification icons and interruption levels", () => {
     });
   }
 });
+
+
+describe("Sound serialization", () => {
+  afterEach(() => vi.unstubAllGlobals());
+
+  const longAliases = {
+    send: (client, request) => client.notifications.sendPushNotification({pushNotificationRequest: request}),
+    start: (client, request) => client.liveActivities.startLiveActivity({liveActivityStartRequest: request}),
+    update: (client, request) => client.liveActivities.updateLiveActivity({liveActivityUpdateRequest: request}),
+    end: (client, request) => client.liveActivities.endLiveActivity({liveActivityEndRequest: request}),
+    stream: (client, request) => client.liveActivities.reconcileLiveActivityStream({streamKey: "job", liveActivityStreamRequest: request}),
+    endStream: (client, request) => client.liveActivities.endLiveActivityStream({streamKey: "job", liveActivityStreamDeleteRequest: request}),
+  };
+
+  for (const method of ["send", "start", "update", "end", "stream", "endStream"]) {
+    for (const sound of [undefined, "chime", "default", "none"]) {
+      for (const form of ["short", "long"]) {
+        it(`${method} (${form}) serializes sound ${JSON.stringify(sound)}`, async () => {
+          const ActivitySmith = require("../dist/src/index.js");
+          let body;
+          vi.stubGlobal("fetch", async (_url, init) => {
+            body = JSON.parse(init.body);
+            return new Response(JSON.stringify({success: true}), {status: 200, headers: {"Content-Type": "application/json"}});
+          });
+          const client = new ActivitySmith({apiKey: "test"});
+          const request = method === "send"
+            ? {title: "Deploy", sound}
+            : {content_state: {title: "Deploy", type: "progress", percentage: 50}, sound};
+          if (method === "update" || method === "end") request.activity_id = "activity-1";
+          if (form === "long") await longAliases[method](client, request);
+          else if (method === "send") await client.notifications.send(request);
+          else if (method === "stream" || method === "endStream") await client.liveActivities[method]("job", request);
+          else await client.liveActivities[method](request);
+          expect(Object.hasOwn(body, "sound")).toBe(sound !== undefined);
+          expect(body.sound).toBe(sound);
+          expect(body.content_state?.sound).toBeUndefined();
+        });
+      }
+    }
+  }
+});
+
+
+describe("Timer window serialization", () => {
+  afterEach(() => vi.unstubAllGlobals());
+
+  for (const method of ["start", "update", "stream", "endStream"]) {
+    it(`${method} serializes timer_start_at and timer_end_at`, async () => {
+      const ActivitySmith = require("../dist/src/index.js");
+      let body;
+      vi.stubGlobal("fetch", async (_url, init) => {
+        body = JSON.parse(init.body);
+        return new Response(JSON.stringify({success: true}), {status: 200, headers: {"Content-Type": "application/json"}});
+      });
+      const client = new ActivitySmith({apiKey: "test"});
+      const request = {
+        content_state: {
+          title: "Nightly backup",
+          type: "timer",
+          timer_start_at: "2026-11-19T01:00:00Z",
+          timer_end_at: "2026-11-19T02:00:00Z",
+        },
+      };
+      if (method === "update") request.activity_id = "activity-1";
+      if (method === "stream" || method === "endStream") await client.liveActivities[method]("job", request);
+      else await client.liveActivities[method](request);
+      expect(body.content_state.timer_start_at).toBe("2026-11-19T01:00:00Z");
+      expect(body.content_state.timer_end_at).toBe("2026-11-19T02:00:00Z");
+    });
+  }
+});
