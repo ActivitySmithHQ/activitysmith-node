@@ -660,13 +660,13 @@ export const ContentStateEndStepColorsEnum = {
 export type ContentStateEndStepColorsEnum = typeof ContentStateEndStepColorsEnum[keyof typeof ContentStateEndStepColorsEnum];
 
 /**
- * Start payload requires title and type. For segmented_progress include number_of_steps and current_step. For progress include percentage or value with upper_limit. For metrics and stats include a non-empty metrics array. For value include a string or number in value; strings preserve currency, units, and other formatting. For alert include message. For timer include duration_seconds for countdowns, or set counts_down false without duration_seconds for an open-ended elapsed timer. Optional icon is supported by all Live Activity types. Optional badge is supported by alert, progress, segmented_progress, and value. For segmented_progress, number_of_steps is not locked and can be changed in later update or end calls.
+ * Start payload requires title and type. For segmented_progress include number_of_steps and current_step. For progress include percentage or value with upper_limit. For metrics and stats include a non-empty metrics array. For value include a string or number in value; strings preserve currency, units, and other formatting. For alert include message. For timer include duration_seconds or timer_end_at for countdowns, or set counts_down false without them for an open-ended elapsed timer. Add timer_start_at for a timer that started earlier. Optional icon is supported by all Live Activity types. Optional badge is supported by alert, progress, segmented_progress, and value. For segmented_progress, number_of_steps is not locked and can be changed in later update or end calls.
  * @export
  * @interface ContentStateStart
  */
 export interface ContentStateStart {
     /**
-     * 
+     * Title shown on the Live Activity. Send an empty string to show no title.
      * @type {string}
      * @memberof ContentStateStart
      */
@@ -708,11 +708,23 @@ export interface ContentStateStart {
      */
     upper_limit?: number;
     /**
-     * Timer duration in seconds. For type=timer countdowns, required on start when counts_down is true or omitted.
+     * Timer duration in seconds. For type=timer countdowns, required on start when counts_down is true or omitted, unless you send timer_end_at. Counts from timer_start_at when you send it.
      * @type {number}
      * @memberof ContentStateStart
      */
     duration_seconds?: number;
+    /**
+     * Use with type=timer. ISO 8601 date and time when the timer started. It can be in the past, so a countdown that started earlier shows the time already gone in its progress bar. Defaults to the request time. Must not be in the future.
+     * @type {string}
+     * @memberof ContentStateStart
+     */
+    timer_start_at?: string;
+    /**
+     * Use with type=timer. ISO 8601 date and time when the countdown ends. Must be after timer_start_at, or in the future when timer_start_at is omitted. Send duration_seconds or timer_end_at, not both.
+     * @type {string}
+     * @memberof ContentStateStart
+     */
+    timer_end_at?: string;
     /**
      * Use with type=timer. When true or omitted, the timer counts down from duration_seconds. Set false for an elapsed timer; omit duration_seconds for an open-ended elapsed timer.
      * @type {boolean}
@@ -848,7 +860,7 @@ export type ContentStateStartStepColorsEnum = typeof ContentStateStartStepColors
  */
 export interface ContentStateUpdate {
     /**
-     * 
+     * Title shown on the Live Activity. Send an empty string to show no title.
      * @type {string}
      * @memberof ContentStateUpdate
      */
@@ -890,11 +902,23 @@ export interface ContentStateUpdate {
      */
     upper_limit?: number;
     /**
-     * Timer duration in seconds. For type=timer, sending duration_seconds resets the timer window from the update request time; omit it to preserve the existing timer window.
+     * Timer duration in seconds. For type=timer, sending duration_seconds resets the timer window from the update request time, or from timer_start_at when you send it. Omit it to preserve the existing timer window.
      * @type {number}
      * @memberof ContentStateUpdate
      */
     duration_seconds?: number;
+    /**
+     * Use with type=timer. ISO 8601 date and time when the timer started. It can be in the past, so a countdown that started earlier shows the time already gone in its progress bar. Defaults to the request time. Must not be in the future.
+     * @type {string}
+     * @memberof ContentStateUpdate
+     */
+    timer_start_at?: string;
+    /**
+     * Use with type=timer. ISO 8601 date and time when the countdown ends. Must be after timer_start_at, or in the future when timer_start_at is omitted. Send duration_seconds or timer_end_at, not both. Send timer_end_at alone to move the end and keep the current start.
+     * @type {string}
+     * @memberof ContentStateUpdate
+     */
+    timer_end_at?: string;
     /**
      * Use with type=timer. When true or omitted, the timer counts down from duration_seconds. Set false for an elapsed timer; omit duration_seconds for an open-ended elapsed timer.
      * @type {boolean}
@@ -1190,6 +1214,12 @@ export interface LiveActivityEndRequest {
      * @memberof LiveActivityEndRequest
      */
     secondary_action?: LiveActivityAction;
+    /**
+     * Optional sound for the end. Ends are silent unless you set one. A sound also expands the Live Activity on the Lock Screen. Sounds bundled with the ActivitySmith app: `arrive`, `bell`, `bells`, `bitflip`, `bloom`, `callout`, `chime`, `coin`, `corrupt`, `crest`, `cue`, `ding`, `drop`, `ember`, `emblem`, `flourish`, `glimmer`, `glint`, `glitch`, `lantern`, `nightfall`, `nudge`, `pixel`, `pop`, `signal`, `streak`, `tally`, `wand`, `whoosh`, `zip`. Use `default` for the sound picked on the device, or `none` for no sound. Bundled sounds and `none` need iOS app 1.19.0 or later. Older apps play the iOS default sound instead.
+     * @type {string}
+     * @memberof LiveActivityEndRequest
+     */
+    sound?: string;
 }
 /**
  * Returned after a Live Activity end event is sent or queued.
@@ -1355,6 +1385,12 @@ export interface LiveActivityStartRequest {
      * @memberof LiveActivityStartRequest
      */
     tags?: Array<string>;
+    /**
+     * Optional sound for the start. Omit it to play the Live Activities sound picked on the device. Sounds bundled with the ActivitySmith app: `arrive`, `bell`, `bells`, `bitflip`, `bloom`, `callout`, `chime`, `coin`, `corrupt`, `crest`, `cue`, `ding`, `drop`, `ember`, `emblem`, `flourish`, `glimmer`, `glint`, `glitch`, `lantern`, `nightfall`, `nudge`, `pixel`, `pop`, `signal`, `streak`, `tally`, `wand`, `whoosh`, `zip`. Use `default` for the sound picked on the device, or `none` for no sound. Bundled sounds and `none` need iOS app 1.19.0 or later. Older apps play the iOS default sound instead.
+     * @type {string}
+     * @memberof LiveActivityStartRequest
+     */
+    sound?: string;
 }
 /**
  * Returned after a Live Activity starts. Save activity_id and use it for all later updates and for the final end call.
@@ -1465,6 +1501,12 @@ export interface LiveActivityStreamDeleteRequest {
      * @memberof LiveActivityStreamDeleteRequest
      */
     alert?: AlertPayload;
+    /**
+     * Optional sound for the end. Ends are silent unless you set one. A sound also expands the Live Activity on the Lock Screen. Sounds bundled with the ActivitySmith app: `arrive`, `bell`, `bells`, `bitflip`, `bloom`, `callout`, `chime`, `coin`, `corrupt`, `crest`, `cue`, `ding`, `drop`, `ember`, `emblem`, `flourish`, `glimmer`, `glint`, `glitch`, `lantern`, `nightfall`, `nudge`, `pixel`, `pop`, `signal`, `streak`, `tally`, `wand`, `whoosh`, `zip`. Use `default` for the sound picked on the device, or `none` for no sound. Bundled sounds and `none` need iOS app 1.19.0 or later. Older apps play the iOS default sound instead.
+     * @type {string}
+     * @memberof LiveActivityStreamDeleteRequest
+     */
+    sound?: string;
 }
 /**
  * Returned after a managed stream is ended and removed.
@@ -1732,6 +1774,12 @@ export interface LiveActivityStreamRequest {
      * @memberof LiveActivityStreamRequest
      */
     tags?: Array<string>;
+    /**
+     * Optional sound for this call. A call that starts a Live Activity plays the Live Activities sound picked on the device unless you set one. Updates are silent unless you set one. A sound on an update also expands the Live Activity on the Lock Screen. Sounds bundled with the ActivitySmith app: `arrive`, `bell`, `bells`, `bitflip`, `bloom`, `callout`, `chime`, `coin`, `corrupt`, `crest`, `cue`, `ding`, `drop`, `ember`, `emblem`, `flourish`, `glimmer`, `glint`, `glitch`, `lantern`, `nightfall`, `nudge`, `pixel`, `pop`, `signal`, `streak`, `tally`, `wand`, `whoosh`, `zip`. Use `default` for the sound picked on the device, or `none` for no sound. Bundled sounds and `none` need iOS app 1.19.0 or later. Older apps play the iOS default sound instead.
+     * @type {string}
+     * @memberof LiveActivityStreamRequest
+     */
+    sound?: string;
 }
 /**
  * Update an existing Live Activity by activity_id.
@@ -1775,6 +1823,12 @@ export interface LiveActivityUpdateRequest {
      * @memberof LiveActivityUpdateRequest
      */
     secondary_action?: LiveActivityAction;
+    /**
+     * Optional sound for this update. Updates are silent unless you set one. A sound also expands the Live Activity on the Lock Screen. Sounds bundled with the ActivitySmith app: `arrive`, `bell`, `bells`, `bitflip`, `bloom`, `callout`, `chime`, `coin`, `corrupt`, `crest`, `cue`, `ding`, `drop`, `ember`, `emblem`, `flourish`, `glimmer`, `glint`, `glitch`, `lantern`, `nightfall`, `nudge`, `pixel`, `pop`, `signal`, `streak`, `tally`, `wand`, `whoosh`, `zip`. Use `default` for the sound picked on the device, or `none` for no sound. Bundled sounds and `none` need iOS app 1.19.0 or later. Older apps play the iOS default sound instead.
+     * @type {string}
+     * @memberof LiveActivityUpdateRequest
+     */
+    sound?: string;
 }
 /**
  * Returned after a Live Activity update is sent or queued.
@@ -2449,7 +2503,7 @@ export interface PushNotificationRequest {
      */
     badge?: number;
     /**
-     * 
+     * Optional sound for this Push Notification. Omit it to play the Push Notifications sound picked on the device. Passive Push Notifications play no sound. Sounds bundled with the ActivitySmith app: `arrive`, `bell`, `bells`, `bitflip`, `bloom`, `callout`, `chime`, `coin`, `corrupt`, `crest`, `cue`, `ding`, `drop`, `ember`, `emblem`, `flourish`, `glimmer`, `glint`, `glitch`, `lantern`, `nightfall`, `nudge`, `pixel`, `pop`, `signal`, `streak`, `tally`, `wand`, `whoosh`, `zip`. Use `default` for the sound picked on the device, or `none` for no sound. Bundled sounds and `none` need iOS app 1.19.0 or later. Older apps play the iOS default sound instead.
      * @type {string}
      * @memberof PushNotificationRequest
      */
@@ -2599,13 +2653,13 @@ export type RateLimitErrorCodeEnum = typeof RateLimitErrorCodeEnum[keyof typeof 
  */
 export type SendPushNotification429Response = LiveActivityLimitError | RateLimitError;
 /**
- * Current state for a managed Live Activity stream. Include type on the first PUT, and whenever the stream may need to start a fresh activity. Supports segmented_progress, progress, metrics, stats, alert, timer, and value types. For timer, send duration_seconds to start or reset a bounded timer; omit duration_seconds on later updates to preserve the existing timer window.
+ * Current state for a managed Live Activity stream. Include type on the first PUT, and whenever the stream may need to start a fresh activity. Supports segmented_progress, progress, metrics, stats, alert, timer, and value types. For timer, send duration_seconds or timer_end_at to start or reset a bounded timer, and timer_start_at for a timer that started earlier. Omit them on later updates to preserve the existing timer window.
  * @export
  * @interface StreamContentState
  */
 export interface StreamContentState {
     /**
-     * 
+     * Title shown on the Live Activity. Send an empty string to show no title.
      * @type {string}
      * @memberof StreamContentState
      */
@@ -2647,11 +2701,23 @@ export interface StreamContentState {
      */
     upper_limit?: number;
     /**
-     * Timer duration in seconds. For type=timer, send duration_seconds to start or reset the timer window; omit it on later stream updates to preserve the existing timer window.
+     * Timer duration in seconds. For type=timer, send duration_seconds to start or reset the timer window, counted from timer_start_at when you send it. Omit it on later stream updates to preserve the existing timer window.
      * @type {number}
      * @memberof StreamContentState
      */
     duration_seconds?: number;
+    /**
+     * Use with type=timer. ISO 8601 date and time when the timer started. It can be in the past, so a countdown that started earlier shows the time already gone in its progress bar. Defaults to the request time. Must not be in the future.
+     * @type {string}
+     * @memberof StreamContentState
+     */
+    timer_start_at?: string;
+    /**
+     * Use with type=timer. ISO 8601 date and time when the countdown ends. Must be after timer_start_at, or in the future when timer_start_at is omitted. Send duration_seconds or timer_end_at, not both. On later stream updates, send timer_end_at alone to move the end and keep the current start.
+     * @type {string}
+     * @memberof StreamContentState
+     */
+    timer_end_at?: string;
     /**
      * Use with type=timer. When true or omitted, the timer counts down from duration_seconds. Set false for an elapsed timer; omit duration_seconds for an open-ended elapsed timer.
      * @type {boolean}
