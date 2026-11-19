@@ -101,6 +101,8 @@ export type LiveActivityContentState = Record<string, unknown> & {
   color?: string;
   duration_seconds?: number;
   counts_down?: boolean;
+  timer_start_at?: string;
+  timer_end_at?: string;
 };
 
 type LiveActivityAlertIconOptions = {

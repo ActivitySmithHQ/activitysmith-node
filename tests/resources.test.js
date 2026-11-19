@@ -1237,3 +1237,33 @@ describe("Sound serialization", () => {
     }
   }
 });
+
+
+describe("Timer window serialization", () => {
+  afterEach(() => vi.unstubAllGlobals());
+
+  for (const method of ["start", "update", "stream", "endStream"]) {
+    it(`${method} serializes timer_start_at and timer_end_at`, async () => {
+      const ActivitySmith = require("../dist/src/index.js");
+      let body;
+      vi.stubGlobal("fetch", async (_url, init) => {
+        body = JSON.parse(init.body);
+        return new Response(JSON.stringify({success: true}), {status: 200, headers: {"Content-Type": "application/json"}});
+      });
+      const client = new ActivitySmith({apiKey: "test"});
+      const request = {
+        content_state: {
+          title: "Nightly backup",
+          type: "timer",
+          timer_start_at: "2026-11-19T01:00:00Z",
+          timer_end_at: "2026-11-19T02:00:00Z",
+        },
+      };
+      if (method === "update") request.activity_id = "activity-1";
+      if (method === "stream" || method === "endStream") await client.liveActivities[method]("job", request);
+      else await client.liveActivities[method](request);
+      expect(body.content_state.timer_start_at).toBe("2026-11-19T01:00:00Z");
+      expect(body.content_state.timer_end_at).toBe("2026-11-19T02:00:00Z");
+    });
+  }
+});
