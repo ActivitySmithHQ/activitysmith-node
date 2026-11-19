@@ -1215,7 +1215,7 @@ export interface LiveActivityEndRequest {
      */
     secondary_action?: LiveActivityAction;
     /**
-     * Optional sound for the end. Ends are silent unless you set one. A sound also expands the Live Activity on the Lock Screen. Sounds bundled with the ActivitySmith app: `arrive`, `bell`, `bells`, `bitflip`, `bloom`, `callout`, `chime`, `coin`, `corrupt`, `crest`, `cue`, `ding`, `drop`, `ember`, `emblem`, `flourish`, `glimmer`, `glint`, `glitch`, `lantern`, `nightfall`, `nudge`, `pixel`, `pop`, `signal`, `streak`, `tally`, `wand`, `whoosh`, `zip`. Use `default` for the sound picked on the device, or `none` for no sound.
+     * Optional sound for the end. Ends are silent unless you set one. iOS plays the sound only while the screen is on. Sounds bundled with the ActivitySmith app: `arrive`, `bell`, `bells`, `bitflip`, `bloom`, `callout`, `chime`, `coin`, `corrupt`, `crest`, `cue`, `ding`, `drop`, `ember`, `emblem`, `flourish`, `glimmer`, `glint`, `glitch`, `lantern`, `nightfall`, `nudge`, `pixel`, `pop`, `signal`, `streak`, `tally`, `wand`, `whoosh`, `zip`. Use `default` for the sound picked on the device, or `none` for no sound.
      * @type {string}
      * @memberof LiveActivityEndRequest
      */
@@ -1502,7 +1502,7 @@ export interface LiveActivityStreamDeleteRequest {
      */
     alert?: AlertPayload;
     /**
-     * Optional sound for the end. Ends are silent unless you set one. A sound also expands the Live Activity on the Lock Screen. Sounds bundled with the ActivitySmith app: `arrive`, `bell`, `bells`, `bitflip`, `bloom`, `callout`, `chime`, `coin`, `corrupt`, `crest`, `cue`, `ding`, `drop`, `ember`, `emblem`, `flourish`, `glimmer`, `glint`, `glitch`, `lantern`, `nightfall`, `nudge`, `pixel`, `pop`, `signal`, `streak`, `tally`, `wand`, `whoosh`, `zip`. Use `default` for the sound picked on the device, or `none` for no sound.
+     * Optional sound for the end. Ends are silent unless you set one. iOS plays the sound only while the screen is on. Sounds bundled with the ActivitySmith app: `arrive`, `bell`, `bells`, `bitflip`, `bloom`, `callout`, `chime`, `coin`, `corrupt`, `crest`, `cue`, `ding`, `drop`, `ember`, `emblem`, `flourish`, `glimmer`, `glint`, `glitch`, `lantern`, `nightfall`, `nudge`, `pixel`, `pop`, `signal`, `streak`, `tally`, `wand`, `whoosh`, `zip`. Use `default` for the sound picked on the device, or `none` for no sound.
      * @type {string}
      * @memberof LiveActivityStreamDeleteRequest
      */
@@ -1775,7 +1775,7 @@ export interface LiveActivityStreamRequest {
      */
     tags?: Array<string>;
     /**
-     * Optional sound for this call. A call that starts a Live Activity plays the Live Activities sound picked on the device unless you set one. Updates are silent unless you set one. A sound on an update also expands the Live Activity on the Lock Screen. Sounds bundled with the ActivitySmith app: `arrive`, `bell`, `bells`, `bitflip`, `bloom`, `callout`, `chime`, `coin`, `corrupt`, `crest`, `cue`, `ding`, `drop`, `ember`, `emblem`, `flourish`, `glimmer`, `glint`, `glitch`, `lantern`, `nightfall`, `nudge`, `pixel`, `pop`, `signal`, `streak`, `tally`, `wand`, `whoosh`, `zip`. Use `default` for the sound picked on the device, or `none` for no sound.
+     * Optional sound for this call. A call that starts a Live Activity plays the Live Activities sound picked on the device unless you set one. Updates are silent unless you set one. iOS plays an update sound only while the screen is on. Sounds bundled with the ActivitySmith app: `arrive`, `bell`, `bells`, `bitflip`, `bloom`, `callout`, `chime`, `coin`, `corrupt`, `crest`, `cue`, `ding`, `drop`, `ember`, `emblem`, `flourish`, `glimmer`, `glint`, `glitch`, `lantern`, `nightfall`, `nudge`, `pixel`, `pop`, `signal`, `streak`, `tally`, `wand`, `whoosh`, `zip`. Use `default` for the sound picked on the device, or `none` for no sound.
      * @type {string}
      * @memberof LiveActivityStreamRequest
      */
@@ -1824,7 +1824,7 @@ export interface LiveActivityUpdateRequest {
      */
     secondary_action?: LiveActivityAction;
     /**
-     * Optional sound for this update. Updates are silent unless you set one. A sound also expands the Live Activity on the Lock Screen. Sounds bundled with the ActivitySmith app: `arrive`, `bell`, `bells`, `bitflip`, `bloom`, `callout`, `chime`, `coin`, `corrupt`, `crest`, `cue`, `ding`, `drop`, `ember`, `emblem`, `flourish`, `glimmer`, `glint`, `glitch`, `lantern`, `nightfall`, `nudge`, `pixel`, `pop`, `signal`, `streak`, `tally`, `wand`, `whoosh`, `zip`. Use `default` for the sound picked on the device, or `none` for no sound.
+     * Optional sound for this update. Updates are silent unless you set one. iOS plays the sound only while the screen is on. Sounds bundled with the ActivitySmith app: `arrive`, `bell`, `bells`, `bitflip`, `bloom`, `callout`, `chime`, `coin`, `corrupt`, `crest`, `cue`, `ding`, `drop`, `ember`, `emblem`, `flourish`, `glimmer`, `glint`, `glitch`, `lantern`, `nightfall`, `nudge`, `pixel`, `pop`, `signal`, `streak`, `tally`, `wand`, `whoosh`, `zip`. Use `default` for the sound picked on the device, or `none` for no sound.
      * @type {string}
      * @memberof LiveActivityUpdateRequest
      */
